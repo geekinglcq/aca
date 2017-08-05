@@ -4,18 +4,21 @@ import pandas
 import codecs
 import numpy as np
 
-variable_map = {
-    "id": 0,
-    "name": 1,
-    "org": 2,
-    "search_results_page": 3,
-    "homepage": 4,
-    "pic": 5,
-    "email": 6,
-    "gender": 7,
-    "position": 8,
-    "location": 9
-}
+from collections import OrderedDict
+variable_map = OrderedDict({
+    ("id", 0),
+    ("name", 1),
+    ("org", 2),
+    ("search_results_page", 3),
+    ("homepage", 4),
+    ("pic", 5),
+    ("email", 6),
+    ("gender", 7),
+    ("position", 8),
+    ("location", 9)
+})
+variable = ["id", "name", "org", "search_results_page", "homepage", "pic",\
+    "email", "gender", "position", "location"]
 
 def handle_one_scientist(lines):
     """
@@ -42,7 +45,7 @@ def read_task1(file):
             sample = handle_one_scientist(temp)
             data.append(sample)
             temp = []
-    data = pandas.DataFrame(data, columns=variable_map.keys())
+    data = pandas.DataFrame(data, columns=variable)
     return data
     
 def load_search_res():
