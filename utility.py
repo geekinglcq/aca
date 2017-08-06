@@ -4,6 +4,7 @@ import http.client
 import requests
 import urllib
 import base64
+# import http.client, urllib.request, urllib.parse, urllib.error, base64
 
 ###############################################
 #### Input picture url, return (bool_isExist , bool_gender)(1:male) ###
@@ -62,4 +63,41 @@ def face_cog(pic_url):
             
             return None
 
+
+
+def word_extract(str_url):
+        # Replace the subscription_key string value with your valid subscription key.
+    subscription_key_set = ['8e33aa488f1f42a281188680c3eab177','3ea78262e0cc4538ae5b002f44e2a3f7']
+   
+    for indx in range(len(subscription_key_set)):
         
+        headers = {
+            # Request headers
+            'Content-Type': 'application/json',
+            'Ocp-Apim-Subscription-Key': subscription_key_set[indx],
+        }
+
+        params = urllib.parse.urlencode({
+            # Request parameters
+            'model': 'title',
+            'text': str_url,
+            # 'order': '{number}',
+            'maxNumOfCandidatesReturned': 1,
+        })
+
+        try:
+            conn = http.client.HTTPSConnection('westus.api.cognitive.microsoft.com')
+            conn.request("POST", "/text/weblm/v1.0/breakIntoWords?%s" % params, "{body}", headers)
+            response = conn.getresponse()
+            data = response.read()
+            data = data.decode('utf-8')
+            data = eval(data)
+            if 'candidates' in data.keys():
+                words = data["candidates"][0]['words']
+            elif 'statusCode' in data.keys():
+                print (data["message"])
+                continue
+            conn.close()
+            return words
+        except Exception as e:
+            print("[Errno {0}] {1}".format(e.errno, e.strerror))
