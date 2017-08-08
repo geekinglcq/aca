@@ -5,7 +5,8 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{9a080685-4c29-428f-8fc0-50ace6a4353a}</ProjectGuid>
     <ProjectHome />
-    <StartupFile>task3.py</StartupFile>
+    <StartupFile>
+    </StartupFile>
     <SearchPath />
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
