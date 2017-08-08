@@ -22,7 +22,7 @@ def get_search_page(search_url):
         for i in res:
             sample = []
             sample.append(i.h3.a.text)
-            temp = get_true_url(i.h3.a["href"]):
+            temp = get_true_url(i.h3.a["href"])
             if temp == None:
                 sample.append(i.h3.a["href"])
             else:

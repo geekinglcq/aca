@@ -2,7 +2,7 @@
 
 import pandas 
 import codecs
-
+import crawler
 import data_io as dio
 
 
@@ -20,6 +20,20 @@ def generat_ans_file(data):
         f.write('expert_id\thomepage_url\tgender\tposition\tperson_photo\temail\tlocation\n')
         for index, row in  data.iterrows():
             f.write(generate_one_row(row))
-        f.write('</task1>')
+        f.write('</task1>\n')
 
-  
+def extract_search_info():
+    data = dio.read_task1('./task1/training.txt')
+    train_set_info = {}
+    for index, row in data.iterrows():
+        print(index)
+        train_set_info[row.id] = crawler.get_search_page(row.search_results_page)
+    with open('train_search_info.json', 'w') as f:
+        json.dump(train_set_info, f)
+    data = dio.read_task1('./task1/validation.txt')
+    test_set_info = {}
+    for index, row in data.iterrows():
+        print(index)
+        test_set_info[row.id] = crawler.get_search_page(row.search_results_page)
+    with open('train_search_info.json', 'w') as f:
+        json.dump(test_set_info, f)
