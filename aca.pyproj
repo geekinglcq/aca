@@ -5,8 +5,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{9a080685-4c29-428f-8fc0-50ace6a4353a}</ProjectGuid>
     <ProjectHome />
-    <StartupFile>
-    </StartupFile>
+    <StartupFile>task3.py</StartupFile>
     <SearchPath />
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
@@ -25,6 +24,8 @@
     <Compile Include="first.py" />
     <Compile Include="ILearner.py" />
     <Compile Include="Paper.py" />
+    <Compile Include="predict_interest.py" />
+    <Compile Include="task2.py" />
     <Compile Include="task3.py" />
     <Compile Include="utility.py" />
   </ItemGroup>

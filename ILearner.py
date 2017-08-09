@@ -1,4 +1,5 @@
 from sklearn.svm import SVR
+from sklearn import linear_model
 
 class ILearner(object):
 	"""description of class"""
@@ -28,3 +29,15 @@ class Svr(ILearner):
 
 	def predict(self, X):
 		return self.model.predict(X)
+
+class SGDRegr(ILearner):
+	def __init__(self):
+		self.clf = linear_model.SGDRegressor()
+	
+	def train(self, X, y):
+		self.clf.fit(X,y)
+
+	def predict(self, X):
+		return self.clf.predict(X)
+
+	

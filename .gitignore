@@ -1,1 +1,5 @@
 *.pyc
+.vs/aca/v15/.suo
+*.user
+*.userosscache
+*.sln.docstates
