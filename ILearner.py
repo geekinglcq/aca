@@ -32,7 +32,7 @@ class Svr(ILearner):
 
 class SGDRegr(ILearner):
 	def __init__(self):
-		self.clf = linear_model.SGDRegressor()
+		self.clf = linear_model.SGDRegressor(n_iter=50)
 	
 	def train(self, X, y):
 		self.clf.fit(X,y)

@@ -88,7 +88,6 @@ def ParsePaperTxt():
 				pass
 
 
-
 def TrainAndValidation():
 	readerCount=0
 	train={}
@@ -116,11 +115,13 @@ def TrainAndValidation():
 			for i in range(len(keys)):
 				row[0, (keys[i]-earliest)/timespan ]=row[0,(keys[i]-earliest)/timespan ]+ty[i]
 			X[I,:]=row
-			#X=np.concatenate((X,np.zeros((1,D),dtype=int)))
 			y[I,:]=train[aut]
-			#y=np.concatenate((y,np.zeros((1,1),dtype=int)))
 			I=I+1
+	
+	np.savetxt("task3X.txt",X,fmt="%d")
+	np.savetxt("task3y.txt",y,fmt="%d")
 
+	"""
 	M = SGDRegr()
 	print("trainning...")
 	M.train(X,y.reshape((N,)))
@@ -145,6 +146,7 @@ def TrainAndValidation():
 				A=M.predict(row)
 				out.write("%s\t%d\n"%(line[0], A))
 			out.write("</task3>\n")
+	"""
 
 def main():
 	ParsePaperTxt()
