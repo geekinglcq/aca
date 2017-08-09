@@ -103,8 +103,9 @@ def TrainAndValidation():
 			train[row[0]]=int(row[1])
 
 	D=int(np.ceil((latest-earliest+1)/timespan*1.0) )+1
-	X=np.zeros((1,D),dtype=int)
-	y=np.zeros((1,1),dtype=int)
+	N=328420
+	X=np.zeros((N,D),dtype=int)
+	y=np.zeros((N,1),dtype=int)
 	I=0
 	for aut in train.keys():
 		res,total = GroupReferedPaperByYear(aut)
@@ -115,26 +116,26 @@ def TrainAndValidation():
 			for i in range(len(keys)):
 				row[0, (keys[i]-earliest)/timespan ]=row[0,(keys[i]-earliest)/timespan ]+ty[i]
 			X[I,:]=row
-			X=np.concatenate((X,np.zeros((1,D),dtype=int)))
+			#X=np.concatenate((X,np.zeros((1,D),dtype=int)))
 			y[I,:]=train[aut]
-			y=np.concatenate((y,np.zeros((1,1),dtype=int)))
+			#y=np.concatenate((y,np.zeros((1,1),dtype=int)))
 			I=I+1
 
 	M = SGDRegr()
 	print("trainning...")
-	M.train(X,y)
+	M.train(X,y.reshape((N,)))
 	print("predicting...")
 	with open(name=unicode(validationPath,'utf8'),mode="r") as csvf:
 		with open(name=unicode(output3Path,'utf8'),mode="w") as out:
 			reader=csv.reader(csvf)
 			firstRow=True
-			for row in reader:
+			for line in reader:
 				if firstRow:
 					firstRow=False
 					out.write("<task3>\nauthorname\tcitation\n")
 					continue
+				res,total = GroupReferedPaperByYear(line[0])
 				row=np.zeros((1,int(np.ceil((latest-earliest+1)/timespan*1.0))+1),dtype=int)
-				res,total = GroupReferedPaperByYear(row[0])
 				keys,ty = SortAutAndReferred(res)
 				#todo 一起预测
 				if len(keys)>0:
@@ -142,7 +143,7 @@ def TrainAndValidation():
 					for i in range(len(keys)):
 						row[ 0,(keys[i]-earliest)/timespan ]=row[0, (keys[i]-earliest)/timespan ]+ty[i]
 				A=M.predict(row)
-				out.write("%s\t%d\n"%(row[0], A))
+				out.write("%s\t%d\n"%(line[0], A))
 			out.write("</task3>\n")
 
 def main():
