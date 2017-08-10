@@ -3,6 +3,7 @@
 import pandas 
 import codecs
 import crawler
+import json
 import data_io as dio
 
 
@@ -24,16 +25,24 @@ def generat_ans_file(data):
 
 def extract_search_info():
     data = dio.read_task1('./task1/training.txt')
+    print(data.shape)
     train_set_info = {}
     for index, row in data.iterrows():
+        if (index < 5000):
+            continue
         print(index)
         train_set_info[row.id] = crawler.get_search_page(row.search_results_page)
-    with open('train_search_info.json', 'w') as f:
+        if (index % 100) == 0:
+            with open('train_search_info_5.json', 'w') as f:
+                json.dump(train_set_info, f)
+        # if (index >= 6000):
+        #     break
+    with open('train_search_info_5.json', 'w') as f:
         json.dump(train_set_info, f)
-    data = dio.read_task1('./task1/validation.txt')
-    test_set_info = {}
-    for index, row in data.iterrows():
-        print(index)
-        test_set_info[row.id] = crawler.get_search_page(row.search_results_page)
-    with open('train_search_info.json', 'w') as f:
-        json.dump(test_set_info, f)
+    #data = dio.read_task1('./task1/validation.txt')
+    #test_set_info = {}
+    #for index, row in data.iterrows():
+    #    print(index)
+    #    test_set_info[row.id] = crawler.get_search_page(row.search_results_page)
+    #with open('train_search_info.json', 'w') as f:
+    #    json.dump(test_set_info, f)
