@@ -6,6 +6,7 @@ import numpy as np
 import data_io
 import urllib
 import requests
+import multiprocessing
 from urllib.request import urlopen
 from bs4 import BeautifulSoup as bs 
 
@@ -27,7 +28,10 @@ def get_search_page(search_url):
                 sample.append(i.h3.a["href"])
             else:
                 sample.append(temp)
-            sample.append(i.find("span", {"class": "st"}).text)
+            if (i.find("span", {"class", "st"}) != None):
+                sample.append(i.find("span", {"class": "st"}).text)
+            else:
+                sample.append('Nothing')
             if i.div.div.find("div", {"class": "slp f"}) == None:
                 sample.append(1)
             else:
