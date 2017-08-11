@@ -13,19 +13,19 @@ class Paper(object):
 
 	@staticmethod
 	def getPaperById(id):
-		if not Paper.__wholeData.has_key(id):
+		if not (id in Paper.__wholeData):
 			Paper.__wholeData[id]=Paper(id)
 		return Paper.__wholeData[id]
 
 	@staticmethod
 	def getPaperByAut(author):
-		if not Paper.__authorData.has_key(author):
+		if not (author in Paper.__authorData):
 			Paper.__authorData[author]=[]
 		return Paper.__authorData[author]
 
 	@staticmethod
 	def addAutPaper(aut,pa):
-		if not Paper.__authorData.has_key(aut):
+		if not (aut in Paper.__authorData):
 			Paper.__authorData[aut]=[pa]
 		else:
 			Paper.__authorData[aut].append(pa)

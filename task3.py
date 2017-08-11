@@ -3,9 +3,12 @@ from __future__ import print_function
 from pylab import *
 import Paper
 import csv
-from ILearner import SGDRegr
+from ILearner import Svr
 import numpy as np
 import ast
+import matplotlib.pyplot as plt
+import matplotlib.mlab as mlab
+import random
 
 # 文件路径
 paperPath = "F:\\比赛数据\\task3\\papers.txt"
@@ -20,8 +23,9 @@ timespan = 5	#每5年的被引数为一个特征
 earliest = 1936
 latest = 2016
 
-zeroFeature=0
-halfMissing=0
+E=[]
+zeroFeature=[]
+zeroFAndZeroOut=0
 
 def GroupReferedPaperByYear(author):
 	res={}
@@ -30,7 +34,7 @@ def GroupReferedPaperByYear(author):
 	for paper in papers:
 		for refed in paper.Referenced:
 			total=total+1
-			if res.has_key(refed.Time):
+			if refed.Time in res:
 				res[refed.Time].append(refed)
 			else:
 				res[refed.Time] = [refed]
@@ -40,28 +44,6 @@ def SortAutAndReferred(res):
 	keys=res.keys()
 	keys.sort()
 	ty=[len(res[k]) for k in keys]
-	return keys,ty
-
-def CompleteReferred(keys,ty):
-	global halfMissing
-	global zeroFeature
-	if len(keys)>0:
-		L=len(keys)
-		if L<=(latest-keys[0]+1)/2:
-			halfMissing=halfMissing+1
-		time=keys[0]
-		i=0
-		while time<=latest:
-			if i+1 < len(keys) and time+1 != keys[i+1]:
-				keys.insert(i+1,time+1)
-				ty.insert(i+1,ty[i])
-			time=time+1
-			i=i+1
-		tmp=keys[-1]+1
-		keys = keys+[i for i in range(tmp,latest+1)]
-		ty = ty+[ty[-1] for i in range(tmp,latest+1)]
-	else:
-		zeroFeature=zeroFeature+1
 	return keys,ty
 
 def ParsePaperTxt():
@@ -86,71 +68,124 @@ def ParsePaperTxt():
 				t.Referenced.append(p)
 			else:
 				pass
-
-
-def TrainAndValidation():
-	readerCount=0
-	train={}
-	with open(name=unicode(trainPath,'utf8'),mode="r") as trainf:
-		reader=csv.reader(trainf)
-		first=True
+def Train():
+	global zeroFeature
+	global zeroFAndZeroOut
+	global E
+	with open(name=unicode(trainPath,'utf8'),mode="r") as csvf:
+		reader=csv.reader(csvf)
+		firstRow=True
 		for row in reader:
-			if first:
-				first=False
+			if firstRow:
+				firstRow=False
 				continue
-			readerCount=readerCount+1
-			train[row[0]]=int(row[1])
+			res,total = GroupReferedPaperByYear(row[0])
+			keys=res.keys()
+			keys.sort()
+			X=keys
+			ty=[len(res[k]) for k in X]
+			y=[sum(ty[0:i+1]) for i in range(len(X))]
+			trainResult=int(row[1])
+			if len(y)>0:
+				svr = Svr(kernel='linear')
+				svr.train(np.array(X).reshape(len(X),1), np.array(y).reshape(len(y),))
+				Xp = [[2017]]
+				yp = svr.predict(Xp)
+				E.append(trainResult/yp[0])
+			else:
+				if trainResult>0:
+					zeroFeature.append(trainResult)
+				else:
+					zeroFAndZeroOut=zeroFAndZeroOut+1
 
-	D=int(np.ceil((latest-earliest+1)/timespan*1.0) )+1
-	N=328420
-	X=np.zeros((N,D),dtype=int)
-	y=np.zeros((N,1),dtype=int)
-	I=0
-	for aut in train.keys():
-		res,total = GroupReferedPaperByYear(aut)
-		keys,ty=SortAutAndReferred(res)
-		row=np.zeros((1,D),dtype=int)
-		keys,ty = CompleteReferred(keys,ty)
-		if len(keys)>0:
-			for i in range(len(keys)):
-				row[0, (keys[i]-earliest)/timespan ]=row[0,(keys[i]-earliest)/timespan ]+ty[i]
-			X[I,:]=row
-			y[I,:]=train[aut]
+	#Save:
+	with open(name=unicode(tempPath,'utf8'),mode="w") as fin:
+		fin.write("%r\n"%zeroFeature)
+		fin.write("%r\n"%zeroFAndZeroOut)
+		fin.write("%r\n"%E)
+
+
+def analysis():
+	global zeroFeature
+	global zeroFAndZeroOut
+	global E
+
+	with open(name=unicode(tempPath,'utf8'),mode="r") as fout:
+		I=0
+		for line in fout:
+			if I==0:
+				tzeroFeature=ast.literal_eval(line)
+			elif I==1:
+				zeroFAndZeroOut=ast.literal_eval(line)
+			else:
+				te=ast.literal_eval(line)
 			I=I+1
-	
-	np.savetxt("task3X.txt",X,fmt="%d")
-	np.savetxt("task3y.txt",y,fmt="%d")
+	#系数分布
+	#E=[i for i in te if i<=100]
+	#ma=max(E)
+	#mi=min(E)
+	#nBins=int(ma-mi)
+	#plt.figure()
+	#n,bins,patches = plt.hist(E,nBins)
+	#s=len(E)
+	#expect=0.0
+	#for i in range(100):
+	#	expect=expect+i*(n[i]/s)
+	#print("%r\t%r\t%r"%(ma,mi,expect))
+	#plt.title("E")
+	#plt.show()
 
-	"""
-	M = SGDRegr()
-	print("trainning...")
-	M.train(X,y.reshape((N,)))
-	print("predicting...")
+	#零输入而最终有结果的分布
+	zeroFeature = [i for i in tzeroFeature if i<=100]
+	plt.figure()
+	ma=max(zeroFeature)
+	mi=min(zeroFeature)
+	nBins=int(ma-mi)
+	n,bins,patches = plt.hist(zeroFeature,nBins)
+	expect=0.0
+	s=len(zeroFeature)
+	for i in range(99):
+		expect=expect+i*(n[i]/s)
+	print("%r\t%r\t%r"%(ma,mi,expect))
+	plt.title("zero Result")
+	plt.show()
+
+	print("%r\t%r"%(zeroFAndZeroOut,zeroFAndZeroOut+len(zeroFeature)))
+
+
+def Validation():
 	with open(name=unicode(validationPath,'utf8'),mode="r") as csvf:
 		with open(name=unicode(output3Path,'utf8'),mode="w") as out:
 			reader=csv.reader(csvf)
 			firstRow=True
-			for line in reader:
+			for row in reader:
 				if firstRow:
 					firstRow=False
 					out.write("<task3>\nauthorname\tcitation\n")
 					continue
-				res,total = GroupReferedPaperByYear(line[0])
-				row=np.zeros((1,int(np.ceil((latest-earliest+1)/timespan*1.0))+1),dtype=int)
-				keys,ty = SortAutAndReferred(res)
-				#todo 一起预测
-				if len(keys)>0:
-					keys,ty = CompleteReferred(keys,ty)
-					for i in range(len(keys)):
-						row[ 0,(keys[i]-earliest)/timespan ]=row[0, (keys[i]-earliest)/timespan ]+ty[i]
-				A=M.predict(row)
-				out.write("%s\t%d\n"%(line[0], A))
+				res,total = GroupReferedPaperByYear(row[0])
+				keys=res.keys()
+				keys.sort()
+				X=keys
+				ty=[len(res[k]) for k in X]
+				y=[sum(ty[0:i+1]) for i in range(len(X))]
+				A=0
+				if len(y)>0:
+					svr = Svr(kernel='linear')
+					svr.train(np.array(X).reshape(len(X),1), np.array(y).reshape(len(y),))
+					Xp = [[2017]]
+					yp = svr.predict(Xp)
+					A=int(yp[0]*12.4)
+				out.write("%s\t%d\n"%(row[0], A))
 			out.write("</task3>\n")
-	"""
+
 
 def main():
 	ParsePaperTxt()
-	TrainAndValidation()
+	#Train()
+
+	Validation()
+	#analysis()
 
 
 
