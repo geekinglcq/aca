@@ -4,6 +4,7 @@ import pandas
 import codecs
 import crawler
 import json
+import random
 import data_io as dio
 
 
@@ -14,6 +15,13 @@ def generate_one_row(row):
     """
     ans = '\t'.join([row.id, row.homepage, row.gender, row.position, row.pic, row.email, row.location])
     return ans + '\n'
+
+def photo_url(url):
+    pic_url = crawler.get_pic_url(url)
+    if len(pic_url) == 0:
+        return ''
+    else:
+        return pic_url[random.randint(0, len(pic_url) - 1)]
 
 def generat_ans_file(data):
     with codecs.open('first_task_ans.txt', 'w', encoding='utf-8') as f:
@@ -46,3 +54,4 @@ def extract_search_info():
     #    test_set_info[row.id] = crawler.get_search_page(row.search_results_page)
     #with open('train_search_info.json', 'w') as f:
     #    json.dump(test_set_info, f)
+

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import json
-import pandas
+import pandas as pd
 import codecs
 import numpy as np
 
@@ -12,7 +12,7 @@ variable_map = OrderedDict({
     ("search_results_page", 3),
     ("homepage", 4),
     ("pic", 5),
-    ("email", 6),
+    ("email", 6),   
     ("gender", 7),
     ("position", 8),
     ("location", 9)
@@ -45,9 +45,16 @@ def read_task1(file):
             sample = handle_one_scientist(temp)
             data.append(sample)
             temp = []
-    data = pandas.DataFrame(data, columns=variable)
+    data = pd.DataFrame(data, columns=variable)
     return data
     
+def read_former_task1_ans(file):
+    """
+    Read former task1 ans 
+    """
+    ans = pd.read_csv(file, sep='\t', skiprows=[0, -1])
+    return ans
+
 def load_search_res():
     """
     Return a dict contains the search results. 
