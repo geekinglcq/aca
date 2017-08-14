@@ -11,21 +11,15 @@ import matplotlib.mlab as mlab
 import random
 
 # 文件路径
-paperPath = "F:\\比赛数据\\task3\\papers.txt"
-trainPath = "F:\\比赛数据\\task3\\train.csv"
-validationPath="F:\\比赛数据\\task3\\validation.csv"
-output3Path="F:\\比赛数据\\task3\\output3.txt"
+paperPath = "F:\\ACAData\\task3\\papers.txt"
+trainPath = "F:\\ACAData\\task3\\train.csv"
+validationPath="F:\\ACAData\\task3\\validation.csv"
+output3Path="F:\\ACAData\\task3\\output3.txt"
 
-tempPath="F:\\比赛数据\\task3\\temp3.txt"
+tempPath="F:\\ACAData\\task3\\temp3.txt"
 
-# 特征参数
-timespan = 5	#每5年的被引数为一个特征
-earliest = 1936
-latest = 2016
-
-E=[]
-zeroFeature=[]
-zeroFAndZeroOut=0
+cited={}
+map=Svr('linear')
 
 def GroupReferedPaperByYear(author):
 	res={}
@@ -40,6 +34,16 @@ def GroupReferedPaperByYear(author):
 				res[refed.Time] = [refed]
 	return res,total
 
+def GroupReferedPaper(id):
+	res={}
+	paper=Paper.Paper.getPaperById(id)
+	for refed in paper.Referenced:
+		if refed.Time in res:
+			res[refed.Time].append(refed)
+		else:
+			res[refed.Time]=[refed]
+	return res
+
 def SortAutAndReferred(res):
 	keys=res.keys()
 	keys.sort()
@@ -47,7 +51,7 @@ def SortAutAndReferred(res):
 	return keys,ty
 
 def ParsePaperTxt():
-	with open(name=unicode(paperPath,'utf8'),mode="rU") as f:
+	with open(name=paperPath,mode="rU") as f:
 		for eachLine in f:
 			if eachLine.startswith('#index'):
 				i = int(eachLine[6:])
@@ -69,93 +73,74 @@ def ParsePaperTxt():
 			else:
 				pass
 def Train():
-	global zeroFeature
-	global zeroFAndZeroOut
-	global E
-	with open(name=unicode(trainPath,'utf8'),mode="r") as csvf:
-		reader=csv.reader(csvf)
-		firstRow=True
-		for row in reader:
-			if firstRow:
-				firstRow=False
-				continue
-			res,total = GroupReferedPaperByYear(row[0])
-			keys=res.keys()
-			keys.sort()
-			X=keys
-			ty=[len(res[k]) for k in X]
+	Id = 0
+	j=0
+	color=['b','g','r','c','m']
+	while Id in Paper.Paper._Paper__wholeData:
+		res = GroupReferedPaper(Id)
+		X = res.keys()
+		if len(X)>0:
+			X.sort()
+			ty = [len(res[k]) for k in X]
 			y=[sum(ty[0:i+1]) for i in range(len(X))]
-			trainResult=int(row[1])
-			if len(y)>0:
-				svr = Svr(kernel='linear')
-				svr.train(np.array(X).reshape(len(X),1), np.array(y).reshape(len(y),))
-				Xp = [[2017]]
-				yp = svr.predict(Xp)
-				E.append(trainResult/yp[0])
+			#plt.plot(X,y,color[j%5],label=str(Id))
+
+			if len(X)>2:
+				xp=X[-3:]
+				yp=y[-3:]
 			else:
-				if trainResult>0:
-					zeroFeature.append(trainResult)
-				else:
-					zeroFAndZeroOut=zeroFAndZeroOut+1
-
-	#Save:
-	with open(name=unicode(tempPath,'utf8'),mode="w") as fin:
-		fin.write("%r\n"%zeroFeature)
-		fin.write("%r\n"%zeroFAndZeroOut)
-		fin.write("%r\n"%E)
-
+				xp=X
+				yp=y
+			svr = Svr('linear')
+			svr.train(  np.array(xp).reshape(len(xp),1),  np.array( yp ).reshape(len(yp),)  )
+			xp.append(2017)
+			yp = svr.predict(np.array(xp).reshape(len(xp),1))
+			cited[Id]=int(yp[-1])
+			#plt.plot(xp,yp,color[j%5]+'--')
+			#j=j+1
+			#if j%5==0:
+			#	plt.legend()
+			#	plt.show()
+		else:
+			cited[Id]=0
+		Id=Id+1
+		
+	with open(name=trainPath,mode="r") as csvf:
+		with open(name=tempPath,mode="w") as outf:
+			reader=csv.reader(csvf)
+			firstRow=True
+			for row in reader:
+				if firstRow:
+					firstRow=False
+					continue
+				papers = Paper.Paper.getPaperByAut(row[0])
+				s=0
+				for paper in papers:
+					s=s+cited[paper.Index]
+				outf.write("%r,%r\n"%(s,int(row[1])))
 
 def analysis():
-	global zeroFeature
-	global zeroFAndZeroOut
-	global E
-
-	with open(name=unicode(tempPath,'utf8'),mode="r") as fout:
-		I=0
-		for line in fout:
-			if I==0:
-				tzeroFeature=ast.literal_eval(line)
-			elif I==1:
-				zeroFAndZeroOut=ast.literal_eval(line)
-			else:
-				te=ast.literal_eval(line)
-			I=I+1
-	#系数分布
-	#E=[i for i in te if i<=100]
-	#ma=max(E)
-	#mi=min(E)
-	#nBins=int(ma-mi)
-	#plt.figure()
-	#n,bins,patches = plt.hist(E,nBins)
-	#s=len(E)
-	#expect=0.0
-	#for i in range(100):
-	#	expect=expect+i*(n[i]/s)
-	#print("%r\t%r\t%r"%(ma,mi,expect))
-	#plt.title("E")
-	#plt.show()
-
-	#零输入而最终有结果的分布
-	zeroFeature = [i for i in tzeroFeature if i<=100]
-	plt.figure()
-	ma=max(zeroFeature)
-	mi=min(zeroFeature)
-	nBins=int(ma-mi)
-	n,bins,patches = plt.hist(zeroFeature,nBins)
-	expect=0.0
-	s=len(zeroFeature)
-	for i in range(99):
-		expect=expect+i*(n[i]/s)
-	print("%r\t%r\t%r"%(ma,mi,expect))
-	plt.title("zero Result")
+	global map
+	d={}
+	with open(name=tempPath,mode="r") as fin:
+		for line in fin:
+			l=line.split(',')
+			#if int(l[0]) in d:
+			#	print("warning: %r already in d, old value is: %r was substituded by: %r\n"%(int(l[0]),d[int(l[0])],int(l[1])))
+			d[int(l[0])]=int(l[1])
+	X=d.keys()
+	X.sort()
+	y=[d[k] for k in X]
+	map=Svr('linear')
+	map.train(np.array(X).reshape(len(X),1),  np.array( y ).reshape(len(y),))
+	Xp = range(X[0],X[-1]+1)
+	yp = map.predict(np.array(Xp).reshape(-1,1))
+	plt.plot(X,y,Xp,yp)
 	plt.show()
 
-	print("%r\t%r"%(zeroFAndZeroOut,zeroFAndZeroOut+len(zeroFeature)))
-
-
 def Validation():
-	with open(name=unicode(validationPath,'utf8'),mode="r") as csvf:
-		with open(name=unicode(output3Path,'utf8'),mode="w") as out:
+	with open(name=validationPath,mode="r") as csvf:
+		with open(name=output3Path,mode="w") as out:
 			reader=csv.reader(csvf)
 			firstRow=True
 			for row in reader:
@@ -163,29 +148,22 @@ def Validation():
 					firstRow=False
 					out.write("<task3>\nauthorname\tcitation\n")
 					continue
-				res,total = GroupReferedPaperByYear(row[0])
-				keys=res.keys()
-				keys.sort()
-				X=keys
-				ty=[len(res[k]) for k in X]
-				y=[sum(ty[0:i+1]) for i in range(len(X))]
-				A=0
-				if len(y)>0:
-					svr = Svr(kernel='linear')
-					svr.train(np.array(X).reshape(len(X),1), np.array(y).reshape(len(y),))
-					Xp = [[2017]]
-					yp = svr.predict(Xp)
-					A=int(yp[0]*12.4)
-				out.write("%s\t%d\n"%(row[0], A))
+				papers = Paper.Paper.getPaperByAut(row[0])
+				s=0
+				for paper in papers:
+					s=s+cited[paper.Index]
+				#yp=map.predict([[s]])
+				#A=yp[0]
+				#if A<0:
+				#	A=s
+				out.write("%s\t%d\n"%(row[0], s*10))
 			out.write("</task3>\n")
-
 
 def main():
 	ParsePaperTxt()
-	#Train()
-
-	Validation()
+	Train()
 	#analysis()
+	Validation()
 
 
 
