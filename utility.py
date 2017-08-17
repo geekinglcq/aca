@@ -6,6 +6,11 @@ import requests
 import urllib
 import base64
 
+homepage_pos = [u'edu',u'faculty', u'id', u'staff',  u'detail', u'person', u'about', u'academic', u'teacher', u'list', \
+                u'lish', u'homepages', u'researcher', u'team', u'teachers', u'member']
+homepage_neg = [u'books', u'google', u'pdf', u'esc', u'scholar', u'netprofile', u'linkedin', u'researchgate', u'news',\
+                u'article', u'[^n]wikipedia', u'gov', u'showrating', u'youtube', u'blots', u'citation']
+
 def face_cog(pic_url):
 
     # Replace the subscription_key string value with your valid subscription key.

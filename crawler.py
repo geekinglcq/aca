@@ -17,8 +17,10 @@ def get_search_page(search_url):
     Including the info of results title, url, detail and if or not have fl(bool)
     """
     try:
-        html = urlopen(search_url, timeout=10)
-        bsObj = bs(html.read())
+        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko'}
+        html = requests.get(search_url, headers=headers, timeout=10)
+        
+        bsObj = bs(html.text)
         res = bsObj.findAll("div", {"class": "rc"})
         ans = []
         for i in res:
