@@ -1,5 +1,4 @@
  #coding:utf-8
-from __future__ import print_function
 from pylab import *
 import Paper
 import csv
@@ -51,7 +50,7 @@ def SortAutAndReferred(res):
 	return keys,ty
 
 def ParsePaperTxt():
-	with open(name=paperPath,mode="rU") as f:
+	with open(paperPath,"r") as f:
 		for eachLine in f:
 			if eachLine.startswith('#index'):
 				i = int(eachLine[6:])
@@ -117,7 +116,10 @@ def Train():
 				s=0
 				for paper in papers:
 					s=s+cited[paper.Index]
-				outf.write("%r,%r\n"%(s,int(row[1])))
+				if s!=0:
+					outf.write("%r,%r\n"%(s, int(row[1])/(s*1.0) ))
+				else:
+					outf.write("%r,0\n"% (s))
 
 def analysis():
 	global map
@@ -127,7 +129,7 @@ def analysis():
 			l=line.split(',')
 			#if int(l[0]) in d:
 			#	print("warning: %r already in d, old value is: %r was substituded by: %r\n"%(int(l[0]),d[int(l[0])],int(l[1])))
-			d[int(l[0])]=int(l[1])
+			d[int(l[0])]=float(l[1])
 	X=d.keys()
 	X.sort()
 	y=[d[k] for k in X]
@@ -156,7 +158,7 @@ def Validation():
 				#A=yp[0]
 				#if A<0:
 				#	A=s
-				out.write("%s\t%d\n"%(row[0], s*10))
+				out.write("%s\t%d\n"%(row[0], s*7))
 			out.write("</task3>\n")
 
 def main():
