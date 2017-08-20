@@ -6,6 +6,11 @@ import requests
 import urllib
 import base64
 
+homepage_pos = [u'edu',u'faculty', u'id', u'staff',  u'detail', u'person', u'about', u'academic', u'teacher', u'list', \
+                u'lish', u'homepages', u'researcher', u'team', u'teachers', u'member']
+homepage_neg = [u'books', u'google', u'pdf', u'esc', u'scholar', u'netprofile', u'linkedin', u'researchgate', u'news',\
+                u'article', u'[^n]wikipedia', u'gov', u'showrating', u'youtube', u'blots', u'citation']
+
 def face_cog(pic_url):
 
     # Replace the subscription_key string value with your valid subscription key.
@@ -98,3 +103,16 @@ def url_segmentation(url):
     url = pattern.sub('', url)
     words = word_extract(url)
     return words
+
+def email_getter(text):
+    """
+    Email format: xx@xx , xx SYMBOL_AT xx DOT xx DOT xx, xx [at] xx [dot] xx [dot] xx, xx at xx, xx (at) xx, xx AT xx, xx（AT）xx, xx[at]xx, xx (dot) xx (at) xx,
+    xx<dot>xx<punkt><at><point>xx<dot>xx,  xxx_xx_xx (replace underscores by @ and .), xx [a] xx [d] xx, sunmeng x math [dot] pku [dot] edu [dot] cn [@/x],
+    loris (at) cs (dot) wisc (another dot) edu, username=bdavie domain=mit.edu, 
+    """
+    dot_p = '\.| dot | \[dot\] | DOT | \(dot\) | \(another dot\) |<dot>| \[d\] | (DOT) '
+    at_p = '@| AT | at | \[at\] |\[at\]| SYMBOL_AT |（AT）|<punkt><at><point>| \[a\] |\[at\]| \(at\) |\(at\)| @ |'
+    '([-+\w]+(?:(\.| dot | \[dot\] | DOT | \(dot\) | \(another dot\) |<dot>| \[d\] |)[-+\w]+)*(@| AT | at | \[at\] |\[at\]| SYMBOL_AT |（AT）|<punkt><at><point>| \[a\]|\[at\]| \(at\) |\(at\))(?:[-\w]+\.| dot | \[dot\] | DOT | \(dot\) | \(another dot\) |<dot>| \[d\] |)+[a-zA-Z]{2,7})'
+    simple_p = re.compile(r'([-+\w]+(?:(%s)[-+\w]+)*(%s)(?:[-\w]+%s)+[a-zA-Z]{2,7})'%(dot_p, at_p, dot_p))
+    p2 = re.compile(r'([-+\w]+(?: [dot] [-+\w]+)* [at] (?:[-\w]+ [dot] )+[a-zA-Z]{2,7})')
+    print('a')
