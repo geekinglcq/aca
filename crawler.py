@@ -27,7 +27,7 @@ def get_search_page(search_url):
             sample = []
             sample.append(i.h3.a.text)
             temp = get_true_url(i.h3.a["href"])
-            if temp == None:
+            if temp == '':
                 sample.append(i.h3.a["href"])
             else:
                 sample.append(temp)
@@ -35,8 +35,8 @@ def get_search_page(search_url):
                 sample.append(i.find("span", {"class": "st"}).text)
             else:
                 sample.append('Nothing')
-            if i.div.div.find("div", {"class": "slp f"}) == None:
-                sample.append(1)
+            if i.div.div.find("div", {"class": "slp f"}).find("a", {"class": "fl"}) == None:
+                sample.append(1) 
             else:
                 sample.append(0)
             ans.append(sample)
@@ -52,10 +52,15 @@ def get_true_url(url):
     """
     try:
 
-        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko'}
-        dlurl = requests.get(url, headers=headers, timeout=5)
+        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36 Edge/15.15063',\
+                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',\
+                    'Accept-Language': 'en-US,en;q=0.8,zh-CN;q=0.6,zh;q=0.4',\
+                    'Accept-Encoding': 'gzip, deflate',\
+                    'Referer': 'https://www.google.com/'}
+        dlurl = requests.get(url, headers=headers, timeout=10)
         return dlurl.url
     except Exception as e:  
+        print(e)
         return ''
 
 def get_pic_url(html):
@@ -63,17 +68,23 @@ def get_pic_url(html):
     Return the url of pics of given page text
     """
     try:
-        pattern = re.compile(r'src="(.+?\.jpg)"')
+        pattern = re.compile(r'src="(.+?\.(jpg|png))"')
         # headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko'}
         # html = requests.get(url, headers=headers, timeout=5)
         img_list = pattern.findall(html.text)
-        return img_list
+        img_list = list(filter(lambda x : 'email' not in x, [i[0] for i in img_list]))
+        # return img_list
         for i in range(len(img_list)):
             if not img_list[i].startswith('http'):
                 root_url_p = re.compile(r'http[s]?:\/\/[^/]*\/')
                 root_url = root_url_p.findall(html.url)
                 if len(root_url) > 0:
-                    img_list[i] = root_url[0][:-1] + img_list[i]
+                    if img_list[i].startswith('./'):
+                        img_list[i] = root_url[0] + img_list[i][2:]
+                    elif img_list[i].startswith('/'):
+                        img_list[i] = root_url[0] + img_list[i][1:]
+                    else:
+                        img_list[i] = root_url[0] + img_list[i]
         return img_list
     except Exception as e:
         print(e)
