@@ -68,7 +68,7 @@ def extract_search_info():
     #with open('train_search_info.json', 'w') as f:
     #    json.dump(test_set_info, f)
 
-def one_sample_homepage_features(data, search_res, labeled):
+def one_sample_homepage_features(data, search_res, labeled=True):
     """
     Input: data - the row of dataframe. search_res - the list of search results info
     Ouput: features
@@ -149,6 +149,45 @@ def predict_one_homepage(model, data):
         url = urls[0]
     return url
 
+def check_homepage_validity(name, res):
+    """
+    Check if the homepage is simtisfied basic rules.
+    Input: name-name of expert res-homepage info list
+    """
+    title, url, detail, cited = res
+    if url.endswith('pdf') or url.endswith('doc'):
+        return False
+    # to check if the title or detail contains the name
+    
+    flag = True
+    for j in name.split(' '):
+        if (j.lower() in title.lower()) or (j.lower() in detail.lower()):
+            flag = False
+            break
+    if flag:
+        return False
+    if 'wikipedia' in title.lower():
+        return False
+    return True
+
+def simple_guess_homepage(data, res):
+    """
+    Use simple rules to guess homepage
+    """
+    for i in res:
+        if check_homepage_validity(data['name'], i):
+            return i[1]
+    return res[0][1]
+
+def predcit_homepage_simple(data, res):
+    """
+    Assign homepage values using simple rules
+    """
+    for index, row in data.iterrows():
+        homepage = simple_guess_homepage(row, res[row['id']])
+        data.set_value(index, 'homepage', homepage)
+    return data
+
 def predict_homepage(model, data, res):
     """
     Assign homepage value to input data, using the input model.
@@ -156,6 +195,6 @@ def predict_homepage(model, data, res):
     for index, row in data.iterrows():
         features = one_sample_homepage_features(row, res[row['id']])
         homepage = predict_one_homepage(model, features)
-        data.set_values(index, 'homepage', homepage)
+        data.set_value(index, 'homepage', homepage)
 
     return data

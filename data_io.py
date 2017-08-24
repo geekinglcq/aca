@@ -49,17 +49,27 @@ def read_task1(file):
             sample = handle_one_scientist(temp)
             data.append(sample)
             temp = []
-    data = pd.DataFrame(data, columns=variable)
+    if len(data[0]) == 4:
+        data = pd.DataFrame(data, columns=variable[0:3])
+    else:
+        data = pd.DataFrame(data, columns=variable)
     return data
     
-def read_former_task1_ans(file):
+
+def read_former_task1_ans(file, raw=validataion_path, skiprows=True):
     """
     Read former task1 ans 
     """
-    ans = pd.read_csv(file, sep='\t', skiprows=[0], error_bad_lines=False, skipfooter=1)
+    if skiprows:
+        skiprows = [0]
+    else:
+        skiprows = None
+    ans = pd.read_csv(file, sep='\t', skiprows=skiprows, error_bad_lines=False)
     ans = ans.fillna('')
     ans.columns = ['id', 'homepage', 'gender', 'position', 'pic', 'email', 'location']
-    data = read_task1(validataion_path)[["id", "name", "org", "search_results_page"]]
+    # print(ans.head())
+    data = read_task1(raw)[["id", "name", "org", "search_results_page"]]
+    # print(data.head())
     ans = pd.merge(ans, data, how='outer', on='id')
     return ans
 
