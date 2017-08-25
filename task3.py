@@ -85,13 +85,14 @@ def ReadValidation():
 def SelectModel():
     X_train, X_test, y_train, y_test = train_test_split(
         trainX, trainY, test_size=0.3, random_state=0)
-    C = [1e5,1e6,1e7]
+    C = [0]
     opt = 0
     for c in C:
-        m = SparsePA(c, 5)
-        m.train(X_train, y_train)
+        m = SparsePA(c, 1000)
+        m.train(trainX, trainY)
         mape = m.MAPEScore(X_test, y_test)
-        print("C: %r,  MAPE: %r, train: %r,test: %r\n" % (c, mape,len(X_train),len(X_test)))
+        print("C: %r,  MAPE: %r, train: %r,test: %r\n" %
+              (c, mape, len(X_train), len(X_test)))
         if mape > opt:
             opt = mape
             model = m
@@ -108,37 +109,38 @@ def GenResult(model):
 
 
 def analisis():
-    #找出哪些文章的被引的确为0
-    z=set()
-    o=set()
-    data={}
+    # 找出哪些文章的被引的确为0
+    z = set()
+    o = set()
+    data = {}
     for i in range(len(trainX)):
-        data[trainX[i]]=trainY[i]
-        if trainY[i]==0:
-            aut=trainX[i]
-            papers=Paper.Paper.getPaperByAut(aut)
+        data[trainX[i]] = trainY[i]
+        if trainY[i] == 0:
+            aut = trainX[i]
+            papers = Paper.Paper.getPaperByAut(aut)
             for paper in papers:
                 z.add(paper)
     for paper in z:
         for aut in paper.Author:
-            if (aut in data) and data[aut]>0:
+            if (aut in data) and data[aut] > 0:
                 o.add(paper)
     z.difference_update(o)
-    with (open('zo.txt',mode='w')) as fout:
-        fout.write("%r\n"%len(z))
+    with (open('zo.txt', mode='w')) as fout:
+        fout.write("%r\n" % len(z))
         for p in z:
-            fout.write("%r,%r\n"%(p.Time,p.Journal))
-        fout.write("%r\n"%len(o))
+            fout.write("%r,%r\n" % (p.Time, p.Journal))
+        fout.write("%r\n" % len(o))
         for p in o:
-            fout.write("%r,%r\n"%(p.Time,p.Journal))
-            
+            fout.write("%r,%r\n" % (p.Time, p.Journal))
+
 
 def main():
     ParsePaperTxt()
     ReadTrain()
-    #analisis()
+    # analisis()
     ReadValidation()
     model = SelectModel()
+    model.save('optModel.txt')
     GenResult(model)
 
 

@@ -3,7 +3,6 @@ from sklearn import linear_model
 import numpy as np
 import Paper
 
-
 class ILearner(object):
     """description of class"""
 
@@ -61,51 +60,69 @@ class SparsePA(ILearner):
         self.C = C
         self.T = T
 
-
-    def __makeOnePrediction(self,aut):
-        w=[]
-        x=[]
+    def __makeOnePrediction(self, aut, **args):
+        w = []
+        x = []
         papers = Paper.Paper.getPaperByAut(aut)
         for paper in papers:
-            t=len(paper.Referenced)
-            p=1.0
+            t = len(paper.Referenced)
+            p = 1.0
             if paper.Index in self.weightPool:
-                p=self.weightPool[paper.Index]
-            if t==0:
-                t=1
+                p = self.weightPool[paper.Index]
+            if t == 0:
+                t = 1
             w.append(p)
             x.append(t)
-        w=np.array(w).reshape((1,-1))
-        x=np.array(x).reshape((-1,1))
-        
+        w = np.array(w).reshape((1, -1))
+        x = np.array(x).reshape((-1, 1))
+
         yp = w.dot(x)[0, 0]
-        return yp,w,x
+        if 'y' in args:
+            y = args['y']
+            loss = abs(yp - y)
+            #tau = loss / (1.0 / (2 * self.C) + np.sum(x**2))
+            tau = loss / np.sum(x**2)
+            w = w + np.sign(y - yp) * tau * x.T
+            tmp = int(round(yp))
+            if (tmp != 0 and y == 0) or (tmp == 0 and y != 0):
+                self.__needRefine.add((aut, args['y']))
+        return int(round(yp)), w
+
+    def save(self,fileName):
+        with open(fileName,'w') as fout:
+            for k,v in self.weightPool.items():
+                fout.write('%r,%r\n'%(k,v))
+                
+    def load(self,fileName):
+        with open(fileName,'r') as fin:
+            for row in fin:
+                it=row.split(',')
+                self.weightPool[int(it[0])] = float(it[1])
 
     def train(self, X, Y):
         """X - List of ['Name']\nY - List of [Citaion]"""
         for k in range(self.T):
-            print("Training: %d\n" % (k))
+            self.__needRefine = set()
+            print("Training: %d" % (k))
             for i in range(len(X)):
-                y=Y[i]
-                yp,w,x = self.__makeOnePrediction(X[i])
-
-                loss = abs(yp - y)
-                tau = loss / (1.0 / (2 * self.C) + np.sum(x**2))
-                w = w + np.sign(y - yp) * tau * x.T
-
-                j=0
+                yp, w = self.__makeOnePrediction(X[i], y=Y[i])
                 papers = Paper.Paper.getPaperByAut(X[i])
-                for paper in papers:
-                    self.weightPool[paper.Index]=w[0,j]
-                    j=j+1
-        
+                for j in range(len(papers)):
+                    self.weightPool[papers[j].Index] = w[0, j]
+            for sam in self.__needRefine:
+                yp, w = self.__makeOnePrediction(sam[0], y=sam[1])
+                papers = Paper.Paper.getPaperByAut(sam[0])
+                for j in range(len(papers)):
+                    self.weightPool[papers[j].Index] = w[0, j]
 
     def predict(self, X):
         """X - List of ['Name'] """
         Y = [0 for x in X]
         for i in range(len(X)):
-            yp,w,x = self.__makeOnePrediction(X[i])
-            Y[i] = int(yp)
+            yp, w = self.__makeOnePrediction(X[i])
+            if yp < 0:
+                yp = -yp
+            Y[i] = yp
         return Y
 
     def MAPEScore(self, Xv, Yv):
@@ -115,7 +132,7 @@ class SparsePA(ILearner):
         for i in range(N):
             if YP[i] != 0 or Yv[i] != 0:
                 s = s + abs(YP[i] - Yv[i]) * 1.0 / max(YP[i], Yv[i])
-        with (open(('%r_cv.txt'%self.C),mode='w')) as fout:
+        with (open(('%r_cv.txt' % self.C), mode='w')) as fout:
             for i in range(N):
-                fout.write("%r,%r,%r\n"%(Xv[i],Yv[i],YP[i]))
+                fout.write("%r,%r,%r\n" % (Xv[i], Yv[i], YP[i]))
         return 1 - 1.0 / N * s
