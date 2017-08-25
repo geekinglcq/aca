@@ -68,10 +68,10 @@ def get_pic_url(html):
     Return the url of pics of given page text
     """
     try:
-        pattern = re.compile(r'src="(.+?\.(jpg|png))"')
+        pattern = re.compile(r'src="(.+?\.(jpg|png|gif))"')
         # headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko'}
         # html = requests.get(url, headers=headers, timeout=5)
-        img_list = pattern.findall(html.text)
+        img_list = pattern.findall(html)
         img_list = list(filter(lambda x : 'email' not in x, [i[0] for i in img_list]))
         # return img_list
         for i in range(len(img_list)):

@@ -99,7 +99,7 @@ def url_segmentation(url):
     For given url, return a segmentation of this url based on 
     Web Language Model
     """
-    pattern = re.compile(u'[\W]|https|http|www|_')
+    pattern = re.compile(r'[\W]|https|http|www|_')
     url = pattern.sub('', url)
     words = word_extract(url)
     return words
@@ -110,9 +110,17 @@ def email_getter(text):
     xx<dot>xx<punkt><at><point>xx<dot>xx,  xxx_xx_xx (replace underscores by @ and .), xx [a] xx [d] xx, sunmeng x math [dot] pku [dot] edu [dot] cn [@/x],
     loris (at) cs (dot) wisc (another dot) edu, username=bdavie domain=mit.edu, 
     """
-    dot_p = r'\.| dot | \[dot\] | DOT | \(dot\) | \(another dot\) |<dot>| \[d\] | (DOT) '
-    at_p = r'@| AT | at | \[at\] |\[at\]| SYMBOL_AT |（AT）|<punkt><at><point>| \[a\] |\[at\]| \(at\) |\(at\)| @ |'
+    #dot_p = r' ?[\[<\{\(](?:(?:[Dd][Oo][Tt])|(?:\.)|(?:another dot)|(?:d))[\]>\}\)] ?|[\[<\{\(](?:(?:[Dd][Oo][Tt])|(?:\.)|(?:another dot)|(?:d))[\]>\}\)]'
+    dot_p = r'\.| dot | \[dot\] | DOT | \(dot\) | \(another dot\) |<dot>| \[d\] | \(DOT\) |\[dot\]|\(\.\)|\[.\]|\{dot\}| \. |\(dot\)| \{dot\} | \[dot\]| \[or\] |_DOT_| “dot” |DOT|_DOT_| -dot- '
+    #'([-+\w]+(?:\.| dot [-+\w]+)*(@| AT | at | \[at\] |\[at\]| SYMBOL_AT |（AT）|<punkt><at><point>| \[a\] |\[at\]| \(at\) |\(at\)| @ )(?:[-\w]+\.| dot )+[a-zA-Z]{2,7})'
+    at_p = r'@| AT | at | \[at\] |\[at\]| SYMBOL_AT |（AT）|<punkt><at><point>| \[a\] |\[at\]| \(at\) |\(at\)| @ | At | … | \'at\' |@nospam@|\[AT\]| \_at\_ | a t m a r k |<at>|_at_| \[AT\] | \(you can make the \"at\"\) |\(aτ\)| \/at\/ |\{at\}|AT|\.at\.|_AT_| \{at\} |_\(on\)_| \(a\) |<at> |--at--|\(a-t\)| “at” | \(here at\) |\[arrowbase\]| - at - | \"at\" | \(a\) |\(AT\)|@\.| -at- '
     #'([-+\w]+(?:(\.| dot | \[dot\] | DOT | \(dot\) | \(another dot\) |<dot>| \[d\] |)[-+\w]+)*(@| AT | at | \[at\] |\[at\]| SYMBOL_AT |（AT）|<punkt><at><point>| \[a\]|\[at\]| \(at\) |\(at\))(?:[-\w]+\.| dot | \[dot\] | DOT | \(dot\) | \(another dot\) |<dot>| \[d\] |)+[a-zA-Z]{2,7})'
-    simple_p = re.compile(r'([-+\w]+(?:%s[-+\w]+)*(%s)(?:[-\w]+%s)+[a-zA-Z]{2,7})'%(dot_p, at_p, dot_p))
+    simple_p = re.compile(r'((?:\[)?[-+\w]+(?:(?:%s)[-+\w]+)*(?:\])?(%s)(?:\[)?(?:[-\w]+(?:%s))+[a-zA-Z]{2,7}(?:\])?)'%(dot_p, at_p, dot_p))
     p2 = re.compile(r'([-+\w]+(?: [dot] [-+\w]+)* [at] (?:[-\w]+ [dot] )+[a-zA-Z]{2,7})')
-    print('a')
+    email = simple_p.findall(text)
+    if len(email) > 0:
+        return email[0][0]
+    else:
+        return ''
+
+    

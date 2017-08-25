@@ -6,14 +6,15 @@ import codecs
 import pickle
 import random
 import crawler
+import readability
+
 import data_io as dio
-
 import xgboost as xgb
-
 
 from utility import homepage_neg
 from utility import homepage_pos
 from scipy.sparse import csr_matrix
+from bs4 import BeautifulSoup as bs
 from sklearn.metrics import accuracy_score
 from sklearn.datasets import load_svmlight_file
 from sklearn.model_selection import train_test_split
@@ -178,6 +179,19 @@ def simple_guess_homepage(data, res):
         if check_homepage_validity(data['name'], i):
             return i[1]
     return res[0][1]
+
+def get_clean_text(html):
+    """
+    generate clean text for given html
+    """
+    doc = readability.Document(html)
+    try:
+        clean = doc.get_clean_html()
+    except Exception as e:
+        print(e)
+        clean = doc.content()
+    bsObj = bs(clean)
+    return bsObj.get_text()
 
 def predcit_homepage_simple(data, res):
     """
