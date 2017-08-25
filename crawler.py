@@ -62,7 +62,23 @@ def get_true_url(url):
     except Exception as e:  
         print(e)
         return ''
+def get_html_text(url):
+    """
+    Get the html text for given url
+    """
+    try:
 
+        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36 Edge/15.15063',\
+                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',\
+                    'Accept-Language': 'en-US,en;q=0.8,zh-CN;q=0.6,zh;q=0.4',\
+                    'Accept-Encoding': 'gzip, deflate',\
+                    'Referer': 'https://www.google.com/'}
+        html = requests.get(url, headers=headers, timeout=10)
+        return html.text
+    except Exception as e:  
+        print(e)
+        return ''
+    
 def get_pic_url(html):
     """
     Return the url of pics of given page text
