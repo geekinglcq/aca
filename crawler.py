@@ -82,12 +82,12 @@ def get_html_text(url):
         print(e)
         return ''
 
-def store_html_text(data, url, prefix='./webpage/'):
+def store_html_text(data, prefix='./webpage/'):
     """
     Store the html text. Check if there is a html file in disk, if not get html text and store it.
     Input:  data - list of [id, url]
     """
-    filename = hashlib.md5(url.encode('utf-8')).hexdigest()
+    filename = hashlib.md5(data[1].encode('utf-8')).hexdigest()
     if not os.path.isfile(prefix + filename):
         html_text = get_html_text(data[1])
         if html_text == '':
