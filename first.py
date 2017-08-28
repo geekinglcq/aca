@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 import re
+import os
 import json
 import pandas 
 import codecs
 import pickle
 import random
 import crawler
-import readability
+import utility
+
 
 import data_io as dio
 import xgboost as xgb
@@ -180,18 +182,21 @@ def simple_guess_homepage(data, res):
             return i[1]
     return res[0][1]
 
-def get_clean_text(html):
+def get_email(html):
     """
-    generate clean text for given html
+    Return a list of email address for given html
     """
-    doc = readability.Document(html)
-    try:
-        clean = doc.get_clean_html()
-    except Exception as e:
-        print(e)
-        clean = doc.content()
-    bsObj = bs(clean)
-    return bsObj.get_text()
+    if html == '':
+        return []
+    # text = utility.get_clean_text(html)
+    text = html
+    email = []
+    for i in text.split('\\n'):
+        t = utility.email_getter(i)
+        if t != '':
+            email.append(t)
+    return email
+
 
 def predcit_homepage_simple(data, res):
     """
@@ -212,3 +217,20 @@ def predict_homepage(model, data, res):
         data.set_value(index, 'homepage', homepage)
 
     return data
+
+def get_homepage_html(data, prefix='./webpage/'):
+    """
+    Return homepage html text
+    Input: data - [id, url]
+    """
+    if not os.path.isfile(prefix + data[0]):
+        html_text = crawler.get_html_text(data[1])
+        if html_text == '':
+            return ''
+        else:
+            with codecs.open(prefix + data[0], 'w', 'utf-8') as f:
+                f.write(html_text)
+            return html_text
+    else:
+        with codecs.open(prefix + data[0], 'r', 'utf-8') as f:
+            return f.read()

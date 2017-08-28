@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import re
+import os
 import pandas
 import codecs
 import numpy as np
@@ -62,6 +63,7 @@ def get_true_url(url):
     except Exception as e:  
         print(e)
         return ''
+    
 def get_html_text(url):
     """
     Get the html text for given url
@@ -78,6 +80,26 @@ def get_html_text(url):
     except Exception as e:  
         print(e)
         return ''
+
+def store_html_text(data, prefix='./webpage/'):
+    """
+    Store the html text. Check if there is a html file in disk, if not get html text and store it.
+    Input:  data - list of [id, url]
+    """
+    if not os.path.isfile(prefix + data[0]):
+        html_text = get_html_text(data[1])
+        if html_text == '':
+            return False
+        else:
+            with codecs.open(prefix + data[0], 'w', 'utf-8') as f:
+                f.write(html_text)
+            return True
+
+def store_multi_thread(data, threads=10):
+    """
+    Execute task using threadings
+    """
+    a = 0
     
 def get_pic_url(html):
     """
