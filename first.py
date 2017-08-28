@@ -33,7 +33,7 @@ def generate_one_row(row, flag=True):
     return ans + '\n'
 
 
-def photo_url(html, filter='head'):
+def photo_url(html, url, filter='head'):
     pic_url = crawler.get_pic_url(html, url)
     if filter == 'head':
         pic_url = utility.head_phote_filter(pic_url)
