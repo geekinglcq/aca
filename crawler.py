@@ -7,6 +7,7 @@ import numpy as np
 
 import data_io
 import urllib
+import hashlib
 import requests
 import multiprocessing
 from urllib.request import urlopen
@@ -81,17 +82,18 @@ def get_html_text(url):
         print(e)
         return ''
 
-def store_html_text(data, prefix='./webpage/'):
+def store_html_text(data, url, prefix='./webpage/'):
     """
     Store the html text. Check if there is a html file in disk, if not get html text and store it.
     Input:  data - list of [id, url]
     """
-    if not os.path.isfile(prefix + data[0]):
+    filename = hashlib.md5(url.encode('utf-8')).hexdigest()
+    if not os.path.isfile(prefix + filename):
         html_text = get_html_text(data[1])
         if html_text == '':
             return False
         else:
-            with codecs.open(prefix + data[0], 'w', 'utf-8') as f:
+            with codecs.open(prefix + filename, 'w', 'utf-8') as f:
                 f.write(html_text)
             return True
 
@@ -110,6 +112,7 @@ def get_pic_url(html, url):
         # headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko'}
         # html = requests.get(url, headers=headers, timeout=5)
         img_list = pattern.findall(html)
+        img_list = list([i[0] for i in img_list])
         # img_list = list(filter(lambda x : ('email' not in x) and ('logo' not in x), [i[0] for i in img_list]))
         # return img_list
         for i in range(len(img_list)):

@@ -139,7 +139,7 @@ def get_clean_text(html):
     return bsObj.get_text()
 
 def head_phote_filter(pic_list):
-    return list(filter(lambda x : ('email' not in x) and ('logo' not in x), [i[0] for i in img_list]))
+    return list(filter(lambda x : ('email' not in x.lower()) and ('logo' not in x.lower()), pic_list))
 
 def email_pic_filter(pic_list):
-    return list(filter(lambda x : ('contact' in x) or ('mail' not in x), [i[0] for i in img_list]))
+    return list(filter(lambda x : ('contact' in x.lower()) or ('mail' not in x.lower()), pic_list))
