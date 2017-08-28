@@ -100,8 +100,8 @@ def store_multi_thread(data, threads=10):
     Execute task using threadings
     """
     a = 0
-    
-def get_pic_url(html):
+
+def get_pic_url(html, url):
     """
     Return the url of pics of given page text
     """
@@ -110,12 +110,12 @@ def get_pic_url(html):
         # headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko'}
         # html = requests.get(url, headers=headers, timeout=5)
         img_list = pattern.findall(html)
-        img_list = list(filter(lambda x : 'email' not in x, [i[0] for i in img_list]))
+        # img_list = list(filter(lambda x : ('email' not in x) and ('logo' not in x), [i[0] for i in img_list]))
         # return img_list
         for i in range(len(img_list)):
             if not img_list[i].startswith('http'):
                 root_url_p = re.compile(r'http[s]?:\/\/[^/]*\/')
-                root_url = root_url_p.findall(html.url)
+                root_url = root_url_p.findall(url)
                 if len(root_url) > 0:
                     if img_list[i].startswith('./'):
                         img_list[i] = root_url[0] + img_list[i][2:]

@@ -32,8 +32,13 @@ def generate_one_row(row, flag=True):
         ans = '\t'.join([row.expert_id, row.homepage_url, row.gender, row.position, row.person_photo, row.email, row.location])
     return ans + '\n'
 
-def photo_url(url):
-    pic_url = crawler.get_pic_url(url)
+
+def photo_url(html, filter='head'):
+    pic_url = crawler.get_pic_url(html, url)
+    if filter == 'head':
+        pic_url = utility.head_phote_filter(pic_url)
+    if filter == 'email':
+        pic_url = utility.email_pic_filter(pic_url)
     if len(pic_url) == 0:
         return ''
     else:
