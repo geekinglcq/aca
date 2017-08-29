@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
 import re
 import os
+import math
 import pandas
 import codecs
 import numpy as np
-
 import data_io
 import urllib
 import hashlib
 import requests
+import threading
 import multiprocessing
 from urllib.request import urlopen
 from bs4 import BeautifulSoup as bs 
@@ -99,23 +100,44 @@ def store_html_text(data, prefix='./webpage/'):
             with codecs.open(prefix + filename, 'w', 'utf-8') as f:
                 f.write(html_text)
             return True
+def store_html_single_thread(data, prefix='./webpage/'):
+    for i in data:
+        store_html_text(i, prefix=prefix)
 
-def store_multi_thread(data, threads=10):
+def store_multi_thread(data, threads=10, prefix='./webpage/'):
     """
     Execute task using threadings
     """
-    a = 0
+    num = len(data)
+    chunk = math.ceil(num / threads)
+    splited_data = [[] for i in range(threads)]
+    for i, r in data.iterrows():
+        splited_data[i % threads].append([r['id'], r['homepage']])
+        
+    print('Data split done')
+    # multi thread
+    threads = []
+    for i in splited_data:
+        t = threading.Thread(target=store_html_single_thread,
+        args=(i, prefix))
+        threads.append(t)
+    for i in threads:
+        i.start()
+    for i in threads:
+        i.join()
+    
+
 
 def get_pic_url(html, url):
     """
     Return the url of pics of given page text
     """
     try:
-        pattern = re.compile(r'src="(.+?\.(jpg|png|gif))"')
+        pattern = re.compile(r'src="([^<> \t\r\n]+?\.(jpg|png|gif))"')
         # headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko'}
         # html = requests.get(url, headers=headers, timeout=5)
         img_list = pattern.findall(html)
-        img_list = list([i[0] for i in img_list])
+        img_list = list(set(list([i[0] for i in img_list])))
         # img_list = list(filter(lambda x : ('email' not in x) and ('logo' not in x), [i[0] for i in img_list]))
         # return img_list
         for i in range(len(img_list)):
@@ -127,6 +149,10 @@ def get_pic_url(html, url):
                         img_list[i] = root_url[0] + img_list[i][2:]
                     elif img_list[i].startswith('/'):
                         img_list[i] = root_url[0] + img_list[i][1:]
+                    elif img_list[i].startswith('../'):
+                        img_list[i] = root_url[0] + img_list[i][3:]
+                    elif img_list[i].startswith('../../'):
+                        img_list[i] = root_url[0] + img_list[i][6:]
                     else:
                         img_list[i] = root_url[0] + img_list[i]
         return img_list
