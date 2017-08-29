@@ -37,7 +37,10 @@ def get_search_page(search_url):
                 sample.append(i.find("span", {"class": "st"}).text)
             else:
                 sample.append('Nothing')
-            if i.div.div.find("div", {"class": "slp f"}).find("a", {"class": "fl"}) == None:
+            temp = i.div.div.find("div", {"class": "slp f"})
+            if temp == None:
+                sample.append(1)
+            elif temp.find("a", {"class": "fl"}) == None:
                 sample.append(1) 
             else:
                 sample.append(0)
