@@ -39,7 +39,8 @@ def photo_url(html, url, filter='head'):
         pic_url = utility.head_phote_filter(pic_url)
     if filter == 'email':
         pic_url = utility.email_pic_filter(pic_url)
-    if len(pic_url) == 0:
+    # return pic_url
+    if len(pic_url) != 1:
         return ''
     else:
         return pic_url[random.randint(0, len(pic_url) - 1)]
