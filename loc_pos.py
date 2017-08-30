@@ -17,7 +17,7 @@ class locpos_guesser():
             self.pos_list.append(line.strip())
         for line in codecs.open('./data/location.txt', 'r', 'utf-8'):
             self.loc_list.append(line.strip())
-        self.pos_p = re.compile('|'.join(self.pos_list))
+        self.pos_p = re.compile(r'|'.join(self.pos_list).replace(r'.', r'\.'))
         self.loc_p = re.compile('|'.join(self.loc_list))
     def pos_guess(self, html_text):
         poss = []

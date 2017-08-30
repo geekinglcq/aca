@@ -145,4 +145,5 @@ def head_phote_filter(pic_list):
 
 def email_pic_filter(pic_list):
     p = re.compile(r'mail|address|contact|text')
-    return list(filter(lambda x : len(p.findall(x.lower())) != 0, pic_list))
+    p2 = re.compile(r'cn_text|thu_text|footer|ico|logo|button|media_sharing')
+    return list(filter(lambda x : (len(p.findall(x.lower())) != 0) and (len(p2.findall(x.lower())) == 0), pic_list))
