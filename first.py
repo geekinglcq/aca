@@ -40,10 +40,10 @@ def photo_url(html, url, filter='head'):
     if filter == 'email':
         pic_url = utility.email_pic_filter(pic_url)
     # return pic_url
-    if len(pic_url) != 1:
-        return ''
+    if len(pic_url) == 0:
+        return []
     else:
-        return pic_url[random.randint(0, len(pic_url) - 1)]
+        return pic_url
 
 def generat_ans_file(data, flag=True):
     with codecs.open('first_task_ans.txt', 'w', encoding='utf-8') as f:
@@ -240,3 +240,29 @@ def get_homepage_html(data, prefix='./webpage/'):
     else:
         with codecs.open(prefix + data[0], 'r', 'utf-8') as f:
             return f.read()
+
+
+def score(ans, keys):
+    """
+    Return score the ans get.
+    Ans and keys are key-value dict.
+    key - expert id
+    values - [homepage,gender,position,pic,email,location]
+    """
+    num = len(ans)
+    goals = 0
+    for i in ans:
+        goal = 0
+        x = ans[i]
+        y = keys[i]
+        for j in range(len(x)):
+            if j != 2:
+                if x[j] == y[j]:
+                    goal += 1
+            else:
+                pos_x = set(x[j].split(';'))
+                pos_y = set(y[j].split(';'))
+                goal += len(pos_x & pos_y) / len(pos_x | pos_y)
+        goals += goal
+    goals = goals / (num * 6)
+    return goals
