@@ -48,7 +48,6 @@ WILLARD R. AND INEZ KERR BELL PROFESSOR
  Chair Professor
 Senior Principal Scientist
 Acheson Professor
-Professor (Research) Emeritus
 Directors
 General Manager
  Deputy Director
@@ -89,7 +88,6 @@ Distinguished atmospheric scientist
 developmental psychologist
 Trustee Professor
 Professorial Chair
-Lab Director (or Principal Investigator)
 Vice Deputy Dean
 Research Director 
 Executive Director 
@@ -156,7 +154,6 @@ Professor
 Vice Chair
 Charles E. Lawall Chair
 Emeritus Professor
-Head
  Endowed Chair 
 Adjunct Senior Lecturer
 Assistant Vice President
@@ -198,7 +195,6 @@ forskare
  教授 
 co-founder
 Professori
-CS
 Fulton Watson Copp Chair
 Henry Dreyfus Professor
 Senior Member
@@ -261,7 +257,6 @@ Regent Advisor
 Senior Principal Scientist 
 Regular Member
 Research Advisor
-Associate Chair (Faculty)
 Professorial Research Fellow
 Zisman Family Professor
 Senior Software Engineer
@@ -317,7 +312,6 @@ Harold H. Hines, Jr. Professor
 Townsend Martin Professor
 Eugene Opie First Centennial Professor
 Graduate Director
-NRF Fellow, School of Computer Science and Engineering Nanyang Associate Professor (NRF)
  Prof.
  Director o
 Frederick Emmons Terman Dean
@@ -353,7 +347,6 @@ Hon. Prof.
 Distinguished Member of Technical Staff
 Research Geneticist
 chemists
-Associate Professor (PI)
 Guest Scientist
 Undergraduate Director
 Research staff
@@ -411,7 +404,6 @@ VIRGINIA AND D. K. LUDWIG PROFESSOR
 Hubble Fellow
 professor Emeritus
 Haslam and Dewey Professor
-Professor (Joint Appointment)
 Joe W. Forehand/Accenture Distinguished Professor
 Postdoctoral Researcher 
 Graduate Assistant
@@ -611,7 +603,6 @@ HEAD OF OUTSTATION AND SENIOR SCIENTIST
 Chamberlain Fellow
 Co-Research Director
 Senior Research Associate
-Captain (retired)
 Associate Director
 Consulting Engineer
 General Surgeon
@@ -627,7 +618,6 @@ Proessor Emeritus
  Senior Lecturer.
 Senior Research
 Associate Professor, Master Advisor for Specialty Degree
-HEAD
  副院长
 Overarching Tech Lead 
  Co-Director
@@ -648,7 +638,6 @@ Trustee Chair Professor
 Prof. Em.
 associate director
  Associate Head
-User Experience (UX) Manager
 Regents’ Professor
 Distinguished Research Staff
 N.I.O.C. Chai
@@ -664,7 +653,6 @@ Associate Fellow
 Wendell H. Nedderman Endowed Professor
 Head Professor
 Postdoctoral Scholar
- Research Chair (Tier II)
 co-editor
 PROF.
  榮譽退休教授
@@ -718,7 +706,6 @@ Willard and Lillian Hackerman Chair
 William L. Valentine Emeritus Professor
 Directtor
 Affiliate Professor
-Professor (Emeritus)
 ao. Univ.-Prof
 Research - Associate Dean
 the Director
@@ -738,7 +725,6 @@ Docente
 Computational Physicist
 prof. 
 Adjunct Associate Professor
-Condra Chair of Excellence (Endowed Chair Professor)
 Visiting Research Professor
 visiting member
 Sidney J. Weinberg Professor
@@ -794,7 +780,6 @@ Andrew and Erna Viterbi Early Career Chair
 Skirkanich Assistant Professor
 二级教授
 Marvin L. Goldberger Professor of Planetary Science
-head
 Senior Adviser
  UG Admissions Officer
 research
@@ -901,7 +886,6 @@ Group Director
 Edwin Howard Armstrong Professor
 执行主任
 Emeritus Professo
-Senior Lecturer (Associate Professor)
 research assistant
 Steenbock Professor
 Integrated Researcher
@@ -916,7 +900,6 @@ Associate Chair
 Herbert G. Kayser Professor
 VISITING ASSOCIATE PROFESSOR
 Je suis professeur
-Student
 rincipal Scientist
 Software Architect
 James O. Welch, Jr. and Virginia B. Welch Professor
@@ -945,7 +928,6 @@ doctoral superviso
 Seniour Lecturer
 cientific Director
 Fred D. & Elizabeth L. Turnage Professor
- Head
 Chief Software Architect
 EY Alumni Professor
 Distinguished University Research Professor
@@ -1051,7 +1033,6 @@ Sterling Professor Emeritus Physics
 Asst. Prof.
 Board of Directors
 Donald W. Feddersen Professor
-Professor (Retired)
 Chandler Family Chair Professor 
 Associate professor 
 Adjunct Professor i
@@ -1064,7 +1045,6 @@ Visting Senior Lecturer
 Conradi Eminent Scholar
 Philips Fellow
  Professor 
-PROFESSOR (RESEARCH)
 Sloan Fellow
 Candidate
 导师
@@ -1085,7 +1065,6 @@ VICE CHAIR
 Associate lead scientist
 Professor and School Director
  senior reseacher
-研究员(二级)
  Associate Dean
 Koenig Endowed Chair
 a professor
@@ -1094,7 +1073,6 @@ a professor
 pesquisador
 Senior Chemist
 Ronald R. Taylor Professor
-Professor (with tenure)
 Univ.-Prof.
 Distinguished Research Scientist
 Vice-Dean
@@ -1110,7 +1088,6 @@ Gordon Kaufman Professor
 research director
 emeritus professor
 Chief Research Scientist
-Deputy director (part-time)
 Thatcher Presidential Endowed Chair
 John R. & Louise S. Parker Distinguished Professor
 Max and Gianna Glassman Chair
@@ -1120,7 +1097,6 @@ LEWIS A. HESTER CHAIR
  Associate Director
 Bionics Lab Director
 Bice Seci-Zorn Professor
-Professor (Leave of Absence)
 实验室主任
 Interdisciplinary Graduate School Professor
 Donald and Martha Harleman Professor
@@ -1164,7 +1140,6 @@ representante
 Joint Professor
 Assistant Researcher
 permanent researcher
-Senior Lecturer (Associate Professor) 
 program director
  Associate Director 
 neuroscientist
@@ -1199,7 +1174,6 @@ Chief Wellness Officer
 Management
 Spencer T. and Ann W. Olin Professor
 Distinguished Emeritus Professor
- Vice-Provost (Research)
  Assistant Professor
 CAE专家
 Howard Hughes Investigator
@@ -1216,7 +1190,6 @@ Chancellor’s Professor
 Associate Provost
 AREA CHAIR
 PROFESSOR AND SYSTEM CHAIR
-Technology
 Newton International Research Fellow
 postdoctoral fellowship
 deputy Head
@@ -1279,7 +1252,6 @@ Asso. Professor
 retired NASA engineer
 Senior Research Professor
 specialist
-Professor (C3)
 adjunct instructor
 Arthur Gould Yates Professor
 Rosenthal Endowed Chair
@@ -1328,7 +1300,6 @@ Interim Dean
 consultant
 Marie Curie Global Fellow
 principal consultant
-Professor (Tenured)
 postdoctoral research associate
  Team Leader
 Co-chair
@@ -1342,7 +1313,6 @@ project coordination
 Chancellor Ford Professor
 Member of Technical Staff
 Assistant Research Professor
-Vice-Dean (research)
 Laboratory Fellow 
 pediatrician
 Senior research:Teaching fellow
@@ -1386,13 +1356,11 @@ Scientist Emeritus
 postdoctoral research fellow
 Surgeon-in-Chief
 Full member researcher
-Associate Dean (FCE)
 Hollis Professor
 President for Global Research
 Emerits
 research engineer
 Life Fellow
-Head (CS) & Professor
  Technical Lead
 scientist/architect
 Distinguished Professor Chair
@@ -1435,11 +1403,9 @@ PROFESSOR
 adjunct associate professor
 Formerly Professor
 长江学者
-研究员（教授)
 双聘教授
 Research Manager
 Professor of Geophysics
-Assistant Professor (Ricercatore)
  Deputy Head of School
 founderp 
 Video and Image Technology Architect
@@ -1450,7 +1416,6 @@ Postdoctoral Associate
 Ship and marine engineering experts
 Senior physicist
 Robert Henry Pfeiffer Professor
-Computer Science
 CWI Fellow
 Cherith Chair
 Board of Trustees Professor
@@ -1474,7 +1439,6 @@ Processor
 Rachleff Professor
 Team Leader
 Principal Computer Scientist
-Alumni Distinguished Professor(Emeritus)
 FH-Prof.
 Lecturer ； Head
 Senior Research Scolar
@@ -1492,7 +1456,6 @@ co-CEO
  adjunct faculty
 computer programmer
 Abdun-Nur Professor
-DECRA Research Fellow (Level B)
 Research director
 Chair Professor
 NEC Professor
@@ -1572,7 +1535,6 @@ Deputy Dean
 Senior Consultant
 George D. Markham Professor
 Co-Director of Interdisciplinary Major Program
-Professor(emeritus)
 正高职
 Post Doctoral Fellow
 Founding Department Head
@@ -1616,7 +1578,6 @@ the Area Manager
 Royal Society Leverhulme Trust Senior Research Fellow
 asiantuntija
 副校长
-Professor (Investigador Titular "C")
 Distinguished Scientist 
 experimental philosopher
 chief data scientist,
@@ -1678,14 +1639,12 @@ Surgical Oncologist
 Assistant Policy Scientist
 Faculty Ombuds
 President and CEO Emeritus
-Professor (affiliate)
 Dan Fielder Endowed Chair Professor
 the Morton and Gladys Pickman Chair
 Assistant Chair
 Douglass and Marion Campbell Professor
 Research Fellow
 project leader
-Research
 Interim Associate Dean
 Distinguished Member
 Associate Chair
@@ -1717,7 +1676,6 @@ Visiting research fellow
 team leader
 specially-appointed professor
 Jerome B. Wiesner Professor
-Senior Researcher (Researcher A')
 Affiliated Professor
 Pomeroy and Betty Perry Smith Professor
 Pathologist
@@ -1819,7 +1777,6 @@ Andrew and Erna Viterbi Professor
 Maseeh Professor
 the Roy and Marie Scola Endowed Chair
 "Thousand Youth Talents Program" Professor
-Associate Professor (Reader)
 Faculty Chair
 Vilas Research Professor 
 John Curtin Distinguished Professor
@@ -1868,7 +1825,6 @@ Managing Director
 Frank J. Roshek Professor
 Maître-assistant
 Co-leader
-(full) Professor
 Scottish businessman
 leading scientist
 John W. Barton, Sr. Endowed Chair
@@ -1901,7 +1857,6 @@ Grousbeck Professor
 Strategic Head
 Elizabeth & James Killian Professor
 Warren J. and Viola M. Raymer Professor
-(full) research professorship
 PhD Supervisor
 Professor of Physics Emeritus
 Local Committee Member
@@ -1946,7 +1901,6 @@ Investigador
 PROFESSOR AND CHAIR OF BIOMEDICAL ENGINEERING
 Reader
 Goodyear Chair Professor
-Vice-Dean (Research)
 LaVon Duddleson Krumb Professor
 Ray and Stephanie Lane Professor
 Tan Sri Runme Shaw Senior Professor
@@ -1973,7 +1927,6 @@ SENIOR LECTURER
 Tutor
 Associate Research
 Carter N. Paden Jr. Distinguished Chair 
-Distinguished Professor (Emeritus)
 senior fellow and director of fractionation technology
 Editor-in-Chief
 Direttore
@@ -1982,7 +1935,6 @@ Andrew and Virginia Rudd Family Foundation Professor
 Royal Society Industry Fellow
 Junior Research Group Leader
 Vivian Church Hoff Professor
-Associate Dean (Academics)
 Billie J. Ball Professor 
 Engineering Consultant
 vice-dean
@@ -2003,7 +1955,6 @@ Ph.D Candidate
 software designer
 SENIOR ATTENDING PHYSICIAN
 Distinguished Research Associat
-Lovell Professor (Chair)
 准教授
 Professeur agrégé
 Ramon y Cajal Research Scientist
@@ -2029,7 +1980,6 @@ Data Science Leader
 Professor/Assistant Dean
 Associate Professor 
 Manager
-research scientist (DR1)
 Associate Prof
 Robert and Harriet Heilbrunn Professor
 assistant
@@ -2097,7 +2047,6 @@ Erik Jonsson School of Engineering Distinguished Chair
 Assoc. Prof
 Reasearch Director
 Royal Society University Research Fellow
- docent (adjoint professor)
 硕导
 Senior Associate
 Associate Research Fellow
@@ -2108,7 +2057,6 @@ professor titular
 Deputy Vice Chancellor
 Senior Research Engineer
 委员
-senior research scientist (DR1)
 Clinical Assistant Professor
 Medical Director
 VICE PRESIDENT
@@ -2164,7 +2112,6 @@ CAS Member
 inorganic chemist
 Research Assistant Professor
 Vice dean
-full (W3) Professor
 professore
 Hans A. Bethe Professor Emeritus
 James McGill Professor 
@@ -2203,7 +2150,6 @@ Mehl Professor
 Coordinador
  Sam and Will Strauss Professor
 研究生导师
-Reader (Associate Professor)
 Senior Lecturer in Medical Image Computing
 American businessman and entrepreneur
 Alumni Centennial Professor
@@ -2218,8 +2164,6 @@ Mgr
 Dean,
 Assoc.Prof.
 founding Director 
-Titular (full) Professor
-Associate Professor (tenured)
 Senior Professor
 Distinguished Chair Professor
 infectious disease specialist
@@ -2236,7 +2180,6 @@ Applied Science
 John C. and Helen F. Franklin Professor
 Robert E. Fassnacht Professor
 ADJUNCT ASSISTANT PROFESSOR
-Associate Dean (Research) 
 Bette and Neison Harris Professor
 CIMR Deputy Directo
 El Pomar Endowed Professor
@@ -2259,7 +2202,6 @@ Ph.D.Supervisor
  Associate Department Chair
 Computer Systems Analyst
 Universitair Hoofddocent
-(senior) lecturer
 Senior Researcher
 Program Director
 Mitchell L. and Robin LaFoley Dong Professor
@@ -2288,7 +2230,6 @@ Professore Associato
 Senior Research Scientist
 Professor - Adjunct
 research fellow
-Professor (emeritus)
 Innovation Officer
 RSA Professor
 会长
@@ -2349,7 +2290,6 @@ American physicist
 Postdoctoral Fellowship
 Research Economist
 tenured associate professor
-Professor (Full)
 Jerrold Zacharias Professor
 novelist
 Barry L. MacLean Professor
@@ -2370,7 +2310,6 @@ Underwood-Prescott Professor
 Stephen Fleming Chair
 Graduate Research assistant
 Senior Research Scientist,
-Associate Professor)
 David and GG Farber Endowed Chair
  博士生导师
 project manager
@@ -2385,7 +2324,6 @@ doctoral supervisor
 Editor
 Regental Professor
 PROFESSORE
-教授（三级）
 venture partner
 affiliate professor
 Newberry Professor
@@ -2410,10 +2348,8 @@ SENIOR ASSOCIATE DEAN
  Professeur
 Director and Chair
 教授，博士生導師，副系主任
-Alexander W. Dreyfoos (1954) Professor
 Executive Vice President
 副总经理
-DIST PROF.（Distinguished Professor）
 Benjamin Barney chair
 Howard M. Wilkoff Professor
 Branch Chief
@@ -2572,7 +2508,6 @@ Senior Research Development Engineer
 professor of pediatrics and pathology at Vanderbilt University in Nashville, Tennessee
 Department Chair
 Leonidas T. Barrow Professor
-Associate professor (MCF)
  Teaching Staff
 Specialist
 Scientia Professor 
@@ -2622,8 +2557,6 @@ Applied Researcher
 Goss Distinguished Professor
 Scientific Director
 Harvey D. Spangler Professor
-Associate Head (Research)
-执行院长（兼）
 Reader 
 Assistant Vice President 
 Visiting Lecturer
@@ -2857,7 +2790,6 @@ Group Vice President
 Frederick G. Storey Chair
 Principle Investigator
 Profesor universitario
-Tenured Senior Lecturer (Associate Professor)
 讲师
 Hugh Roy and Lillie Cranz Cullen University Professor
 A. Russell Chandler III Chair
@@ -2906,7 +2838,6 @@ DISTINGUISHED PROFESSOR
  Full Professor,
 Fredrick John Stare Professor 
 innovator
-senior research scientist (directeur de recherche)
 SEI Fellow
 Bloomberg Distinguished Professor
 Hugo F. Sonnenschein Distinguished Service Professor
@@ -2918,7 +2849,6 @@ Principal Research Manager
 Robert Kirby Professor
  硕士生导师 
 Vilas Professor
-Clinical Professor (Honorary)
  Acting Director
 Department Chair ；Professor
 Deputy Managing Director
@@ -2973,7 +2903,6 @@ Associate Editors
 Nord Professor
 Steenbock Professor 
 independent consultant
-Professor (Associate)
 Experienced Researcher
 SENIOR ADVISOR
 henry Adams Morss and Henry Adams Morss, Jr. Professor
@@ -2989,7 +2918,6 @@ Chope Chair
 PRINCIPAL INVESTIGATOR
 Associate Professor, head of the Viper group
 Co-head
-学部委员（院士）
  Associate Professor,
 Ambrose Swasey Professor
 50th Anniversary Chair
@@ -3022,7 +2950,6 @@ IEEE Fellow
 Associate Program Manager
 Division Deputy
  Advisor
-(associate) Professor
 Sterling Professor
 NSERC/AITF Industrial Research Chair
 SPECIAL ADVISOR
@@ -3056,7 +2983,6 @@ MSU Foundation Professor
 Faculty Program Director
 former Senior Scientific Director
 Project leader 
- head
 John P. Morgridge Professor
 Hasib Sabbagh Professor
 Sensory Scientist
@@ -3133,4 +3059,3 @@ Chairman
 Principal Lecturer
 Senior scientist
 Assoc/Professor
-chair (retired)
