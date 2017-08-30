@@ -131,6 +131,7 @@ def get_clean_text(html):
     """
     doc = readability.Document(html)
     try:
+        doc._html()
         clean = doc.get_clean_html()
     except Exception as e:
         print(e)
@@ -143,4 +144,5 @@ def head_phote_filter(pic_list):
     return list(filter(lambda x : len(p.findall(x.lower())) == 0, pic_list))
 
 def email_pic_filter(pic_list):
-    return list(filter(lambda x : ('contact' in x.lower()) or ('mail' not in x.lower()), pic_list))
+    p = re.compile(r'mail|address|contact|text')
+    return list(filter(lambda x : len(p.findall(x.lower())) != 0, pic_list))
