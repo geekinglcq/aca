@@ -14,14 +14,18 @@ import multiprocessing
 from urllib.request import urlopen
 from bs4 import BeautifulSoup as bs 
 
-def get_search_page(search_url):
+def get_search_page(search_url, use_proxy=True):
     """
     Return the search results of the given searching url.
     Including the info of results title, url, detail and if or not have fl(bool)
     """
     try:
+        if use_proxy:
+            proxies = {"http": "127.0.0.1:1080", "https": "127.0.0.1:1080"}
+        else:
+            proxies = None
         headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko'}
-        html = requests.get(search_url, headers=headers, timeout=10)
+        html = requests.get(search_url, headers=headers, timeout=10, proxies=proxies)
         
         bsObj = bs(html.text)
         res = bsObj.findAll("div", {"class": "rc"})
@@ -51,36 +55,78 @@ def get_search_page(search_url):
     except Exception as e:
       print(e)
       return []
+def single_thread_get_search_page(data, search_info):
+    """
+    Data - [[id, url], [id, url]]
+    """
+    for i in data:
+        search_info[i[0]] = get_search_page(i[1])
 
-def get_true_url(url):
+def multi_thread_get_search_page(data, threads_num=10):
+    """
+    Data - [[id, url], [id, url]]
+    """
+    search_info = []
+    for i in range(threads_num):
+        search_info.append(dict())
+    threads = []
+    num = len(data)
+    chunk = math.ceil(num / threads_num)
+    splited_data = [[] for i in range(threads_num)]
+    for i, r in data.iterrows():
+        splited_data[i % threads_num].append([r['id'], r['search_results_page']])
+    print('Data split done')
+    
+    for i in range(threads_num):
+        t = threading.Thread(target=single_thread_get_search_page, args=(splited_data[i], search_info[i]))
+        threads.append(t)
+    for i in threads:
+        print('Start')
+        i.start()
+    for i in threads:
+        i.join()
+    info_sum = {}
+    for i in search_info:
+        info_sum.update(i)
+    return info_sum
+    
+
+
+def get_true_url(url, use_proxy=True):
     """
     Get the true url after redirecting. 
     """
     try:
-
+        if use_proxy:
+            proxies = {"http": "127.0.0.1:1080", "https": "127.0.0.1:1080"}
+        else:
+            proxies = None
         headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36 Edge/15.15063',\
                     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',\
                     'Accept-Language': 'en-US,en;q=0.8,zh-CN;q=0.6,zh;q=0.4',\
                     'Accept-Encoding': 'gzip, deflate',\
                     'Referer': 'https://www.google.com/'}
-        dlurl = requests.get(url, headers=headers, timeout=10)
+        dlurl = requests.get(url, headers=headers, timeout=10, proxies=proxies)
         return dlurl.url
     except Exception as e:  
         print(e)
         return ''
     
-def get_html_text(url):
+def get_html_text(url, use_proxy=True):
     """
     Get the html text for given url
     """
     try:
-
+        if use_proxy:
+            proxies = {"http": "127.0.0.1:1080", "https": "127.0.0.1:1080"}
+        else:
+            proxies = None
         headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36 Edge/15.15063',\
                     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',\
                     'Accept-Language': 'en-US,en;q=0.8,zh-CN;q=0.6,zh;q=0.4',\
                     'Accept-Encoding': 'gzip, deflate',\
                     'Referer': 'https://www.google.com/'}
-        html = requests.get(url, headers=headers, timeout=10)
+        html = requests.get(url, headers=headers, timeout=10, proxies=proxies)
         return html.text
     except Exception as e:  
         print(e)
@@ -155,15 +201,20 @@ def get_pic_url(html, url):
                         img_list[i] = root_url[0] + img_list[i][6:]
                     else:
                         img_list[i] = root_url[0] + img_list[i]
+        img_list = list(filter(x: check_request_validation(x), img_list))
         return img_list
     except Exception as e:
         print(e)
         return []
 
-def get_gender_name_single_page(url):
+def get_gender_name_single_page(url, use_proxy=True):
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko'}
     try:
-        html = requests.get(url, headers=headers, timeout=5)
+        if use_proxy:
+            proxies = {"http": "127.0.0.1:1080", "https": "127.0.0.1:1080"}
+        else:
+            proxies = None
+        html = requests.get(url, headers=headers, timeout=5, proxies=proxies)
         bsObj = bs(html.text)
         name_list = [i.text for i in bsObj.findAll("span", {"class": "result-name"})]
         return name_list
@@ -188,3 +239,20 @@ def get_gender_name():
     except Exception as e:
         print(e)
         return [['Error'], ['Error']]
+
+def check_request_validation(url, use_proxy=True):
+    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko'}
+    try:
+        if use_proxy:
+            proxies = {"http": "127.0.0.1:1080", "https": "127.0.0.1:1080"}
+        else:
+            proxies = None
+        res = requests.get(url, headers=headers, proxies=proxies)
+        
+        if res.status_code == 200:
+            return True
+        else:
+            return False
+    except Exception as e:
+        print(e)
+        return False
