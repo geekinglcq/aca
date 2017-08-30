@@ -354,7 +354,6 @@ Adjunct Faculty
 Adjunctive Professor
 Programme Counsellor
 McAfee Professor
-research
 Dan R. and Catherine M. Dalton Professor
 Janet S. Cockrell Centennial Chair
 Research Group Leader
@@ -767,7 +766,6 @@ Computer Research Specialist
 visiting assistant professor
 Founding Dean
 研究所长
-senior undergraduate student
 cardiologist
 Associate Head of Department & Professor
 Harvey D. Spangler Professor
@@ -2044,7 +2042,6 @@ Deputy Pro-Vice Chancellor
 Hon. Prof.
 Data Analytics
 Douglass and Marion Campbell Professor
-Alumni
 Senior Lecturer in Medical Image Computing
 Qimonda Chair Professor
 John Lions Chair
@@ -2324,7 +2321,6 @@ Visting Senior Lecturer
 Simons Professor
 Harvey W. Cushing Professor
 UBC Killam Professor
-Visiting PhD student
 青年千人计划/研究员
 Teresa and H. John Heinz III University Professor
 Research scientis
