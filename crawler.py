@@ -201,7 +201,7 @@ def get_pic_url(html, url):
                         img_list[i] = root_url[0] + img_list[i][6:]
                     else:
                         img_list[i] = root_url[0] + img_list[i]
-        img_list = list(filter(x: check_request_validation(x), img_list))
+        img_list = list(filter(lambda x: check_request_validation(x), img_list))
         return img_list
     except Exception as e:
         print(e)
