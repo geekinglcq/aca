@@ -14,7 +14,7 @@ import multiprocessing
 from urllib.request import urlopen
 from bs4 import BeautifulSoup as bs 
 
-def get_search_page(search_url, use_proxy=True):
+def get_search_page(search_url, use_proxy=False):
     """
     Return the search results of the given searching url.
     Including the info of results title, url, detail and if or not have fl(bool)
@@ -25,14 +25,15 @@ def get_search_page(search_url, use_proxy=True):
         else:
             proxies = None
         headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko'}
-        html = requests.get(search_url, headers=headers, timeout=10, proxies=proxies)
+        search_url = search_url.replace('ifang.ml', '166.111.7.106')
+        html = requests.get(search_url, headers=headers, timeout=20, proxies=proxies)
         
         bsObj = bs(html.text)
         res = bsObj.findAll("div", {"class": "rc"})
         ans = []
         for i in res:
             sample = []
-            sample.append(i.h3.a.text)
+            sample.append(i.h3.a.text) 
             temp = get_true_url(i.h3.a["href"])
             if temp == '':
                 sample.append(i.h3.a["href"])
@@ -59,12 +60,16 @@ def single_thread_get_search_page(data, search_info):
     """
     Data - [[id, url], [id, url]]
     """
+    c = 0
     for i in data:
+        if (c % 50) == 0:
+            print(c)
         search_info[i[0]] = get_search_page(i[1])
+        c += 1
 
 def multi_thread_get_search_page(data, threads_num=10):
     """
-    Data - [[id, url], [id, url]]
+    Data - stdandard dataframe
     """
     search_info = []
     for i in range(threads_num):
@@ -94,23 +99,28 @@ def multi_thread_get_search_page(data, threads_num=10):
 
 def get_true_url(url, use_proxy=True):
     """
-    Get the true url after redirecting. 
+    Get the true url and title after redirecting. 
     """
-    try:
-        if use_proxy:
-            proxies = {"http": "127.0.0.1:1080", "https": "127.0.0.1:1080"}
-        else:
-            proxies = None
-        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36 Edge/15.15063',\
+    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36 Edge/15.15063',\
                     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',\
                     'Accept-Language': 'en-US,en;q=0.8,zh-CN;q=0.6,zh;q=0.4',\
                     'Accept-Encoding': 'gzip, deflate',\
                     'Referer': 'https://www.google.com/'}
-        dlurl = requests.get(url, headers=headers, timeout=10, proxies=proxies)
+    try:
+        dlurl = requests.get(url, headers=headers, timeout=10)
         return dlurl.url
     except Exception as e:  
-        print(e)
-        return ''
+        if use_proxy:
+            proxies = {"http": "127.0.0.1:1080", "https": "127.0.0.1:1080"}
+            try:
+                dlurl = requests.get(url, headers=headers, timeout=20, proxies=proxies)
+                return dlurl.url
+            except Exception as e:
+                print(e)
+                return ''
+        else:
+            print(e)
+            return ''
     
 def get_html_text(url, use_proxy=True):
     """

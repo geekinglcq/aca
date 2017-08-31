@@ -20,9 +20,11 @@ class locpos_guesser():
         self.pos_p = re.compile(r'|'.join(self.pos_list).replace(r'.', r'\.'))
         self.loc_p = re.compile('|'.join(self.loc_list))
     def pos_guess(self, html_text):
+        html_text = html_text.split('\n')
         poss = []
         for i in html_text:
-            poss.extend(self.pos_p.findall(i))
+            if 'was' not in i:
+                poss.extend(self.pos_p.findall(i))
         poss = list(set(poss))
         sub_filter = {}
         for i in poss:
@@ -38,6 +40,7 @@ class locpos_guesser():
         return poss
     
     def loc_guess(self, html_text):
+        html_text = html_text.split('\n')
         locs = []
         for i in html_text:
             locs.extend(self.loc_p.findall(i))

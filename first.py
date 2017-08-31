@@ -15,6 +15,7 @@ import xgboost as xgb
 
 from utility import homepage_neg
 from utility import homepage_pos
+from pypinyin import lazy_pinyin
 from scipy.sparse import csr_matrix
 from bs4 import BeautifulSoup as bs
 from sklearn.metrics import accuracy_score
@@ -164,17 +165,16 @@ def check_homepage_validity(name, res):
     Input: name-name of expert res-homepage info list
     """
     title, url, detail, cited = res
-    if url.endswith('pdf') or url.endswith('doc'):
+    if url.endswith('pdf') or url.endswith('doc') or 'linkedin' in url.lower() or 'researchgate' in url.lower() or 'citations' in url.lower():
         return False
     # to check if the title or detail contains the name
     
-    flag = True
-    for j in name.split(' '):
-        if (j.lower() in title.lower()) or (j.lower() in detail.lower()):
-            flag = False
-            break
-    if flag:
+    
+    title = ' '.join(lazy_pinyin(title))
+    p = re.compile(r'|'.join(name.lower().split(' ')))
+    if len(p.findall(title.lower())) == 0:
         return False
+    
     if 'wikipedia' in title.lower():
         return False
     return True
@@ -182,6 +182,7 @@ def check_homepage_validity(name, res):
 def simple_guess_homepage(data, res):
     """
     Use simple rules to guess homepage
+    res - homepage search results 
     """
     for i in res:
         if check_homepage_validity(data['name'], i):
