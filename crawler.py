@@ -2,6 +2,7 @@
 import re
 import os
 import math
+import shutil
 import pandas
 import codecs
 import numpy as np
@@ -11,6 +12,7 @@ import hashlib
 import requests
 import threading
 import multiprocessing
+from PIL import Image
 from urllib.request import urlopen
 from bs4 import BeautifulSoup as bs 
 
@@ -266,3 +268,36 @@ def check_request_validation(url, use_proxy=True):
     except Exception as e:
         print(e)
         return False
+
+def download_image(url, path, use_proxy=False):
+    """
+    Download the image based on url to given path. 
+    Output: True save successfully, False save unsuccessfully
+    If the formate is not jpg, swith it to jpg then store it.
+    """
+    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko'}
+    if use_proxy:
+        proxies = {"http": "127.0.0.1:1080", "https": "127.0.0.1:1080"}
+    else:
+        proxies = None
+    try:
+        r = requests.get(url, headers=headers, stream=True, proxies=proxies)
+        postfix = '.jpg'
+        if r.status_code == 200:
+            with open(path + postfix, 'wb') as f:
+                r.raw.decode_content = True
+                shutil.copyfileobj(r.raw, f)
+            img = Image.open(path + postfix)
+            if img.format != 'jpg':
+                if img.mode == 'P':
+                    img = img.convert('RGB')
+                img.save(path + postfix, 'JPEG')
+            img.close()
+            return True
+        return False
+    except Exception as e:
+        print(e)
+        if use_proxy:
+            return False
+        else:
+            return download_image(url, path, use_proxy=True)
