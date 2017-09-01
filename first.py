@@ -115,12 +115,16 @@ def one_sample_homepage_features(data, search_res, labeled=True):
 
     return features
 
-def extract_homepage_features(labeled=True):
+def extract_homepage_features(labeled=True, full_data=False):
     
     features = []
     if labeled:
-        raw_data = dio.read_task1('./task1/training.txt')
-        search_info = dio.load_search_res(labeled)
+        if full_data:
+            raw_data = dio.read_former_task1_ans('./full_data/full_data_ans.txt', raw='./full_data/full_data.tsv', skiprows=False)
+            search_info = json.load(open('./full_data/all_search_info.json'))
+        else:
+            raw_data = dio.read_task1('./task1/training.txt')
+            search_info = dio.load_search_res(labeled)
     else:
         raw_data = dio.read_task1('./task1/validation.txt')
         search_info = dio.load_search_res(labeled)
@@ -128,16 +132,18 @@ def extract_homepage_features(labeled=True):
         samples = one_sample_homepage_features(r, search_info[r["id"]], labeled)
         if samples != []:
             features.extend(samples)
-
+    if full_data:
+        labeled = 'all'
     with open('./data/%s_features.svm.txt'%(labeled), 'w') as f:
         for feature in features:
             line = str(feature[0]) + ' '
             line = line + ' '.join([str(i) + ':' + str(feature[i]) for i in range(1, len(feature))]) + '\n'
             f.write(line)
 
-def homepage_xgb_model(model_path):
+def homepage_xgb_model(model_path, training_set='True'):
+    training_set = './data/%s_features.svm.txt'%(training_set)
     model = xgb.XGBClassifier()
-    X, y = load_svmlight_file('./data/True_features.svm.txt')
+    X, y = load_svmlight_file(training_set)
     model.fit(X,y)
     pickle.dump(model, open(model_path, 'wb'))
     return model
@@ -175,8 +181,8 @@ def check_homepage_validity(name, res):
     if len(p.findall(title.lower())) == 0:
         return False
     
-    if 'wikipedia' in title.lower():
-        return False
+    #if 'wikipedia' in title.lower():
+     #   return False
     return True
 
 def simple_guess_homepage(data, res):
