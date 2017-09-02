@@ -2,6 +2,7 @@
 import re
 import os
 import math
+import json
 import shutil
 import pandas
 import codecs
@@ -212,7 +213,7 @@ def get_pic_url(html, url):
                     else:
                         img_list[i] = root_url[0] + img_list[i]
         # print(img_list)
-        img_list = list(filter(lambda x: check_request_validation(x), img_list))
+        # img_list = list(filter(lambda x: check_request_validation(x), img_list))
         return img_list
     except Exception as e:
         print(e)
@@ -221,13 +222,14 @@ def single_thread_get_pic_url(data, html, pics):
     """
     data - list of {'id':xxx,'homepage':''}
     """
-
-    pics = {}
     for r in data:
         h = html[r['id']]
         if h != '':
             pic = get_pic_url(h, r['homepage'])
             pics[r['id']] = [r['homepage'], pic]
+        else:
+            pics[r['id']] = [r['homepage'], pic]
+    
     
 
 def multi_thread_get_pic_url(data, html, threads_num=10):
@@ -244,18 +246,22 @@ def multi_thread_get_pic_url(data, html, threads_num=10):
         splited_data[i % threads_num].append({'id': r['id'], 'homepage': r['homepage']})
 
     print('Data split done')
-
+    print(len(splited_data[0]))
     for i in range(threads_num):
-        t = threading.Thread(target=single_thread_get_pic_url, args=(splited_data[i], html, pics_single))
+        t = threading.Thread(target=single_thread_get_pic_url, args=(splited_data[i], html, pics_single[i]))
         threads.append(t)
     for i in threads:
         i.start()
     for i in threads:
         i.join()
-    pics = {}
+    ans, pics, id_page = {}, {}, {}
+    
     for i in pics_single:
-        pics.update(i)
-    return pics
+        ans.update(i)
+    for i in ans:
+        pics[i] = ans[i][1]
+        id_page[i] = ans[i][0]
+    return pics, id_page
 
 def get_gender_name_single_page(url, use_proxy=True):
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko'}
@@ -319,7 +325,7 @@ def download_image(url, path, use_proxy=False):
     else:
         proxies = None
     try:
-        r = requests.get(url, headers=headers, stream=True, proxies=proxies)
+        r = requests.get(url, headers=headers, stream=True, proxies=proxies, timeout=40)
         postfix = '.jpg'
         if r.status_code == 200:
             with open(path + postfix, 'wb') as f:
@@ -327,7 +333,7 @@ def download_image(url, path, use_proxy=False):
                 shutil.copyfileobj(r.raw, f)
             img = Image.open(path + postfix)
             if img.format != 'jpg':
-                if img.mode == 'P':
+                if img.mode in ['P', 'LA', 'I']:
                     img = img.convert('RGB')
                 img.save(path + postfix, 'JPEG')
             img.close()
@@ -339,3 +345,51 @@ def download_image(url, path, use_proxy=False):
             return False
         else:
             return download_image(url, path, use_proxy=True)
+
+def single_thread_download_image(pics, succ, index):
+    flag = 0
+    succ = {}
+    for i in pics:
+        flag = 0
+        succ[i] = []
+        urls = pics[i]
+        for url in urls:
+            path = './head/%s-%s'%(i, flag)
+            if download_image(url, path):
+                flag += 1
+                succ[i].append([path, url])
+        if len(succ) % 10 ==0:
+            with codecs.open('./temp/%s_succ.json'%(index), 'w', 'utf-8') as f:
+                json.dump(succ, f)
+            with open('./temp/%s_num.txt'%(index), 'a') as f:
+                f.write(str(len(succ)))
+    
+    return succ
+
+
+def multi_thread_download_image(pics, threads_num=10):
+    """
+    Pics - dict of {'id':[urls]}
+    Output: save all possible images and return the list of images that stored successfully
+    """
+    num = len(pics)
+    chunk = math.ceil(num / threads_num)
+    threads = []
+    ids = list(pics.keys())
+    split_data = [{} for i in range(threads_num)]
+    succ_sub = [{} for i in range(threads_num)]
+    for i, pid in enumerate(ids):
+        split_data[i % threads_num][pid] = pics[pid]
+    for i in range(threads_num):
+        t =  threading.Thread(target=single_thread_download_image, args=(split_data[i], succ_sub[i], i))
+        threads.append(t)
+    for i in threads:
+        i.start()
+    for i in threads:
+        i.join()
+    succ = {}
+    for i in succ_sub:
+        succ.update(i)
+    return succ
+
+
