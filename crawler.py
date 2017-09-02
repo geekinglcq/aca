@@ -191,17 +191,15 @@ def get_pic_url(html, url):
     Return the url of pics of given page text
     """
     try:
-        pattern = re.compile(r'(?:src|SRC)(?: ?= ?)"([^<> \t\r\n]+?\.(jpg|png|gif))"')
-        # headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko'}
-        # html = requests.get(url, headers=headers, timeout=5)
+        pattern = re.compile(r'(?:src|SRC)(?: ?= ?)"([^<> \t\r\n]+?\.(jpg|png|gif)(?:\?[^<> \t\r\n]+)?)"')
         img_list = pattern.findall(html)
         img_list = list(set(list([i[0] for i in img_list])))
-        # img_list = list(filter(lambda x : ('email' not in x) and ('logo' not in x), [i[0] for i in img_list]))
-        # return img_list
+        # print(img_list)
         for i in range(len(img_list)):
             if not img_list[i].startswith('http'):
                 root_url_p = re.compile(r'http[s]?:\/\/[^/]*\/')
                 root_url = root_url_p.findall(url)
+                # print(root_url)
                 if len(root_url) > 0:
                     if img_list[i].startswith('./'):
                         img_list[i] = root_url[0] + img_list[i][2:]
@@ -213,11 +211,51 @@ def get_pic_url(html, url):
                         img_list[i] = root_url[0] + img_list[i][6:]
                     else:
                         img_list[i] = root_url[0] + img_list[i]
+        # print(img_list)
         img_list = list(filter(lambda x: check_request_validation(x), img_list))
         return img_list
     except Exception as e:
         print(e)
         return []
+def single_thread_get_pic_url(data, html, pics):
+    """
+    data - list of {'id':xxx,'homepage':''}
+    """
+
+    pics = {}
+    for r in data:
+        h = html[r['id']]
+        if h != '':
+            pic = get_pic_url(h, r['homepage'])
+            pics[r['id']] = [r['homepage'], pic]
+    
+
+def multi_thread_get_pic_url(data, html, threads_num=10):
+    """
+    data - standard dataframe
+    html - dict of {'id':'html'}
+    """
+    num = data.shape[0]
+    chunk = math.ceil(num / threads_num)
+    threads = []
+    splited_data = [[] for i in range(threads_num)]
+    pics_single = [{} for i in range(threads_num)]
+    for i, r in data.iterrows():
+        splited_data[i % threads_num].append({'id': r['id'], 'homepage': r['homepage']})
+
+    print('Data split done')
+
+    for i in range(threads_num):
+        t = threading.Thread(target=single_thread_get_pic_url, args=(splited_data[i], html, pics_single))
+        threads.append(t)
+    for i in threads:
+        i.start()
+    for i in threads:
+        i.join()
+    pics = {}
+    for i in pics_single:
+        pics.update(i)
+    return pics
 
 def get_gender_name_single_page(url, use_proxy=True):
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko'}
