@@ -66,6 +66,8 @@ def read_former_task1_ans(file, raw=validataion_path, skiprows=True):
         skiprows = None
     ans = pd.read_csv(file, sep='\t', skiprows=skiprows, error_bad_lines=False)
     ans = ans.fillna('')
+    if skiprows == [0]:
+        ans = ans.drop(ans.shape[0] - 1)
     ans.columns = ['id', 'homepage', 'gender', 'position', 'pic', 'email', 'location']
     # print(ans.head())
     data = read_task1(raw)[["id", "name", "org", "search_results_page"]]
