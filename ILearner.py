@@ -2,6 +2,7 @@ from sklearn.svm import SVR
 from sklearn import linear_model
 import numpy as np
 import Paper
+import datetime
 
 class ILearner(object):
     """description of class"""
@@ -63,12 +64,13 @@ class SparsePA(ILearner):
     def __makeOnePrediction(self, aut, **args):
         w = []
         x = []
-        papers = Paper.Paper.getPaperByAut(aut)
-        for paper in papers:
-            t = len(paper.Referenced)
+        papersIds = Paper.Paper._Paper__authorToIndexes[aut]
+        gids=set( [ Paper.Paper._Paper__IndexToGroup[ pid ] for pid in papersIds]  )
+        for gid in gids:
+            t = Paper.Paper._Paper__GroupData[gid]
             p = 1.0
-            if paper.Index in self.weightPool:
-                p = self.weightPool[paper.Index]
+            if gid in self.weightPool:
+                p = self.weightPool[gid]
             if t == 0:
                 t = 1
             w.append(p)
@@ -80,13 +82,15 @@ class SparsePA(ILearner):
         if 'y' in args:
             y = args['y']
             loss = abs(yp - y)
-            #tau = loss / (1.0 / (2 * self.C) + np.sum(x**2))
-            tau = loss / np.sum(x**2)
+            if self.C==0:
+                tau = loss / np.sum(x**2)
+            else:
+                tau = loss / (1.0 / (2 * self.C) + np.sum(x**2))
             w = w + np.sign(y - yp) * tau * x.T
             tmp = int(round(yp))
             if (tmp != 0 and y == 0) or (tmp == 0 and y != 0):
                 self.__needRefine.add((aut, args['y']))
-        return int(round(yp)), w
+        return int(round(yp)), w, gids
 
     def save(self,fileName):
         with open(fileName,'w') as fout:
@@ -103,23 +107,25 @@ class SparsePA(ILearner):
         """X - List of ['Name']\nY - List of [Citaion]"""
         for k in range(self.T):
             self.__needRefine = set()
-            print("Training: %d" % (k))
+            print("%s  Training: %d" % (datetime.datetime.now(), k))
             for i in range(len(X)):
-                yp, w = self.__makeOnePrediction(X[i], y=Y[i])
-                papers = Paper.Paper.getPaperByAut(X[i])
-                for j in range(len(papers)):
-                    self.weightPool[papers[j].Index] = w[0, j]
+                yp, w, ids = self.__makeOnePrediction(X[i], y=Y[i])
+                j=0
+                for id in ids:
+                    self.weightPool[id] = w[0, j]
+                    j=j+1
             for sam in self.__needRefine:
-                yp, w = self.__makeOnePrediction(sam[0], y=sam[1])
-                papers = Paper.Paper.getPaperByAut(sam[0])
-                for j in range(len(papers)):
-                    self.weightPool[papers[j].Index] = w[0, j]
+                yp, w, ids = self.__makeOnePrediction(sam[0], y=sam[1])
+                j=0
+                for id in ids:
+                    self.weightPool[id] = w[0, j]
+                    j=j+1
 
     def predict(self, X):
         """X - List of ['Name'] """
         Y = [0 for x in X]
         for i in range(len(X)):
-            yp, w = self.__makeOnePrediction(X[i])
+            yp, w, ids = self.__makeOnePrediction(X[i])
             if yp < 0:
                 yp = -yp
             Y[i] = yp

@@ -3,7 +3,7 @@ import Paper
 import csv
 from ILearner import SparsePA
 from sklearn.model_selection import train_test_split
-
+import datetime
 
 # 文件路径
 paperPath = "F:\\ACAData\\task3\\papers.txt"
@@ -11,16 +11,12 @@ trainPath = "F:\\ACAData\\task3\\train.csv"
 validationPath = "F:\\ACAData\\task3\\validation.csv"
 output3Path = "F:\\ACAData\\task3\\output3.txt"
 
-tempPath = "F:\\ACAData\\task3\\temp3.txt"
-
-
 trainX = []
 trainY = []
 testX = []
-epsilon = 0.7
-C = 1
 
 def ParsePaperTxt():
+    print("%s parse paper"%datetime.datetime.now())
     with open(paperPath, "r") as f:
         for eachLine in f:
             if eachLine.startswith('#index'):
@@ -45,6 +41,7 @@ def ParsePaperTxt():
 
 
 def ReadTrain():
+    print("%s read training set"%datetime.datetime.now())
     with open(name=trainPath, mode="r") as csvf:
         reader = csv.reader(csvf)
         firstRow = True
@@ -57,6 +54,7 @@ def ReadTrain():
 
 
 def ReadValidation():
+    print("%s read validation set"%datetime.datetime.now())
     with open(name=validationPath, mode="r") as csvf:
         reader = csv.reader(csvf)
         firstRow = True
@@ -68,16 +66,17 @@ def ReadValidation():
 
 
 def SelectModel():
+    print("%s select model"%datetime.datetime.now())
     X_train, X_test, y_train, y_test = train_test_split(
         trainX, trainY, test_size=0.3, random_state=0)
     C = [0]
     opt = 0
     for c in C:
-        m = SparsePA(c, 1000)
+        m = SparsePA(c, 5)
         m.train(trainX, trainY)
         mape = m.score(X_test, y_test)
-        print("C: %r,  MAPE: %r, train: %r,test: %r\n" %
-              (c, mape, len(X_train), len(X_test)))
+        print("C: %r,  MAPE: %r, train: %r, test: %r\n" %
+              (c, mape, len(trainY), len(y_test)))
         if mape > opt:
             opt = mape
             model = m
@@ -85,6 +84,7 @@ def SelectModel():
 
 
 def GenResult(model):
+    print("%s save model"%datetime.datetime.now())
     with open(name=output3Path, mode="w") as out:
         out.write("<task3>\nauthorname\tcitation\n")
         Yp = model.predict(testX)
@@ -121,6 +121,7 @@ def analisis():
 
 def main():
     ParsePaperTxt()
+    Paper.Paper.MergerPaper()
     ReadTrain()
     # analisis()
     ReadValidation()
