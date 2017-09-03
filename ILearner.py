@@ -125,7 +125,7 @@ class SparsePA(ILearner):
             Y[i] = yp
         return Y
 
-    def MAPEScore(self, Xv, Yv):
+    def score(self, Xv, Yv):
         YP = self.predict(Xv)
         s = 0
         N = len(Yv)
@@ -136,3 +136,55 @@ class SparsePA(ILearner):
             for i in range(N):
                 fout.write("%r,%r,%r\n" % (Xv[i], Yv[i], YP[i]))
         return 1 - 1.0 / N * s
+
+class task2Learner(ILearner):
+    def __init__(self):
+        self.summary={}
+
+    def train(self, X, y):
+        r={}
+        for i in range(len(X)):
+            papers = Paper.Paper.getPaperByAut(X[i])
+            jur = set([p.Journal for p in papers])
+            for j in jur:
+                if not j in r:
+                    r[j]={}
+                for it in y[i]:
+                    if not it in r[j]:
+                        r[j][it]=0
+                    r[j][it]=r[j][it]+1
+        for k,v in r.items():
+            mh = max(v.values())
+            it = [(p,q) for (p,q) in v.items() if q>mh*0.5]
+            self.summary[k]=it
+
+    def predict(self, X):
+        y=[]
+        for i in range(len(X)):
+            aut=X[i]
+            papers = Paper.Paper.getPaperByAut(aut)
+            jur = set([p.Journal for p in papers])
+            tmp=[]
+            count={}
+            for j in jur:
+                #todo : if not in??
+                if j in self.summary:
+                    tus = self.summary[j]
+                    for tu in tus:
+                        if not tu[0] in count:
+                            count[tu[0]]=0
+                        count[tu[0]]=count[tu[0]]+tu[1]
+            l=sorted(count.items(),key=lambda d:d[1],reverse=True)
+            V = [v[0] for v in l]
+            y.append(V[0:10])
+        return y
+
+    def score(self,Xv,Yv):
+        YP=self.predict(Xv)
+        N=len(Xv)
+        s=0
+        for i in range(N):
+            s1=set(YP[i])
+            s2=set(Yv[i])
+            s=s+len(s1.intersection(s2))/3.0
+        return s/N

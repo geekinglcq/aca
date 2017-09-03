@@ -30,3 +30,18 @@ class Paper(object):
             Paper.__authorData[aut] = [pa]
         else:
             Paper.__authorData[aut].append(pa)
+
+    @staticmethod
+    def GroupReferedPaperByYear(author):
+        res = {}
+        total = 0
+        papers = Paper.Paper.getPaperByAut(author)
+        for paper in papers:
+            for refed in paper.Referenced:
+                total = total + 1
+                if refed.Time in res:
+                    res[refed.Time].append(refed)
+                else:
+                    res[refed.Time] = [refed]
+        return res, total
+
