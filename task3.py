@@ -20,21 +20,6 @@ testX = []
 epsilon = 0.7
 C = 1
 
-
-def GroupReferedPaperByYear(author):
-    res = {}
-    total = 0
-    papers = Paper.Paper.getPaperByAut(author)
-    for paper in papers:
-        for refed in paper.Referenced:
-            total = total + 1
-            if refed.Time in res:
-                res[refed.Time].append(refed)
-            else:
-                res[refed.Time] = [refed]
-    return res, total
-
-
 def ParsePaperTxt():
     with open(paperPath, "r") as f:
         for eachLine in f:
@@ -90,7 +75,7 @@ def SelectModel():
     for c in C:
         m = SparsePA(c, 1000)
         m.train(trainX, trainY)
-        mape = m.MAPEScore(X_test, y_test)
+        mape = m.score(X_test, y_test)
         print("C: %r,  MAPE: %r, train: %r,test: %r\n" %
               (c, mape, len(X_train), len(X_test)))
         if mape > opt:
