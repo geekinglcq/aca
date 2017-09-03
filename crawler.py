@@ -14,8 +14,15 @@ import requests
 import threading
 import multiprocessing
 from PIL import Image
+from random import randint
 from urllib.request import urlopen
 from bs4 import BeautifulSoup as bs 
+
+user_agents = ['Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36',\
+               'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36 Edge/15.15063',\
+               'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.6; rv,2.0.1) Gecko/20100101 Firefox/4.0.1',\
+               'Mozilla/5.0 (Windows NT 6.1; rv,2.0.1) Gecko/20100101 Firefox/4.0.1',\
+               'Mozilla/5.0 (Windows NT 6.1; rv,2.0.1) Gecko/20100101 Firefox/4.0.1']
 
 def get_search_page(search_url, use_proxy=False):
     """
@@ -125,24 +132,29 @@ def get_true_url(url, use_proxy=True):
             print(e)
             return ''
     
-def get_html_text(url, use_proxy=True):
+def get_html_text(url, use_proxy=False):
     """
     Get the html text for given url
     """
     try:
         if use_proxy:
             proxies = {"http": "127.0.0.1:1080", "https": "127.0.0.1:1080"}
+            timeout = 40
         else:
             proxies = None
-        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36 Edge/15.15063',\
+            timeout = 10
+        user_agent = user_agents[randint(0, len(user_agents) - 1)]
+        headers = {'User-Agent': user_agent,\
                     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',\
                     'Accept-Language': 'en-US,en;q=0.8,zh-CN;q=0.6,zh;q=0.4',\
                     'Accept-Encoding': 'gzip, deflate',\
                     'Referer': 'https://www.google.com/'}
-        html = requests.get(url, headers=headers, timeout=10, proxies=proxies)
+        html = requests.get(url, headers=headers, timeout=timeout, proxies=proxies, verify='./data/certs.pem')
         return html.text
     except Exception as e:  
         print(e)
+        if not use_proxy:
+            return get_html_text(url, use_proxy=True)
         return ''
 
 def store_html_text(data, prefix='./webpage/'):
@@ -166,6 +178,7 @@ def store_html_single_thread(data, prefix='./webpage/'):
 def store_multi_thread(data, threads=10, prefix='./webpage/'):
     """
     Execute task using threadings
+    Data - standard DataFrame
     """
     num = len(data)
     chunk = math.ceil(num / threads)
@@ -194,75 +207,62 @@ def get_pic_url(html, url):
     try:
         pattern = re.compile(r'(?:src|SRC)(?: ?= ?)"([^<> \t\r\n]+?\.(jpg|png|gif)(?:\?[^<> \t\r\n]+)?)"')
         img_list = pattern.findall(html)
+        root_url_p = re.compile(r'http[s]?:\/\/[^/]*\/')
+        root_url = root_url_p.findall(url)
         img_list = list(set(list([i[0] for i in img_list])))
         # print(img_list)
         for i in range(len(img_list)):
-            if not img_list[i].startswith('http'):
-                root_url_p = re.compile(r'http[s]?:\/\/[^/]*\/')
-                root_url = root_url_p.findall(url)
-                # print(root_url)
-                if len(root_url) > 0:
-                    if img_list[i].startswith('./'):
-                        img_list[i] = root_url[0] + img_list[i][2:]
-                    elif img_list[i].startswith('/'):
-                        img_list[i] = root_url[0] + img_list[i][1:]
-                    elif img_list[i].startswith('../'):
-                        img_list[i] = root_url[0] + img_list[i][3:]
-                    elif img_list[i].startswith('../../'):
-                        img_list[i] = root_url[0] + img_list[i][6:]
-                    else:
-                        img_list[i] = root_url[0] + img_list[i]
+            if not img_list[i].startswith('http'):        
+                img_list[i] = urllib.parse.urljoin(url, img_list[i])
+                # # print(root_url)
+                # if len(root_url) > 0:
+                #     if img_list[i].startswith('./'):
+                #         img_list[i] = root_url[0] + img_list[i][2:]
+                #     elif img_list[i].startswith('/'):
+                #         img_list[i] = root_url[0] + img_list[i][1:]
+                #     elif img_list[i].startswith('../'):
+                #         img_list[i] = root_url[0] + img_list[i][3:]
+                #     elif img_list[i].startswith('../../'):
+                #         img_list[i] = root_url[0] + img_list[i][6:]
+                #     else:
+                #         img_list[i] = root_url[0] + img_list[i]
         # print(img_list)
         # img_list = list(filter(lambda x: check_request_validation(x), img_list))
-        return img_list
+        return list(set(img_list))
     except Exception as e:
         print(e)
         return []
-def single_thread_get_pic_url(data, html, pics):
-    """
-    data - list of {'id':xxx,'homepage':''}
-    """
-    for r in data:
-        h = html[r['id']]
-        if h != '':
-            pic = get_pic_url(h, r['homepage'])
-            pics[r['id']] = [r['homepage'], pic]
-        else:
-            pics[r['id']] = [r['homepage'], pic]
-    
-    
 
-def multi_thread_get_pic_url(data, html, threads_num=10):
-    """
-    data - standard dataframe
-    html - dict of {'id':'html'}
-    """
-    num = data.shape[0]
-    chunk = math.ceil(num / threads_num)
-    threads = []
-    splited_data = [[] for i in range(threads_num)]
-    pics_single = [{} for i in range(threads_num)]
-    for i, r in data.iterrows():
-        splited_data[i % threads_num].append({'id': r['id'], 'homepage': r['homepage']})
-
-    print('Data split done')
-    print(len(splited_data[0]))
-    for i in range(threads_num):
-        t = threading.Thread(target=single_thread_get_pic_url, args=(splited_data[i], html, pics_single[i]))
-        threads.append(t)
-    for i in threads:
-        i.start()
-    for i in threads:
-        i.join()
-    ans, pics, id_page = {}, {}, {}
+def get_pic_url2(html, url):
+    try:
+        root_url_p = re.compile(r'http[s]?:\/\/[^/]*\/')
+        root_url = root_url_p.findall(url)
+        bsObj = bs(html)
+        img_list = set(list(filter(lambda x: x!= '', [i.get('src', '') for i in bsObj.findAll('img')])))
+        temp = list(filter(lambda x: x!= '', [i.get('data-src', '') for i in bsObj.findAll('img')]))
+        img_list = img_list | set(temp)
+        temp = list(filter(lambda x: x!= '', [i.get('SRC', '') for i in bsObj.findAll('img')]))
+        img_list = list(img_list | set(temp))
+        for i in range(len(img_list)):
+            if not img_list[i].startswith('http'):
+                img_list[i] = urllib.parse.urljoin(url, img_list[i])
+                # # print(root_url)
+                # if len(root_url) > 0:
+                #     if img_list[i].startswith('./'):
+                #         img_list[i] = root_url[0] + img_list[i][2:]
+                #     elif img_list[i].startswith('/'):
+                #         img_list[i] = root_url[0] + img_list[i][1:]
+                #     elif img_list[i].startswith('../'):
+                #         img_list[i] = root_url[0] + img_list[i][3:]
+                #     elif img_list[i].startswith('../../'):
+                #         img_list[i] = root_url[0] + img_list[i][6:]
+                #     else:
+                #         img_list[i] = root_url[0] + img_list[i]
+        return img_list
+    except Exception as e:
+        print(e.__traceback__())
+        return []
     
-    for i in pics_single:
-        ans.update(i)
-    for i in ans:
-        pics[i] = ans[i][1]
-        id_page[i] = ans[i][0]
-    return pics, id_page
-
 def get_gender_name_single_page(url, use_proxy=True):
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko'}
     try:
