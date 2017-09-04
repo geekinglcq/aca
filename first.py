@@ -8,7 +8,7 @@ import pickle
 import random
 import crawler
 import utility
-
+import hashlib
 
 import data_io as dio
 import xgboost as xgb
@@ -45,6 +45,16 @@ def photo_url(html, url, filter='head'):
         return []
     else:
         return pic_url
+
+def data_pic_url(data, html):
+    """
+    Input: data - standard DataFrame
+           html - dict of {'id': html content}
+    """
+    pics = {}
+    for i, r in data.iterrows():
+        pics[r['id']] = crawler.get_pic_url2(html[r['id']], r['homepage'])
+    return pics
 
 def generat_ans_file(data, flag=True):
     with codecs.open('first_task_ans.txt', 'w', encoding='utf-8') as f:
@@ -273,19 +283,14 @@ def score_homepage(model, data, res):
 def get_homepage_html(data, prefix='./webpage/'):
     """
     Return homepage html text
-    Input: data - [id, url]
+    Input: data - standard DataFrame
+    Ouput: html - dict of {'id': html content}
     """
-    if not os.path.isfile(prefix + data[0]):
-        html_text = crawler.get_html_text(data[1])
-        if html_text == '':
-            return ''
-        else:
-            with codecs.open(prefix + data[0], 'w', 'utf-8') as f:
-                f.write(html_text)
-            return html_text
-    else:
-        with codecs.open(prefix + data[0], 'r', 'utf-8') as f:
-            return f.read()
+    html = {}
+    for i, r in data.iterrows():
+        one_html = crawler.get_local_html(r['homepage'], prefix=prefix)
+        html[r['id']] = one_html
+    return html
 
 
 def score_to(ans, keys):

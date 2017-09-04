@@ -15,6 +15,7 @@ import threading
 import multiprocessing
 from PIL import Image
 from random import randint
+from threading import Thread
 from urllib.request import urlopen
 from bs4 import BeautifulSoup as bs 
 
@@ -132,7 +133,7 @@ def get_true_url(url, use_proxy=True):
             print(e)
             return ''
     
-def get_html_text(url, use_proxy=False):
+def get_html_text(url, use_proxy=False, re_try=False):
     """
     Get the html text for given url
     """
@@ -143,18 +144,42 @@ def get_html_text(url, use_proxy=False):
         else:
             proxies = None
             timeout = 10
+        if re_try:
+            verify = False
+        else:
+            verify = './data/certs.pem'
         user_agent = user_agents[randint(0, len(user_agents) - 1)]
         headers = {'User-Agent': user_agent,\
                     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',\
                     'Accept-Language': 'en-US,en;q=0.8,zh-CN;q=0.6,zh;q=0.4',\
                     'Accept-Encoding': 'gzip, deflate',\
                     'Referer': 'https://www.google.com/'}
-        html = requests.get(url, headers=headers, timeout=timeout, proxies=proxies, verify='./data/certs.pem')
+        html = requests.get(url, headers=headers, timeout=timeout, proxies=proxies, verify=verify)
         return html.text
+    except requests.exceptions.SSLError:
+        if not re_try:
+            print('here')
+            return get_html_text(url, use_proxy=True, re_try=True)
+        else:
+            return ''
     except Exception as e:  
         print(e)
+        print(type(e))
         if not use_proxy:
             return get_html_text(url, use_proxy=True)
+        return ''
+def get_local_html(url, prefix='./webpage/'):
+    try:
+        filename = hashlib.md5(url.encode('utf-8')).hexdigest()
+        if not os.path.isfile(prefix + filename):
+            html_text = get_html_text(url)
+            if html_text == '':
+                return ''
+            else:
+                with codecs.open(prefix + filename, 'w', 'utf-8') as f:
+                    f.write(html_text)
+                return html_text
+    except Exception as e:
         return ''
 
 def store_html_text(data, prefix='./webpage/'):
@@ -171,6 +196,7 @@ def store_html_text(data, prefix='./webpage/'):
             with codecs.open(prefix + filename, 'w', 'utf-8') as f:
                 f.write(html_text)
             return True
+
 def store_html_single_thread(data, prefix='./webpage/'):
     for i in data:
         store_html_text(i, prefix=prefix)
@@ -262,6 +288,7 @@ def get_pic_url2(html, url):
     except Exception as e:
         print(e.__traceback__())
         return []
+
     
 def get_gender_name_single_page(url, use_proxy=True):
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko'}
@@ -325,7 +352,7 @@ def download_image(url, path, use_proxy=False):
     else:
         proxies = None
     try:
-        r = requests.get(url, headers=headers, stream=True, proxies=proxies, timeout=40)
+        r = requests.get(url, headers=headers, stream=True, proxies=proxies, timeout=80)
         postfix = '.jpg'
         if r.status_code == 200:
             with open(path + postfix, 'wb') as f:
@@ -333,7 +360,7 @@ def download_image(url, path, use_proxy=False):
                 shutil.copyfileobj(r.raw, f)
             img = Image.open(path + postfix)
             if img.format != 'jpg':
-                if img.mode in ['P', 'LA', 'I']:
+                if img.mode in ['P', 'LA', 'I','RGBA']:
                     img = img.convert('RGB')
                 img.save(path + postfix, 'JPEG')
             img.close()
@@ -381,15 +408,27 @@ def multi_thread_download_image(pics, threads_num=10):
     for i, pid in enumerate(ids):
         split_data[i % threads_num][pid] = pics[pid]
     for i in range(threads_num):
-        t =  threading.Thread(target=single_thread_download_image, args=(split_data[i], succ_sub[i], i))
+        t = my_thread(split_data[i], i)
+        # t =  threading.Thread(target=single_thread_download_image, args=(split_data[i], succ_sub[i], i))
         threads.append(t)
     for i in threads:
         i.start()
     for i in threads:
         i.join()
     succ = {}
-    for i in succ_sub:
-        succ.update(i)
+    for i in threads:
+        succ.update(t.get_result())
     return succ
 
+class my_thread(Thread):
+    def __init__(self, data, i):
+        Thread.__init__(self)
+        self.data = data
+        self.index = i
+        
 
+    def run(self):
+        self.result = single_thread_download_image(self.data, {}, self.index)
+        
+    def get_result(self):
+        return self.result
