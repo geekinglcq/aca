@@ -11,7 +11,7 @@ import utility
 import hashlib
 
 import data_io as dio
-import xgboost as xgb
+
 
 from utility import homepage_neg
 from utility import homepage_pos

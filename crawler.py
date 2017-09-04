@@ -108,7 +108,7 @@ def multi_thread_get_search_page(data, threads_num=10):
     
 
 
-def get_true_url(url, use_proxy=True):
+def get_true_url(url, use_proxy=True, re_try=False):
     """
     Get the true url and title after redirecting. 
     """
@@ -118,7 +118,9 @@ def get_true_url(url, use_proxy=True):
                     'Accept-Encoding': 'gzip, deflate',\
                     'Referer': 'https://www.google.com/'}
     try:
-        dlurl = requests.get(url, headers=headers, timeout=10)
+        if re_try:
+            verify = False
+        dlurl = requests.get(url, headers=headers, timeout=10, verify=verify)
         return dlurl.url
     except Exception as e:  
         if use_proxy:
@@ -158,7 +160,6 @@ def get_html_text(url, use_proxy=False, re_try=False):
         return html.text
     except requests.exceptions.SSLError:
         if not re_try:
-            print('here')
             return get_html_text(url, use_proxy=True, re_try=True)
         else:
             return ''
@@ -179,6 +180,9 @@ def get_local_html(url, prefix='./webpage/'):
                 with codecs.open(prefix + filename, 'w', 'utf-8') as f:
                     f.write(html_text)
                 return html_text
+        else:
+            with codecs.open(prefix + filename, 'r', 'utf-8') as f:
+                return f.read()
     except Exception as e:
         return ''
 
