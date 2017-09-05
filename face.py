@@ -8,7 +8,7 @@ import re
 import cv2
 from scipy import misc
 import tensorflow as tf
-from facenet.align import detect_face
+from align import detect_face
 
 
 #   setup facenet parameters
