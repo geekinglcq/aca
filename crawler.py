@@ -192,7 +192,8 @@ def store_html_text(data, prefix='./webpage/'):
     Input:  data - list of [id, url]
     """
     filename = hashlib.md5(data[1].encode('utf-8')).hexdigest()
-    if not os.path.isfile(prefix + filename):
+    # if not os.path.isfile(prefix + filename):
+    if True:
         html_text = get_html_text(data[1])
         if html_text == '':
             return False
@@ -394,7 +395,6 @@ def single_thread_download_image(pics, succ, index):
                 json.dump(succ, f)
             with open('./temp/%s_num.txt'%(index), 'a') as f:
                 f.write(str(len(succ)))
-    
     return succ
 
 
@@ -421,7 +421,7 @@ def multi_thread_download_image(pics, threads_num=10):
         i.join()
     succ = {}
     for i in threads:
-        succ.update(t.get_result())
+        succ.update(i.get_result())
     return succ
 
 class my_thread(Thread):
