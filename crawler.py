@@ -24,15 +24,17 @@ user_agents = ['Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KH
                'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.6; rv,2.0.1) Gecko/20100101 Firefox/4.0.1',\
                'Mozilla/5.0 (Windows NT 6.1; rv,2.0.1) Gecko/20100101 Firefox/4.0.1',\
                'Mozilla/5.0 (Windows NT 6.1; rv,2.0.1) Gecko/20100101 Firefox/4.0.1']
+ss_proxies = {"http": "127.0.0.1:1080", "https"： ”127.0.0.1:1080“}
 
 def get_search_page(search_url, use_proxy=False):
+
     """
     Return the search results of the given searching url.
     Including the info of results title, url, detail and if or not have fl(bool)
     """
     try:
         if use_proxy:
-            proxies = {"http": "127.0.0.1:1080", "https": "127.0.0.1:1080"}
+            proxies = ss_proxies
         else:
             proxies = None
         headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko'}
@@ -124,7 +126,7 @@ def get_true_url(url, use_proxy=True, re_try=False):
         return dlurl.url
     except Exception as e:  
         if use_proxy:
-            proxies = {"http": "127.0.0.1:1080", "https": "127.0.0.1:1080"}
+            proxies = ss_proxies
             try:
                 dlurl = requests.get(url, headers=headers, timeout=20, proxies=proxies)
                 return dlurl.url
@@ -141,7 +143,7 @@ def get_html_text(url, use_proxy=False, re_try=False):
     """
     try:
         if use_proxy:
-            proxies = {"http": "127.0.0.1:1080", "https": "127.0.0.1:1080"}
+            proxies = ss_proxies
             timeout = 40
         else:
             proxies = None
@@ -299,7 +301,7 @@ def get_gender_name_single_page(url, use_proxy=True):
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko'}
     try:
         if use_proxy:
-            proxies = {"http": "127.0.0.1:1080", "https": "127.0.0.1:1080"}
+            proxies = ss_proxies
         else:
             proxies = None
         html = requests.get(url, headers=headers, timeout=5, proxies=proxies)
@@ -332,7 +334,7 @@ def check_request_validation(url, use_proxy=True):
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko'}
     try:
         if use_proxy:
-            proxies = {"http": "127.0.0.1:1080", "https": "127.0.0.1:1080"}
+            proxies = ss_proxies
         else:
             proxies = None
         res = requests.get(url, headers=headers, proxies=proxies)
@@ -353,7 +355,7 @@ def download_image(url, path, use_proxy=False):
     """
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko'}
     if use_proxy:
-        proxies = {"http": "127.0.0.1:1080", "https": "127.0.0.1:1080"}
+        proxies = ss_proxies
     else:
         proxies = None
     try:
