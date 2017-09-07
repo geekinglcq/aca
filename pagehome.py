@@ -35,17 +35,20 @@ def one_sample_homepage_features(data, search_res, labeled=True):
         in_school = 1 # 0 
     else:
         in_school = 0
+    
     if search_res == None:
         return []
     for i in range(len(search_res)):
         title = ' '.join(lazy_pinyin(search_res[i][0]))
         url = search_res[i][1]
+        rank = i # 1
         if labeled:
             if url == data.homepage:
                 label = 1
             else:
                 # subsample
-                if random.random() < 0.2:
+                # if random.random() < 0.1:
+                if rank < 3:
                     label = 0
                 else:
                     continue
@@ -53,7 +56,6 @@ def one_sample_homepage_features(data, search_res, labeled=True):
             label = url
         feature = []
         feature.append(label)
-        rank = i # 1
         content = search_res[i][2]
         is_cited = search_res[i][3] # 2
         pos_words_num = len(pos_p.findall(url)) # 3
@@ -61,7 +63,7 @@ def one_sample_homepage_features(data, search_res, labeled=True):
         edu = 1 if 'edu' in url else 0 # 5
         org = 1 if 'org' in url else 0 # 6
         gov = 1 if 'gov' in url else 0 # 7
-        # name_in = 1 if len(name_p.findall(title.lower())) != 0 else 0 # 8
+        name_in = 1 if len(name_p.findall(title.lower())) != 0 else 0 # 8
         linkedin = 1 if 'linkedin' in url else 0 # 9
         title_len = len(title) # 10
         content_len = len(content) # 11
@@ -235,4 +237,4 @@ def main(model_path='./model/temp.dat'):
     res = dio.load_search_res(True)
     print('Test set:', score_homepage(model, test, res))
     
-
+    return model
