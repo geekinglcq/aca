@@ -83,7 +83,7 @@ def check_name_in_url(name, url):
     www.xx.org.avatar.jpg get 0
     """
     score = 0
-    for i in name.split(' '):
+    for i in re.split(r'[ -]', name):
         if i.lower() in url.lower():
             score += 1
     return score / len(name.split(' '))

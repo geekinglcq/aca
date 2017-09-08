@@ -32,7 +32,7 @@ def one_sample_homepage_features(data, search_res, labeled=True):
     name_p = re.compile(r'|'.join(name.lower().split(' ')))
     
     if p.match(data["org"]):
-        in_school = 1 # 0 
+        in_school = 1 # 2
     else:
         in_school = 0
     
@@ -41,36 +41,46 @@ def one_sample_homepage_features(data, search_res, labeled=True):
     for i in range(len(search_res)):
         title = ' '.join(lazy_pinyin(search_res[i][0]))
         url = search_res[i][1]
-        rank = i # 1
+        rank = [i] # 1
+        # for j in range(10):
+        #     if i == j:
+        #         rank.append(1)
+        #     else:
+        #         rank.append(0)
         if labeled:
             if url == data.homepage:
                 label = 1
             else:
                 # subsample
-                # if random.random() < 0.1:
-                if rank < 3:
+                if random.random() < 0.1:
+                # if rank < 2:
                     label = 0
                 else:
                     continue
         else:
+            # if rank >= 2:
+                # continue
             label = url
         feature = []
         feature.append(label)
+        feature.extend(rank)
         content = search_res[i][2]
-        is_cited = search_res[i][3] # 2
-        pos_words_num = len(pos_p.findall(url)) # 3
-        neg_words_num = len(neg_p.findall(url)) # 4
-        edu = 1 if 'edu' in url else 0 # 5
-        org = 1 if 'org' in url else 0 # 6
-        gov = 1 if 'gov' in url else 0 # 7
-        name_in = 1 if len(name_p.findall(title.lower())) != 0 else 0 # 8
-        linkedin = 1 if 'linkedin' in url else 0 # 9
-        title_len = len(title) # 10
-        content_len = len(content) # 11
-        org_len = len(data["org"]) + 1 # 12
-        name_title = check_name_in_text(name, title) # 13
-        name_content = check_name_in_text(name, content) # 14
-        feature.extend([in_school, rank, is_cited, pos_words_num, neg_words_num, edu,\
+        is_cited = search_res[i][3] # 3
+        pos_words_num = len(pos_p.findall(url)) # 4
+        neg_words_num = len(neg_p.findall(url)) # 5
+        edu = 1 if 'edu' in url else 0 # 6
+        org = 1 if 'org' in url else 0 # 7
+        gov = 1 if 'gov' in url else 0 # 8
+        name_in = 1 if len(name_p.findall(title.lower())) != 0 else 0 # 9
+        linkedin = 1 if 'linkedin' in url else 0 # 10
+        title_len = len(title) # 11
+        content_len = len(content) # 12
+        org_len = len(data["org"]) + 1 # 13
+        name_title = check_name_in_text(name, title) # 14
+        name_content = check_name_in_text(name, content) # 15
+        mail_content = 1 if 'mail' in content.lower() else 0 # 16
+        address_content = 1 if 'address' in content.lower() else 0 # 17
+        feature.extend([in_school, is_cited, pos_words_num, neg_words_num, edu,\
          org, gov, linkedin, title_len, content_len, org_len, name_title, name_content]) 
         # for i in homepage_neg:
         #     if i in title.lower():
@@ -88,12 +98,12 @@ def one_sample_homepage_features(data, search_res, labeled=True):
 def check_name_in_text(name, text):
     """
     Sample: for the name of "Bai Li", \
-    www.xx.com/li.jpg get 0.5
+    # www.xx.com/li.jpg get 0.5
     www.xx.org/bai_li.jpg get 1
     www.xx.org.avatar.jpg get 0
     """
     score = 0
-    for i in name.split(' '):
+    for i in re.split(r'[ -]', name):
         if i.lower() in text.lower():
             score += 1
     return score / len(name.split(' '))
@@ -105,6 +115,11 @@ def extract_homepage_features(labeled=True, full_data=False):
         if full_data:
             raw_data = dio.read_former_task1_ans('./full_data/full_data_ans.txt', raw='./full_data/full_data.tsv', skiprows=False)
             search_info = json.load(open('./full_data/all_search_info.json'))
+            # another = dio.read_task1('./task1/training.txt')
+            # raw_data = pd.concat([raw_data, another])
+            # another = dio.load_search_res(True)
+            # search_info.update(another)
+            print(raw_data.shape)
         else:
             raw_data = dio.read_task1('./task1/training.txt')
             search_info = dio.load_search_res(labeled)
@@ -143,11 +158,12 @@ def predict_one_homepage(model, data):
     features = np.array([x[1:] for x in data ])
     urls = [i[0] for i in data]
     # return urls[0]
-    pred = model.predict_proba(features)[: ,1]
+    # pred = model.predict_prob(features)[: ,1]
+    pred = model.predict_proba(features)
     # print(pred)
-    url = urls[pred.argmax()]
-    if pred.max() < 0.5:
-        url = urls[0]
+    url = urls[pred[: ,1].argmax()]
+    # if pred.max() < 0.5:
+    #     url = urls[0]
     return url
 
 def check_homepage_validity(name, res):
