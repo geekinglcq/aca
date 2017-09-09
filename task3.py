@@ -72,7 +72,7 @@ def SelectModel():
     C = [0]
     opt = 0
     for c in C:
-        m = SparsePA(c, 5)
+        m = SparsePA(c, 1000)
         m.train(trainX, trainY)
         mape = m.score(X_test, y_test)
         print("C: %r,  MAPE: %r, train: %r, test: %r\n" %
