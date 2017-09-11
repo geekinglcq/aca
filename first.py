@@ -103,6 +103,14 @@ def get_email(html):
             email.append(t)
     return email
 
+def predict_email(data, html):
+    for i, r in data.iterrows():
+        emails = get_email(html[r['id']])
+        if len(emails > 0):
+            data.set_value(i, 'email', emails[0])
+        else:
+            data.set_value(i, 'email', '')
+
 def get_homepage_html(data, prefix='./webpage/'):
     """
     Return homepage html text
