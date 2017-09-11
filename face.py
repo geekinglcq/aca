@@ -12,7 +12,6 @@ from align import detect_face
 
 
 #   setup facenet parameters
-gpu_memory_fraction = 1.0
 minsize = 50 # minimum size of face
 threshold = [ 0.6, 0.7, 0.7 ]  # three steps's threshold
 factor = 0.709 # scale factor

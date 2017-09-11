@@ -48,7 +48,15 @@ class gender_guesser():
             return 'f'
         else:
             return 'm'
-    
+
+    def predict_gender(self, data):
+        """
+        data - standrad DataFrame
+        """
+        for i, r in data.iterrows():
+            gender = self.simple_guess(r['name'])
+            data.set_value(i, 'gender', gender)
+
     def advanced_guess(self, name):
         # Acc = 0.778 in training set
         if not(self.classifier):
