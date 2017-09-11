@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import json
-import pandas as pd
 import codecs
+import pandas as pd
 import numpy as np
 
 from collections import OrderedDict

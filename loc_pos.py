@@ -22,9 +22,9 @@ class locpos_guesser():
     def pos_guess(self, html_text):
         html_text = html_text.split('\n')
         poss = []
-        for i in html_text:
-            if 'was' not in i:
-                poss.extend(self.pos_p.findall(i))
+        for i in range(len(html_text)):
+            if 'was' not in html_text[i]:
+                poss.extend(self.pos_p.findall(html_text[i]))
         poss = list(set(poss))
         sub_filter = {}
         for i in poss:
@@ -38,7 +38,11 @@ class locpos_guesser():
             if sub_filter[i]:
                 poss.append(i)
         return poss
-    
+    def predict_pos(self, data, html):
+        for i, r in data.iterrows():
+            pos = self.pos_guess(html[r['id']])
+            data.set_value(i, 'position', pos)
+
     def loc_guess(self, html_text):
         html_text = html_text.split('\n')
         locs = []
@@ -46,3 +50,7 @@ class locpos_guesser():
             locs.extend(self.loc_p.findall(i))
         return locs
         
+    def predict_loc(self, data, html):
+        for i, r in data.iterrows():
+            loc = self.loc_guess(html[r['id']])
+            data.set_value(i, 'location', loc)
