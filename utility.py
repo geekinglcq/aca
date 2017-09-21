@@ -7,7 +7,7 @@ import requests
 import urllib
 import base64
 import readability
-
+import pagehome as ph
 from bs4 import BeautifulSoup as bs
 homepage_pos = [u'edu',u'faculty', u'id', u'staff',  u'detail', u'person', u'about', u'academic', u'teacher', u'list', \
                 u'lish', u'homepages', u'researcher', u'team', u'teachers', u'member']
@@ -125,6 +125,21 @@ def url_segmentation(url):
     words = word_extract(url)
     return words
 
+def check_email_validation(email):
+    
+    if len(email) >= 60:
+        return False
+    if email.endswith('.pdf') or email.endswith('.htm') or email.endswith('.jpg') \
+    or email.endswith('.css') or email.endswith('Try') or email.endswith('.png'):
+        return False
+    if 'info' in email or 'communication' in email or 'example' in email or 'mathews'in email\
+    or 'physics' in email:
+        return False
+    return True
+
+def select_email(email):
+    pass
+
 def email_getter(text):
     """
     Email format: xx@xx , xx SYMBOL_AT xx DOT xx DOT xx, xx [at] xx [dot] xx [dot] xx, xx at xx, xx (at) xx, xx AT xx, xx（AT）xx, xx[at]xx, xx (dot) xx (at) xx,
@@ -132,17 +147,22 @@ def email_getter(text):
     loris (at) cs (dot) wisc (another dot) edu, username=bdavie domain=mit.edu, 
     """
     #dot_p = r' ?[\[<\{\(](?:(?:[Dd][Oo][Tt])|(?:\.)|(?:another dot)|(?:d))[\]>\}\)] ?|[\[<\{\(](?:(?:[Dd][Oo][Tt])|(?:\.)|(?:another dot)|(?:d))[\]>\}\)]'
-    dot_p = r'\.| dot | \[dot\] | DOT | \(dot\) | \(another dot\) |<dot>| \[d\] | \(DOT\) |\[dot\]|\(\.\)|\[.\]|\{dot\}| \. |\(dot\)| \{dot\} | \[dot\]| \[or\] |_DOT_| “dot” |DOT|_DOT_| -dot- '
+    dot_p = r'\.| dot | tod | \[dot\] | DOT | \(dot\) | \(another dot\) |<dot>| \[d\] | \(DOT\) |\[dot\]|\(\.\)|\[.\]|\{dot\}| \. |\(dot\)| \{dot\} | \[dot\]| \[or\] |_DOT_| “dot” |DOT|_DOT_| -dot- '
     #'([-+\w]+(?:\.| dot [-+\w]+)*(@| AT | at | \[at\] |\[at\]| SYMBOL_AT |（AT）|<punkt><at><point>| \[a\] |\[at\]| \(at\) |\(at\)| @ )(?:[-\w]+\.| dot )+[a-zA-Z]{2,7})'
-    at_p = r'@| AT | at | \[at\] |\[at\]| SYMBOL_AT |（AT）|<punkt><at><point>| \[a\] |\[at\]| \(at\) |\(at\)| @ | At | … | \'at\' |@nospam@|\[AT\]| \_at\_ | a t m a r k |<at>|_at_| \[AT\] | \(you can make the \"at\"\) |\(aτ\)| \/at\/ |\{at\}|AT|\.at\.|_AT_| \{at\} |_\(on\)_| \(a\) |<at> |--at--|\(a-t\)| “at” | \(here at\) |\[arrowbase\]| - at - | \"at\" | \(a\) |\(AT\)|@\.| -at- '
+    at_p = r'@|&nbsp;[at]&nbsp;|&#64;| AT | at | ta | \[at\] |\[at\]| SYMBOL_AT |（AT）|<punkt><at><point>| \[a\] |\[at\]| \(at\) |\(at\)| @ | At | … | \'at\' |@nospam@|\[AT\]| \_at\_ | a t m a r k |<at>|_at_| \[AT\] | \(you can make the \"at\"\) |\(aτ\)| \/at\/ |\{at\}|AT|\.at\.|_AT_| \{at\} |_\(on\)_| \(a\) |<at> |--at--|\(a-t\)| “at” | \(here at\) |\[arrowbase\]| - at - | \"at\" | \(a\) |\(AT\)|@\.| -at- '
     #'([-+\w]+(?:(\.| dot | \[dot\] | DOT | \(dot\) | \(another dot\) |<dot>| \[d\] |)[-+\w]+)*(@| AT | at | \[at\] |\[at\]| SYMBOL_AT |（AT）|<punkt><at><point>| \[a\]|\[at\]| \(at\) |\(at\))(?:[-\w]+\.| dot | \[dot\] | DOT | \(dot\) | \(another dot\) |<dot>| \[d\] |)+[a-zA-Z]{2,7})'
-    simple_p = re.compile(r'((?:\[)?[-+\w]+(?:(?:%s)[-+\w]+)*(?:\])?(%s)(?:\[)?(?:[-\w]+(?:%s))+[a-zA-Z]{2,7}(?:\])?)'%(dot_p, at_p, dot_p))
+    simple_p = re.compile(r'((?:\[)?[-+\w]+(?:(?:%s)[-+\w]+)*(?:\])?(?:%s)(?:\[)?(?:[-\w]+(?:%s))+[a-zA-Z]{2,7}(?:\])?)'%(dot_p, at_p, dot_p))
     p2 = re.compile(r'([-+\w]+(?: [dot] [-+\w]+)* [at] (?:[-\w]+ [dot] )+[a-zA-Z]{2,7})')
     email = simple_p.findall(text)
-    if len(email) > 0:
-        return email[0][0]
-    else:
-        return ''
+    email = list(filter(lambda x: check_email_validation(x), email))
+    # email = list(filter(lambda x: not(x.endswith('.pdf') or x.endswith('.htm') or)))
+    return email
+    # if len(email) == 1:
+    #     return email[0]
+    # elif len(email) == 0:
+    #     return ''
+    # else:
+    #     return select_email(email)
 
 def get_clean_text(html):
     """
