@@ -11,7 +11,7 @@ import utility
 import hashlib
 
 import data_io as dio
-
+import pagehome as ph
 
 from utility import homepage_neg
 from utility import homepage_pos
@@ -88,7 +88,7 @@ def extract_search_info():
     #with open('train_search_info.json', 'w') as f:
     #    json.dump(test_set_info, f)
 
-def get_email(html):
+def get_email(name, html):
     """
     Return a list of email address for given html
     """
@@ -100,16 +100,26 @@ def get_email(html):
     for i in text.split('\\n'):
         t = utility.email_getter(i)
         if t != '':
-            email.append(t)
-    return email
+            email.extend(t)
+    return list(set(email))
+    max_score = -1
+    if len(email) == 0:
+        return ''
+    for i in email:
+        score = ph.check_name_in_text(name, i)
+        if score > max_score:
+            max_score = score
+            ans = i
+        
+    return ans
 
 def predict_email(data, html):
+    emails = {}
     for i, r in data.iterrows():
-        emails = get_email(html[r['id']])
-        if len(emails > 0):
-            data.set_value(i, 'email', emails[0])
-        else:
-            data.set_value(i, 'email', '')
+        email = get_email(r['name'], html[r['id']])
+        emails[r['id']] = (r['name'], r['homepage'], email)
+        # data.set_value(i, 'email', email)
+    return emails
 
 def get_homepage_html(data, prefix='./webpage/'):
     """
