@@ -10,6 +10,7 @@ import numpy as np
 import pandas as pd
 import xgboost as xgb
 import data_io as dio
+from sklearn.svm import SVC
 from pypinyin import lazy_pinyin
 from utility import stop_words
 from utility import homepage_neg
@@ -179,12 +180,28 @@ def homepage_xgb_model(model_path, training_set='True'):
     model = xgb.XGBClassifier()
     X, y = load_svmlight_file(training_set)
     model.fit(X,y)
+    print(get_f1_score(model.predict(X), y))
     pickle.dump(model, open(model_path, 'wb'))
+    return model
+
+def homepage_svm_model(model_path, training_set='True'):
+    training_set = './data/%s_features.svm.txt'%(training_set)
+    model = SVC(C=1.0, probability=True)
+    X, y = load_svmlight_file(training_set)
+    model.fit(X, y)
+    print(get_f1_score(model.predict(X), y))
+
     return model
 
 def load_homepage_model(model_path):
     model = pickle.load(open(model_path, 'rb'))
     return model
+def get_f1_score(y_pred, y):
+    true_positive = sum(np.logical_and(y_pred == y, y))
+    precise =  true_positive / sum(y_pred)
+    recall = true_positive / sum(y)
+    f1 = 2 * precise * recall / (precise + recall)
+    return f1
 
 def predict_one_homepage(model, data):
     """
@@ -198,9 +215,10 @@ def predict_one_homepage(model, data):
     pred = model.predict_proba(features)
     # print(pred)
     url = urls[pred[: ,1].argmax()]
-    # if pred.max() < 0.5:
-    if len([i for i in pred[:, 1] if i > 0.5]) > 1:
-        url = None
+    if pred.max() < 0.5:
+        return urls[0]
+    # if len([i for i in pred[:, 1] if i > 0.5]) > 1:
+    #     url = None
     
     return url
 
@@ -272,14 +290,15 @@ def score_homepage(model, data, res):
     """
     score = 0   
     c = 0
+    print(data.shape)
     tf_idf = {"tf_title": utility.load_title_tf(), "idf_title": utility.load_title_idf(), \
          "tf_content": utility.load_content_tf(), "idf_content":utility.load_content_idf()}
     for index, row in data.iterrows():
         features = one_sample_homepage_features(row, res[row['id']], tf_idf, labeled=False)
         homepage = predict_one_homepage(model, features)
-        if homepage is None:
-            c += 1
-            homepage = simple_guess_homepage(row, res[row['id']])
+        # if homepage is None:
+        #     c += 1
+        #     homepage = simple_guess_homepage(row, res[row['id']])
         if homepage == row['homepage']:
             score += 1
     print(c)
@@ -290,7 +309,7 @@ def main(model_path='./model/temp.dat'):
     # Features extraction & model training
     extract_homepage_features(labeled=True, full_data=True)
     extract_homepage_features(labeled=False, full_data=False)
-    model = homepage_xgb_model(model_path, training_set='all')
+    model = homepage_svm_model(model_path, training_set='all')
     # Training Set
     data = dio.read_former_task1_ans('./full_data/full_data_ans.txt', raw='./full_data/full_data.tsv', skiprows=False)
     search_info = json.load(open('./full_data/all_search_info.json'))

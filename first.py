@@ -7,14 +7,15 @@ import codecs
 import pickle
 import random
 import crawler
-import utility
 import hashlib
 
 import data_io as dio
 import pagehome as ph
-
+from utility import email_getter
 from utility import homepage_neg
 from utility import homepage_pos
+from utility import head_phote_filter
+from utility import email_pic_filter
 from pypinyin import lazy_pinyin
 from scipy.sparse import csr_matrix
 from bs4 import BeautifulSoup as bs
@@ -37,9 +38,9 @@ def generate_one_row(row, flag=True):
 def photo_url(html, url, filter='head'):
     pic_url = crawler.get_pic_url(html, url)
     if filter == 'head':
-        pic_url = utility.head_phote_filter(pic_url)
+        pic_url = head_phote_filter(pic_url)
     if filter == 'email':
-        pic_url = utility.email_pic_filter(pic_url)
+        pic_url = email_pic_filter(pic_url)
     # return pic_url
     if len(pic_url) == 0:
         return []
@@ -94,11 +95,11 @@ def get_email(name, html):
     """
     if html == '':
         return []
-    # text = utility.get_clean_text(html)
+    # text = get_clean_text(html)
     text = html
     email = []
     for i in text.split('\\n'):
-        t = utility.email_getter(i)
+        t = email_getter(i)
         if t != '':
             email.extend(t)
     return list(set(email))
