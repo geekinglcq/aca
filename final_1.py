@@ -10,9 +10,9 @@ import data_io as dio
 import pagehome as ph
 import gender_name as gn
 
-raw_data_path = ''
-model_path = ''
-search_res = ''
+raw_data_path = './task1/validation.txt'
+model_path = './model/temp.dat'
+search_res = './data/search_res.json'
 def main():
     data = dio.read_task1(raw_data_path)
     res = crawler.multi_thread_get_search_page(data, threads_num=20)
