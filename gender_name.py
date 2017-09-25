@@ -26,6 +26,9 @@ class gender_guesser():
             'last_two': name[-2:],   
             'last_three': name[-3:], 
             'last_four': name[-4:] if len(name) > 3 else name[-3:] + ' ',
+            'last_five': name[-5:] if len(name) > 4 else name[-3:] + '  ',
+            'last_six': name[-6:] if len(name) > 5 else name[-3:] + '   ',
+            'last_six': name[-7:] if len(name) > 6 else name[-3:] + '    ',
             #'first': name[0],        
             'first2': name[:1],
             'length': len(name)       
