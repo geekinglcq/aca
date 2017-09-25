@@ -32,51 +32,6 @@ def load_content_tf():
         tf = json.load(f)
     return tf
 
-def face_cog(pic_url):
-
-    # Replace the subscription_key string value with your valid subscription key.
-    subscription_key_set = ['156af6858fca46f4a156e44250ed1c59','19913dc0e75b428899562253e892dc0b']
-    # NOTE: Free trial subscription keys are generated in the westcentralus region, so if you are using
-    # a free trial subscription key, you should not need to change this region.
-    uri_base = 'https://westcentralus.api.cognitive.microsoft.com'
-    # Request parameters.
-    params = {
-        'returnFaceId': 'true',
-        'returnFaceLandmarks': 'false',
-        # 'returnFaceAttributes': 'age,gender,headPose,smile,facialHair,glasses,emotion,hair,makeup,occlusion,accessories,blur,exposure,noise',
-        'returnFaceAttributes': 'age,gender',
-    }
-
-
-    for indx in range(len(subscription_key_set)):
-        isExist = 0
-        gender  = 0
-        subscription_key = subscription_key_set[indx]
-        headers = {
-        'Content-Type': 'application/json',
-        'Ocp-Apim-Subscription-Key': subscription_key,
-        }
-        
-        try:
-            # The URL of a JPEG image to analyze.
-            body = {'url': pic_url}
-            # Execute the REST API call and get the response.
-            response = requests.request('POST', uri_base + '/face/v1.0/detect', json=body, data=None, headers=headers, params=params)
-            parsed = json.loads(response.text)
-            # 'data' contains the JSON data. The following formats the JSON data for display.
-            if len(parsed)>0:
-                # print len(parsed)
-                isExist = 1
-                # age = parsed[0]["faceAttributes"]["age"]
-                gender = 1 if parsed[0]["faceAttributes"]["gender"] == 'male' else 0
-            
-            return ([isExist,gender])
-        except Exception as e:
-            print("[Errno {0}] {1}".format(e.errno, e.strerror))
-            
-            return None
-
-
 
 def word_extract(str_url):
         # Replace the subscription_key string value with your valid subscription key.
@@ -133,7 +88,7 @@ def check_email_validation(email):
     or email.endswith('.css') or email.endswith('Try') or email.endswith('.png'):
         return False
     if 'info' in email or 'communication' in email or 'example' in email or 'mathews'in email\
-    or 'physics' in email:
+    or 'physics' in email or 'support' in email or 'engineering' in email or 'help' in email:
         return False
     return True
 
@@ -147,11 +102,11 @@ def email_getter(text):
     loris (at) cs (dot) wisc (another dot) edu, username=bdavie domain=mit.edu, 
     """
     #dot_p = r' ?[\[<\{\(](?:(?:[Dd][Oo][Tt])|(?:\.)|(?:another dot)|(?:d))[\]>\}\)] ?|[\[<\{\(](?:(?:[Dd][Oo][Tt])|(?:\.)|(?:another dot)|(?:d))[\]>\}\)]'
-    dot_p = r'\.| dot | tod | \[dot\] | DOT | \(dot\) | \(another dot\) |<dot>| \[d\] | \(DOT\) |\[dot\]|\(\.\)|\[.\]|\{dot\}| \. |\(dot\)| \{dot\} | \[dot\]| \[or\] |_DOT_| “dot” |DOT|_DOT_| -dot- '
+    dot_p = r'\.| dot | tod | \[dot\] | DOT | \(dot\) | \[-dot-\] | \(another dot\) |<dot>| \[d\] | \(DOT\) |\[dot\]|\(\.\)|\[.\]|\{dot\}| \. |\(dot\)| \{dot\} | \[dot\]| \[or\] |_DOT_| “dot” |DOT|_DOT_| -dot- '
     #'([-+\w]+(?:\.| dot [-+\w]+)*(@| AT | at | \[at\] |\[at\]| SYMBOL_AT |（AT）|<punkt><at><point>| \[a\] |\[at\]| \(at\) |\(at\)| @ )(?:[-\w]+\.| dot )+[a-zA-Z]{2,7})'
-    at_p = r'@|&nbsp;[at]&nbsp;|&#64;| AT | at | ta | \[at\] |\[at\]| SYMBOL_AT |（AT）|<punkt><at><point>| \[a\] |\[at\]| \(at\) |\(at\)| @ | At | … | \'at\' |@nospam@|\[AT\]| \_at\_ | a t m a r k |<at>|_at_| \[AT\] | \(you can make the \"at\"\) |\(aτ\)| \/at\/ |\{at\}|AT|\.at\.|_AT_| \{at\} |_\(on\)_| \(a\) |<at> |--at--|\(a-t\)| “at” | \(here at\) |\[arrowbase\]| - at - | \"at\" | \(a\) |\(AT\)|@\.| -at- '
+    at_p = r'@|\(@|&nbsp;\[at\]&nbsp;|&#64;|&#0064;| AT | at | \[-at-\] | ta | AT SPAMFREE | \[at\] |\[at\]| SYMBOL_AT | \[@\] |（AT）|<punkt><at><point>| \[a\] |\[at\]| \(at\) |\(at\)| @ | At | … | \'at\' |@nospam@|\[AT\]| \_at\_ | a t m a r k |<at>|_at_| \[AT\] | \(you can make the \"at\"\) |\(aτ\)| \/at\/ |\{at\}|AT|\.at\.|_AT_| \{at\} |_\(on\)_| \(a\) |<at> |--at--|\(a-t\)| “at” | \(here at\) |\[arrowbase\]| - at - | \"at\" | \(a\) |\(AT\)|@\.| -at- '
     #'([-+\w]+(?:(\.| dot | \[dot\] | DOT | \(dot\) | \(another dot\) |<dot>| \[d\] |)[-+\w]+)*(@| AT | at | \[at\] |\[at\]| SYMBOL_AT |（AT）|<punkt><at><point>| \[a\]|\[at\]| \(at\) |\(at\))(?:[-\w]+\.| dot | \[dot\] | DOT | \(dot\) | \(another dot\) |<dot>| \[d\] |)+[a-zA-Z]{2,7})'
-    simple_p = re.compile(r'((?:\[)?[-+\w]+(?:(?:%s)[-+\w]+)*(?:\])?(?:%s)(?:\[)?(?:[-\w]+(?:%s))+[a-zA-Z]{2,7}(?:\])?)'%(dot_p, at_p, dot_p))
+    simple_p = re.compile(r'((?:\[)?(?:[-+\w]|&nbsp;)+(?:(?:%s)(?:[-+\w]|&nbsp;))*(?:\])?(?:%s)(?:\[)?(?:[-\w]+(?:%s))+[a-zA-Z)]{2,7}(?:\])?)'%(dot_p, at_p, dot_p))
     p2 = re.compile(r'([-+\w]+(?: [dot] [-+\w]+)* [at] (?:[-\w]+ [dot] )+[a-zA-Z]{2,7})')
     email = simple_p.findall(text)
     email = list(filter(lambda x: check_email_validation(x), email))
