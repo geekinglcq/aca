@@ -27,7 +27,9 @@ class locpos_guesser():
         ri = min(index + 2, len(html_text)) + 1
         for i in range(le, ri):
             if 'position' in html_text[i] or '职' in html_text[i] \
-            or 'title' in html_text[i]
+            or 'title' in html_text[i]:
+                return True
+
     def pos_guess(self, html_text):
         html_text = html_text.split('\n')
         poss = []

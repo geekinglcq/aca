@@ -76,7 +76,8 @@ def one_sample_homepage_features(data, search_res, tf_idf, labeled=True):
         edu = 1 if 'edu' in url else 0 # 6
         org = 1 if 'org' in url else 0 # 7
         gov = 1 if 'gov' in url else 0 # 8
-        com = 1 if 'com' in url else 0 # 9
+        # com = 1 if 'com' in url else 0 # 9
+        name_in = 1 if len(name_p.findall(title.lower())) != 0 else 0 # 9
         linkedin = 1 if 'linkedin' in url else 0 # 10
         title_len = len(title) # 11
         content_len = len(content) # 12
@@ -93,9 +94,9 @@ def one_sample_homepage_features(data, search_res, tf_idf, labeled=True):
             else:
                 key_v.append(0)
         feature.extend([in_school, is_cited, pos_words_num, neg_words_num, edu,\
-         org, gov, com, linkedin, title_len, content_len, org_len, name_title, name_content]) 
+         org, gov, linkedin, title_len, content_len, org_len, name_title, name_content]) 
         feature.extend(key_v)
-        tf_idf_features = get_tf_idf_features(data['name'], data['org'], title, content, tf_idf)
+        # tf_idf_features = get_tf_idf_features(data['name'], data['org'], title, content, tf_idf)
         # for i in homepage_neg:
         #     if i in title.lower():
         #         feature.append(1)
@@ -106,7 +107,7 @@ def one_sample_homepage_features(data, search_res, tf_idf, labeled=True):
         #         feature.append(1)
         #     else:
         #         feature.append(0)
-        feature.extend(tf_idf_features)
+        # feature.extend(tf_idf_features)
         features.append(feature)
     for i in range(len(features)):
         features[i].append(features[i][14] / name_title_total)
@@ -138,10 +139,15 @@ def check_name_in_text(name, text):
     www.xx.org.avatar.jpg get 0
     """
     score = 0
+    short = ''
     for i in re.split(r'[ -]', name):
+        short = i.lower().strip()[0] + short
         if i.lower() in text.lower():
             score += 1
-    return score / len(name.split(' '))
+    if short in text.lower() or short[::-1] in text.lower():
+        score += 0.2
+    print(short)
+    return score / len(re.split(r'[ -]', name))
 
 def extract_homepage_features(labeled=True, full_data=False):
     
@@ -211,12 +217,12 @@ def predict_one_homepage(model, data):
     features = np.array([x[1:] for x in data ])
     urls = [i[0] for i in data]
     # return urls[0]
-    # pred = model.predict_prob(features)[: ,1]
+    # pred = model.predict_proba(features)[: ,1]
     pred = model.predict_proba(features)
     # print(pred)
     url = urls[pred[: ,1].argmax()]
-    if pred.max() < 0.5:
-        return urls[0]
+    # if pred.max() < 0.5:
+    #     return urls[0]
     # if len([i for i in pred[:, 1] if i > 0.5]) > 1:
     #     url = None
     
@@ -309,7 +315,7 @@ def main(model_path='./model/temp.dat'):
     # Features extraction & model training
     extract_homepage_features(labeled=True, full_data=True)
     extract_homepage_features(labeled=False, full_data=False)
-    model = homepage_svm_model(model_path, training_set='all')
+    model = homepage_xgb_model(model_path, training_set='all')
     # Training Set
     data = dio.read_former_task1_ans('./full_data/full_data_ans.txt', raw='./full_data/full_data.tsv', skiprows=False)
     search_info = json.load(open('./full_data/all_search_info.json'))
