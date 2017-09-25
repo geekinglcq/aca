@@ -24,7 +24,7 @@ user_agents = ['Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KH
                'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.6; rv,2.0.1) Gecko/20100101 Firefox/4.0.1',\
                'Mozilla/5.0 (Windows NT 6.1; rv,2.0.1) Gecko/20100101 Firefox/4.0.1',\
                'Mozilla/5.0 (Windows NT 6.1; rv,2.0.1) Gecko/20100101 Firefox/4.0.1']
-ss_proxies = {"http": "127.0.0.1:1080", "https"： ”127.0.0.1:1080“}
+ss_proxies = {"http": "127.0.0.1:8118", "https": "127.0.0.1:8118"}
 
 def get_search_page(search_url, use_proxy=False):
 
@@ -247,20 +247,7 @@ def get_pic_url(html, url):
         for i in range(len(img_list)):
             if not img_list[i].startswith('http'):        
                 img_list[i] = urllib.parse.urljoin(url, img_list[i])
-                # # print(root_url)
-                # if len(root_url) > 0:
-                #     if img_list[i].startswith('./'):
-                #         img_list[i] = root_url[0] + img_list[i][2:]
-                #     elif img_list[i].startswith('/'):
-                #         img_list[i] = root_url[0] + img_list[i][1:]
-                #     elif img_list[i].startswith('../'):
-                #         img_list[i] = root_url[0] + img_list[i][3:]
-                #     elif img_list[i].startswith('../../'):
-                #         img_list[i] = root_url[0] + img_list[i][6:]
-                #     else:
-                #         img_list[i] = root_url[0] + img_list[i]
-        # print(img_list)
-        # img_list = list(filter(lambda x: check_request_validation(x), img_list))
+                
         return list(set(img_list))
     except Exception as e:
         print(e)
@@ -279,18 +266,6 @@ def get_pic_url2(html, url):
         for i in range(len(img_list)):
             if not img_list[i].startswith('http'):
                 img_list[i] = urllib.parse.urljoin(url, img_list[i])
-                # # print(root_url)
-                # if len(root_url) > 0:
-                #     if img_list[i].startswith('./'):
-                #         img_list[i] = root_url[0] + img_list[i][2:]
-                #     elif img_list[i].startswith('/'):
-                #         img_list[i] = root_url[0] + img_list[i][1:]
-                #     elif img_list[i].startswith('../'):
-                #         img_list[i] = root_url[0] + img_list[i][3:]
-                #     elif img_list[i].startswith('../../'):
-                #         img_list[i] = root_url[0] + img_list[i][6:]
-                #     else:
-                #         img_list[i] = root_url[0] + img_list[i]
         return img_list
     except Exception as e:
         print(e.__traceback__())

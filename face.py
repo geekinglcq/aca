@@ -12,7 +12,6 @@ from align import detect_face
 
 
 #   setup facenet parameters
-gpu_memory_fraction = 1.0
 minsize = 50 # minimum size of face
 threshold = [ 0.6, 0.7, 0.7 ]  # three steps's threshold
 factor = 0.709 # scale factor
@@ -83,7 +82,7 @@ def check_name_in_url(name, url):
     www.xx.org.avatar.jpg get 0
     """
     score = 0
-    for i in name.split(' '):
+    for i in re.split(r'[ -]', name):
         if i.lower() in url.lower():
             score += 1
     return score / len(name.split(' '))

@@ -7,14 +7,15 @@ import codecs
 import pickle
 import random
 import crawler
-import utility
 import hashlib
 
 import data_io as dio
-
-
+import pagehome as ph
+from utility import email_getter
 from utility import homepage_neg
 from utility import homepage_pos
+from utility import head_phote_filter
+from utility import email_pic_filter
 from pypinyin import lazy_pinyin
 from scipy.sparse import csr_matrix
 from bs4 import BeautifulSoup as bs
@@ -37,9 +38,9 @@ def generate_one_row(row, flag=True):
 def photo_url(html, url, filter='head'):
     pic_url = crawler.get_pic_url(html, url)
     if filter == 'head':
-        pic_url = utility.head_phote_filter(pic_url)
+        pic_url = head_phote_filter(pic_url)
     if filter == 'email':
-        pic_url = utility.email_pic_filter(pic_url)
+        pic_url = email_pic_filter(pic_url)
     # return pic_url
     if len(pic_url) == 0:
         return []
@@ -88,20 +89,38 @@ def extract_search_info():
     #with open('train_search_info.json', 'w') as f:
     #    json.dump(test_set_info, f)
 
-def get_email(html):
+def get_email(name, html):
     """
     Return a list of email address for given html
     """
     if html == '':
         return []
-    # text = utility.get_clean_text(html)
+    # text = get_clean_text(html)
     text = html
     email = []
     for i in text.split('\\n'):
-        t = utility.email_getter(i)
+        t = email_getter(i)
         if t != '':
-            email.append(t)
-    return email
+            email.extend(t)
+    return list(set(email))
+    max_score = -1
+    if len(email) == 0:
+        return ''
+    for i in email:
+        score = ph.check_name_in_text(name, i)
+        if score > max_score:
+            max_score = score
+            ans = i
+        
+    return ans
+
+def predict_email(data, html):
+    emails = {}
+    for i, r in data.iterrows():
+        email = get_email(r['name'], html[r['id']])
+        emails[r['id']] = (r['name'], r['homepage'], email)
+        # data.set_value(i, 'email', email)
+    return emails
 
 def get_homepage_html(data, prefix='./webpage/'):
     """

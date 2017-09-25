@@ -26,6 +26,9 @@ class gender_guesser():
             'last_two': name[-2:],   
             'last_three': name[-3:], 
             'last_four': name[-4:] if len(name) > 3 else name[-3:] + ' ',
+            'last_five': name[-5:] if len(name) > 4 else name[-3:] + '  ',
+            'last_six': name[-6:] if len(name) > 5 else name[-3:] + '   ',
+            'last_six': name[-7:] if len(name) > 6 else name[-3:] + '    ',
             #'first': name[0],        
             'first2': name[:1],
             'length': len(name)       
@@ -48,7 +51,15 @@ class gender_guesser():
             return 'f'
         else:
             return 'm'
-    
+
+    def predict_gender(self, data):
+        """
+        data - standrad DataFrame
+        """
+        for i, r in data.iterrows():
+            gender = self.simple_guess(r['name'])
+            data.set_value(i, 'gender', gender)
+
     def advanced_guess(self, name):
         # Acc = 0.778 in training set
         if not(self.classifier):
