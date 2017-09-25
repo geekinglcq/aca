@@ -1,8 +1,11 @@
 from sklearn.svm import SVR
+from sklearn import svm
 from sklearn import linear_model
+from sklearn.cluster import KMeans
 import numpy as np
 import Paper
 import datetime
+import math
 
 class ILearner(object):
     """description of class"""
@@ -143,46 +146,60 @@ class SparsePA(ILearner):
                 fout.write("%r,%r,%r\n" % (Xv[i], Yv[i], YP[i]))
         return 1 - 1.0 / N * s
 
-class task2Learner(ILearner):
-    def __init__(self):
-        self.summary={}
+class LIFT(ILearner):
+    def __init__(self, r, LabelSpace):
+        self.models=[]
+        self.r = r
+        self.LabelSpace = LabelSpace
+        self.ansLen=5
+
+    def _distance(self,x,y):
+         return np.sqrt( np.sum( np.power( np.array(x)-np.array(y),2) ) )
 
     def train(self, X, y):
-        r={}
-        for i in range(len(X)):
-            papers = Paper.Paper.getPaperByAut(X[i])
-            jur = set([p.Journal for p in papers])
-            for j in jur:
-                if not j in r:
-                    r[j]={}
-                for it in y[i]:
-                    if not it in r[j]:
-                        r[j][it]=0
-                    r[j][it]=r[j][it]+1
-        for k,v in r.items():
-            mh = max(v.values())
-            it = [(p,q) for (p,q) in v.items() if q>mh*0.5]
-            self.summary[k]=it
+        y=np.array(y)
+        q = len(self.LabelSpace)
+        M = np.size(X,0)
+        for k in range(q):
+            Pk = [X[i] for i in range(M) if self.LabelSpace[k] in y[i]]
+            Nk = [X[i] for i in range(M) if not self.LabelSpace[k] in y[i]]
+            mk = self.r * min(len(Pk),len(Nk))
+            #todo: choose another cluster method
+            centp = KMeans(mk).fit(Pk).cluster_centers_
+            centn = KMeans(mk).fit(Nk).cluster_centers_
+            PhiK=[]
+            Yk=[0 for i in range(M)]
+            for i in range(M):
+                tp = [ self._distance(Pk[i],centp[j]) for j in range(mk) ]
+                tn = [ self._distance(Pk[i],centn[j]) for j in range(mk) ]
+                tp.extend(tn)
+                PhiK.append(tp)
+                if self.LabelSpace[k] in y[i]:
+                    Yk[i]=1
+                else:
+                    Yk[i]=0
+
+            #todo: choose another classification method and adjust parameters
+            clf = svm.SVC()
+            clf.fit(PhiK,Yk)
+            self.models.append(clf)
+
 
     def predict(self, X):
         y=[]
         for i in range(len(X)):
-            aut=X[i]
-            papers = Paper.Paper.getPaperByAut(aut)
-            jur = set([p.Journal for p in papers])
-            tmp=[]
-            count={}
-            for j in jur:
-                #todo : if not in??
-                if j in self.summary:
-                    tus = self.summary[j]
-                    for tu in tus:
-                        if not tu[0] in count:
-                            count[tu[0]]=0
-                        count[tu[0]]=count[tu[0]]+tu[1]
-            l=sorted(count.items(),key=lambda d:d[1],reverse=True)
-            V = [v[0] for v in l]
-            y.append(V[0:10])
+            t=[-1 for i in range(self.ansLen+1)]
+            p=[-1 for i in range(self.ansLen+1)]
+            for k in len(self.LabelSpace):
+                R = self.models[k]._predict_proba(X[i])
+                j = self.ansLen
+                while j>0 and p[j-1]<R[1]:
+                   p[j]=p[j-1]
+                   t[j]=t[j-1]
+                   j=j-1
+                p[j] = R[1]
+                t[j]=k
+            y.append(t)
         return y
 
     def score(self,Xv,Yv):
