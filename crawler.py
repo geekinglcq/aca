@@ -24,7 +24,7 @@ user_agents = ['Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KH
                'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.6; rv,2.0.1) Gecko/20100101 Firefox/4.0.1',\
                'Mozilla/5.0 (Windows NT 6.1; rv,2.0.1) Gecko/20100101 Firefox/4.0.1',\
                'Mozilla/5.0 (Windows NT 6.1; rv,2.0.1) Gecko/20100101 Firefox/4.0.1']
-ss_proxies = {"http": "127.0.0.1:8118", "https": "127.0.0.1:8118"}
+ss_proxies = {"http": "127.0.0.1:1080", "https": "127.0.0.1:1080"}
 
 def get_search_page(search_url, use_proxy=False):
 
@@ -122,6 +122,8 @@ def get_true_url(url, use_proxy=True, re_try=False):
     try:
         if re_try:
             verify = False
+        else:
+            verify = True
         dlurl = requests.get(url, headers=headers, timeout=10, verify=verify)
         return dlurl.url
     except Exception as e:  
