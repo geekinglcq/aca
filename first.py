@@ -12,6 +12,7 @@ import hashlib
 import data_io as dio
 import pagehome as ph
 from utility import email_getter
+from utility import get_clean_text
 from utility import homepage_neg
 from utility import homepage_pos
 from utility import head_phote_filter
@@ -89,20 +90,22 @@ def extract_search_info():
     #with open('train_search_info.json', 'w') as f:
     #    json.dump(test_set_info, f)
 
-def get_email(name, email):
+def get_email(name, html):
     """
     Return a list of email address for given html
     """
-    # if html == '':
-    #     return []
-    # # text = get_clean_text(html)
-    # text = html
-    # email = []
-    # for i in text.split('\\n'):
-    #     t = email_getter(i)
-    #     if t != '':
-    #         email.extend(t)
-    # return list(set(email))
+    if html == '':
+        return []
+    # text = get_clean_text(html)
+    text = html
+    email = []
+    for i in text.split('\\n'):
+        if len(i) < 5:
+            continue
+        t = email_getter(i)
+        if t != '':
+            email.extend(t)
+    return list(set(email))
     max_score = -1
     if len(email) == 0:
         return ''
