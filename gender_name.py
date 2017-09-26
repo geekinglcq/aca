@@ -57,7 +57,11 @@ class gender_guesser():
         data - standrad DataFrame
         """
         for i, r in data.iterrows():
-            gender = self.simple_guess(r['name'])
+            gender = self.simple_guess(r['name'].split()[0].strip())
+            data.set_value(i, 'gender', gender)
+    def predict_gender_advanced(self, data):
+        for i, r in data.iterrows():
+            gender = self.advanced_guess(r['name'].split()[0].strip())
             data.set_value(i, 'gender', gender)
 
     def advanced_guess(self, name):
