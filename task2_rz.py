@@ -134,7 +134,7 @@ def getVenue(venue, d=dict()):
 
 def getData(fileName):
 	papers = dict()
-	with open(fileName, 'r') as f:
+	with codecs.open(fileName, 'r',encoding='utf-8') as f:
 	#with open(fileName, 'r',encoding='utf-8') as f:
 		l = f.readline()
 		count = 1
@@ -165,7 +165,7 @@ def getData(fileName):
 					# print 'paperTitle: %s'%paperTitle
 				elif tmp.startswith('#@'): # --- Authors
 					al = tmp[2:].split(',')
-					al = list(map(str.strip, al))
+					al = list(map(unicode.strip, al))
 					authors = al
 					# print 'Authors:', al
 				elif tmp.startswith('#t'): # ---- Year
@@ -200,7 +200,7 @@ def getLDAModel(paperData, numTopics=25, numPasses=2):
 
 	# Create p_stemmer of class PorterStemmer
 	p_stemmer = PorterStemmer()
-	
+
 	#Get Doc List
 	doc_set = [paperData[paper][0] + ' ' + paperData[paper][5] for paper in paperData]
 
@@ -232,7 +232,6 @@ def getLDAModel(paperData, numTopics=25, numPasses=2):
 	
 	#Save memory
 	del doc_set
-
 	# turn our tokenized documents into a id <-> term dictionary
 	dictionary = corpora.Dictionary(texts)
 	print('%s: turned our tokenized documents into a id <-> term dictionary' % datetime.datetime.now())
@@ -257,7 +256,7 @@ def getLDAModel(paperData, numTopics=25, numPasses=2):
 
 	return ldamodel
 
-def getTopics(paperIdx):
+def getTopics(paperIdx,model):
 	paperText = preProcess(paperData[paperIdx][0] + ' ' + paperData[paperIdx][5])
 	return model[paperText]
 
@@ -282,16 +281,14 @@ def Preprocess():
 	en_stop =  stopwords.words('english')
 	model = gensim.models.ldamulticore.LdaMulticore.load('LDAModel.pkl')
 	dictionary = pickle.load(open('dictionary.pkl', 'rb'))
-	paperData = None
-	with open('paperData.pkl', 'rb') as f:
-		paperData = pickle.load(f)
+
 	p_stemmer = PorterStemmer()
 
 	print('Done loading stuff!')
 	d = dict()
 	i = 0
 	for paperIdx in paperData:
-		d[paperIdx] = getTopics(paperIdx)
+		d[paperIdx] = getTopics(paperIdx,model)
 		i += 1
 		if i % 1000 == 0:
 			print('Done with %d papers!'%i)
