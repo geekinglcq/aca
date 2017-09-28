@@ -72,10 +72,9 @@ def SelectModel():
     X_train, X_test, y_train, y_test = train_test_split(
         trainX, trainY, test_size=0.3, random_state=0)
     c=0
-    #m = SparsePA(c, 1000)
     m = ILearner.DNN()
     m.train(trainX, trainY)
-    mape = m.score(X_test, y_test)
+    mape = m.score(trainX, trainY)
     print("C: %r,  MAPE: %r, train: %r, test: %r\n" %
           (c, mape, len(trainY), len(y_test)))
     if mape > opt:

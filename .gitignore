@@ -6,3 +6,7 @@
 *.m
 *.mat
 *.txt
+*.pkl
+*.npy
+*.id2word
+*.state

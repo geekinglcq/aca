@@ -61,6 +61,10 @@ ordinals = ['first',
  'hundredth',
  'thousandth']
 
+en_stop =  stopwords.words('english')
+p_stemmer = PorterStemmer()
+dictionary = pickle.load(open('dictionary.pkl', 'rb'))
+model = gensim.models.ldamulticore.LdaMulticore.load('LDAModel.pkl')
 
 def ReadLabels():
 	with codecs.open(labelsPath, "r",'utf-8') as fin:
@@ -165,7 +169,7 @@ def getData(fileName):
 					# print 'paperTitle: %s'%paperTitle
 				elif tmp.startswith('#@'): # --- Authors
 					al = tmp[2:].split(',')
-					al = list(map(unicode.strip, al))
+					al = list(map(str.strip, al))
 					authors = al
 					# print 'Authors:', al
 				elif tmp.startswith('#t'): # ---- Year
@@ -256,8 +260,8 @@ def getLDAModel(paperData, numTopics=25, numPasses=2):
 
 	return ldamodel
 
-def getTopics(paperIdx,model):
-	paperText = preProcess(paperData[paperIdx][0] + ' ' + paperData[paperIdx][5])
+def getTopics(str):
+	paperText = preProcess(str)
 	return model[paperText]
 
 def preProcess(paperText):
@@ -272,29 +276,23 @@ def preProcess(paperText):
 	return dictionary.doc2bow(tokens)
 
 def Preprocess():
-	paperData = getData(paperPath)
 
-	print('%s: Loaded data' % datetime.datetime.now())
-	m = getLDAModel(paperData, 100) 
-	print(m)
-
-	en_stop =  stopwords.words('english')
-	model = gensim.models.ldamulticore.LdaMulticore.load('LDAModel.pkl')
-	dictionary = pickle.load(open('dictionary.pkl', 'rb'))
-
-	p_stemmer = PorterStemmer()
-
-	print('Done loading stuff!')
-	d = dict()
-	i = 0
-	for paperIdx in paperData:
-		d[paperIdx] = getTopics(paperIdx,model)
-		i += 1
-		if i % 1000 == 0:
-			print('Done with %d papers!'%i)
-	with open('paperToTopics.pkl', 'wb') as f:
-		pickle.dump(d, f)
-
+    #m = getLDAModel(paperData, 100) 
+    #print(m)
+    
+    paperData = getData(paperPath)
+    print('%s: Loaded data' % datetime.datetime.now())
+    
+    d = dict()
+    i = 0
+    for paperIdx in paperData:
+    	d[paperIdx] = getTopics(paperData[paperIdx][0] + ' ' + paperData[paperIdx][5])
+    	i += 1
+    	if i % 10000 == 0:
+    		print('Done with %d papers!'%i)
+    with open('paperToTopics.pkl', 'wb') as f:
+    	pickle.dump(d, f)
+    #paperTopics = pickle.load(open('paperToTopics.pkl', 'rb'))
 
 def reformatData(X,Y):
 	"""
