@@ -8,7 +8,7 @@ import pickle
 
 
 # 文件路径
-paperPath = "F:\\ACAData\\task3\\papers.txt"
+paperPath = "./task3/papers.txt"
 trainPath = "F:\\ACAData\\task3\\train.csv"
 validationPath = "F:\\ACAData\\task3\\validation.csv"
 output3Path = "F:\\ACAData\\task3\\output3.txt"
