@@ -105,7 +105,7 @@ def get_email(name, html):
         t = email_getter(i)
         if t != '':
             email.extend(t)
-    return list(set(email))
+    # return list(set(email))
     max_score = -1
     if len(email) == 0:
         return ''
