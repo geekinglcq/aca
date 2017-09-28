@@ -146,7 +146,6 @@ def check_name_in_text(name, text):
             score += 1
     if short in text.lower() or short[::-1] in text.lower():
         score += 0.2
-    print(short)
     return score / len(re.split(r'[ -]', name))
 
 def extract_homepage_features(labeled=True, full_data=False):
