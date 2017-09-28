@@ -103,6 +103,7 @@ def check_name_in_text(name, text):
     www.xx.org.avatar.jpg get 0
     """
     score = 0
+    text = ' '.join(lazy_pinyin(text))
     for i in re.split(r'[ -]', name):
         if i.lower() in text.lower():
             score += 1

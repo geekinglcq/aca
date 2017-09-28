@@ -15,36 +15,22 @@
 二级教授
 主任
 ​Professor
-visiting professor
-vice-president
-vice president
 tenured professor
 technology director
 technical lead
 team leader
-teacher
 staff scientist
-software engineer
 senior staff research scientist
 senior scientist
 senior researcher
 senior research scientist
-senior member
 senior lecturer
-scientist
-ricercatore
-researcher
 research staff member
 research staff
 research scientist
-research professor
 research manager
-research fellow
 research engineer
 research director
-research associate
-research assistant
-project manager
 project leader
 professore ordinario
 professore associato
@@ -53,88 +39,37 @@ professor emeritus
 professor
 professeur
 prof.
-prof
 principal scientist
-principal investigator
-president
 postdoctoral researcher
 post-doctoral researcher
-pesquisador
 permanent researcher
-manager
-lecturer
-leader
 full professor
 full Professor
 founding Director
-founder
-faculty member
-expert
-engineer
 emeritus professor
 distinguished professor
-director
 directeur
-deputy director
-dean
-data scientist
-coordinator
-consultant
-computer scientist
-co-founder
-co-director
-co-chair
-co-Director
 chief scientist
-chief
-chairman
-chair
-cardiologist
 associate professor
-associate editor
-associate director
 assistant professor
-adjunct professor
 Wissenschaftlicher Mitarbeiter
-William R. Kenan, Jr. Professor
 Walter P. Murphy Professor
-Visiting professor
-Visiting Scientist
-Visiting Scholar
-Visiting Researcher
+Visiting Group Leader
 Visiting Research Professor
-Visiting Professor
 Visiting Associate Professor
 Visiting Assistant Professor
 Vice-Principal
-Vice-President
-Vice-Chancellor
-Vice Provost
-Vice President
 Vice Head
 Vice Director
 Vice Dean
-Vice Chancellor
-Vice Chair
 VU/VUmc-director
-VP
-University Distinguished Professor
 Univ.-Prof.
-Tutor
 Titular Professor
 Tier I Concordia Research Chair
 Tenured Scientist
 Technical Staff Member
-Technical Staff
 Technical Fellow
-Team Leader
-Teaching Assistant
-Supervisor
-Staff Scientist
 Staff Research Scientist
-Spencer T. and Ann W. Olin Professor
-Specialist
-Software Engineer
 Senior scientist
 Senior researcher
 Senior lecturer
@@ -148,12 +83,10 @@ Senior Research Manager
 Senior Research Investigator
 Senior Research Fellow
 Senior Research Engineer
-Senior Research Associate
 Senior Professor
 Senior Principal Scientist
 Senior Principal Research Scientist
 Senior Physicist
-Senior Member
 Senior Manager
 Senior Lecturer
 Senior Investigator
@@ -163,23 +96,16 @@ Senior Consultant
 Senior Computer Scientist
 Senior Associate Professor
 Senior Associate Dean
-Senior Advisor
-Scientist
 Scientific Researcher
-Scientific Director
 Scientific Councillor
 Scientia Professor
 SUNY Distinguished Professor
-Ricercatore
 Retired Professor
 Researcher Emeritus
-Researcher
-Research staff
 Research scientist
 Research associate
 Research Worker
 Research Staff Member
-Research Staff
 Research Scientist
 Research Professor Emeritus
 Research Professor
@@ -190,22 +116,12 @@ Research Chair
 Research Associate Professor
 Research Associate
 Research Assistant Professor
-Research Assistant
 Reseacher
 Regents' Professor
 Regents Professor
-Regents Chair
-Reader
 RESEARCHER
 Pro­fes­sor
-Provost
-Project Manager
-Project Leader
 Programme leader
-Program Manager
-Program Director
-Professur
-Professors
 Professori
 Professore ordinario
 Professore associato
@@ -223,71 +139,48 @@ Professo
 Professeur agrégé
 Professeur
 Profesora
-Profesor Titular de Universidad
 Profesor Titular
 Profesor
 Prof. Associato
 Prof.
-Prof
 Privatdozent
 Principal Scientist
 Principal Researcher
 Principal Research Staff Member
-Principal Research Scientist
 Principal Research Manager
 Principal Lecturer
-Principal Investigator
 Principal Engineer
 Principal Applied Scientist
-President
 Postdoctoral Scientist
-Postdoctoral Researcher
-Postdoctoral Fellowship
-Postdoctoral Fellow
 Post-Doctoral Researcher
 PhD supervisor
-Partner
 PROFESSORE ASSOCIATO
 PROFESSOR EMERITUS
 PROFESSOR
 PROFESOR
 PROF.
-PROF
-Officer
 Medical Director
 Master Inventor
-Managing Director
-Manager
 Lucie Stern Professor
-Life Fellow
 Lehrstuhlinhaber
-Lecturer
-Leader
 Lead Researcher
-Lead
 Laureate Professor
 Laura H. Carnell Professor
 John Curtin Distinguished Professor
 James F. Barbour Professor
 Invited Professor
-Investigator
 Interim Director
 Interim Associate Dean
-Instructor
 Institute Chair Professor
-IBM Fellow
 Hugh Roy and Lillie Cranz Cullen Distinguished Professor
 Honorary Visiting Professor
 Honorary Research Fellow
 Honorary Professor
 Honorary Fellow
 Honorary Associate Professor
-Head of Department
 Head
 Guest Scientist
-Guest Professor
 Group leader
-Group Leader
 Group Lead
 Graduate Director
 Gordon McKay Professor
@@ -299,35 +192,19 @@ Full member researcher
 Full Research Professor
 Full Professor emeritus
 Full Professor
-Founding Director
-Founder
 Foundation Chair
-Fellow
-Faculty Member
-Faculty Fellow
 FULL PROFESSOR
 External Professor
 Executive Vice President
 Executive Officer
-Executive Director
 Engineering Manager
-Engineer
-Eminent Scholar
 Emeritus professor
 Emeritus Professor
-Emeritus
 Emerita Professor
-Educator
-Editorial Board Member
-Editor
-Doctor
-Docente
-Docent
 Division Head
 Division Chief
 Distinguished University Professor Emeritus
 Distinguished University Professor
-Distinguished Scientist
 Distinguished Research Staff Member
 Distinguished Research Professor
 Distinguished Professor Emeritus
@@ -336,65 +213,38 @@ Distinguished Member of Technical Staff
 Distinguished Engineer
 Distinguished Adjunct Professor
 Distiguished Professor
-Direttore
 Director,
-Director of Research
 Director General
 Director Emeritus
 Director
 Directeur de Recherche
 Directeur
 Deputy Scientific Director
-Deputy Head
-Deputy Director
-Department Head
-Department Chair
 Delta Electronics Professor
 Dean Emeritus
-Dean
 DISTINGUISHED PROFESSOR
 DIRECTOR
 Curators' Distinguished Professor
-Coordinator
 Convenor
 Consulting professor
-Consultant
 Concurrent Professor
-Computer Scientist
 Co-head
-Co-founder
-Co-editor
-Co-director
 Co-creator
-Co-Principal Investigator
-Co-Founder
-Co-Director
-Co-Chair
-Clinical Director
 CHIEF ENGINEER
 Chief Technology Officer
 Chief Scientist
-Chief Scientific Officer
 Chief Executive Officer
-Chief
 Chercheur
 Chancellor’s Professor
 Chancellor's Professor Emeritus
 Chancellor's Professor
-Chairperson
-Chairman
 Chair Professor
-Chair
 Catedrático
 Carolina Distinguished Professor
-Canada Research Chair
-CTO
 CNRS researcher
-CEO
 B. N. Gafford Professor
 Associated Professor
 Associate professor
-Associate editor
 Associate Vice President
 Associate Vice Chair
 Associate Teaching Professor
@@ -404,18 +254,13 @@ Associate Research Scientist
 Associate Research Professor
 Associate Research Fellow
 Associate Provost
-Associate Professor Emeritus
 Associate Professor
-Associate Member
 Associate Head
 Associate Fellow
 Associate Faculty
-Associate Editor
-Associate Director
 Associate Department Head
 Associate Dean
 Associate Chair
-Associate
 Assoc. Professor
 Assoc. Prof.
 Assoc Professor
@@ -423,18 +268,14 @@ Assistant professor
 Assistant Research Professor
 Assistant Research Fellow
 Assistant Professor
-Assistant Director
 Assistant Dean
 Arthur F. Thurnau Professor
 Argonne Distinguished Fellow
 An Wang Professor
 Alfred Deakin Professor
-Affiliated Researcher
 Affiliate Professor
-Advisor
 Adjunct Research Fellow
 Adjunct Professor
-Adjunct Faculty
 Adjunct Associate Professor
 Adjunct Assistant Professor
 ASSOCIATE PROFESSOR
