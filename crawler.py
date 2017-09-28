@@ -27,8 +27,16 @@ user_agents = ['Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KH
                'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.6; rv,2.0.1) Gecko/20100101 Firefox/4.0.1',\
                'Mozilla/5.0 (Windows NT 6.1; rv,2.0.1) Gecko/20100101 Firefox/4.0.1',\
                'Mozilla/5.0 (Windows NT 6.1; rv,2.0.1) Gecko/20100101 Firefox/4.0.1']
+<<<<<<< HEAD
 ss_proxies = {"http": "127.0.0.1:1080", "https": "127.0.0.1:1080"}
 
+=======
+ss_proxies = {"http": "127.0.0.1:8118", "https": "127.0.0.1:8118"}
+proxies = {
+    'http': 'socks5://user:pass@104.194.72.216:443',
+    'https': 'socks5://user:pass@host:port'
+}
+>>>>>>> e6186a1fd362e79ae48bf80042ac2c211bcf0d6f
 def get_search_page(search_url, use_proxy=False):
 
     """

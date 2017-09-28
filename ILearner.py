@@ -6,6 +6,8 @@ import numpy as np
 import Paper
 import datetime
 import math
+import tensorflow as tf
+
 
 class ILearner(object):
     """description of class"""
@@ -15,7 +17,6 @@ class ILearner(object):
 
     def predict(self, X):
         pass
-
 
 class Svr(ILearner):
 
@@ -44,7 +45,6 @@ class Svr(ILearner):
     def predict(self, X):
         return self.model.predict(X)
 
-
 class SGDRegr(ILearner):
 
     def __init__(self):
@@ -55,7 +55,6 @@ class SGDRegr(ILearner):
 
     def predict(self, X):
         return self.clf.predict(X)
-
 
 class SparsePA(ILearner):
 
@@ -211,3 +210,69 @@ class LIFT(ILearner):
             s2=set(Yv[i])
             s=s+len(s1.intersection(s2))/3.0
         return s/N
+
+
+class TensorFlowRegression(SparsePA):
+    def __init__(self, C, T):
+        return super(TensorFlowRegression, self).__init__(C, T)
+
+    def train(self, X, Y):
+        return super(TensorFlowRegression, self).train(X, Y)
+
+    def predict(self, X):
+        return super(TensorFlowRegression, self).predict(X)
+
+
+class DNN(SparsePA):
+    def __init__(self):
+        self.feature_length=len(Paper.Paper._Paper__wholeData)
+        self.feature_columns=[tf.feature_column.numeric_column('feature',[self.feature_length],dtype=tf.int32)]
+        self.dnn=tf.contrib.learn.DNNRegressor(hidden_units=[100,10],feature_columns=self.feature_columns,model_dir='./',label_dimension=1,optimizer='adam')
+        self.dataSize=len(Paper.Paper._Paper__authorData)
+        self.batchSize=100
+
+    def train(self, X, y):
+        Xbatch=[]
+        ybatch=[]
+        count=0
+        for i in range(len(X)):
+            papers = Paper.Paper.getPaperByAut(X[i])
+            A = [(papers[j].Index, len(papers[j].Referenced)) for j in range(len(papers))]
+            xi = [0 for i in range(self.feature_length)]
+            for j in range(len(A)):
+                xi[A[j][0]] = A[j][1]
+            yi=y[i]
+            count=count+1
+            Xbatch.append(xi)
+            ybatch.append(yi)
+            if count==self.batchSize:
+                self.dnn.fit(input_fn=DNN.input_fn(Xbatch,ybatch))
+                count=0
+                Xbatch=[]
+                ybatch=[]
+
+    def input_fn(x,label):
+        return tf.estimator.inputs.numpy_input_fn(x={'feature',x},y=label,batch_size=self.batchSize,num_epochs=1)
+       
+    def predict_fn(x):
+        return tf.estimator.inputs.numpy_input_fn(x={'feature',x},batch_size=self.batchSize,num_epochs=1)
+
+    def predict(self, X):
+        y=[]
+        Xbatch=[]
+        ybatch=[]
+        count=0
+        for i in range(len(X)):
+            papers = Paper.Paper.getPaperByAut(X[i])
+            A = [(papers[j].Index, len(papers[j].Referenced)) for j in range(len(papers))]
+            xi = [0 for i in range(self.feature_length)]
+            for j in range(len(A)):
+                xi[A[j][0]] = A[j][1]
+            count=count+1
+            Xbatch.append(xi)
+            if count==self.batchSize:
+                ybatch = self.dnn.predict(input_fn=DNN.predict_fn(Xbatch))
+                count=0
+                Xbatch=[]
+                y.extend(ybatch)
+        return y
