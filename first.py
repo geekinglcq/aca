@@ -95,7 +95,7 @@ def get_email(name, html):
     Return a list of email address for given html
     """
     if html == '':
-        return []
+        return ''
     # text = get_clean_text(html)
     text = html
     email = []
@@ -107,6 +107,7 @@ def get_email(name, html):
             email.extend(t)
     # return list(set(email))
     max_score = -1
+    
     if len(email) == 0:
         return ''
     for i in email:
@@ -126,8 +127,8 @@ def predict_email(data, html):
     for i, r in data.iterrows():
         email = get_email(r['name'], html[r['id']])
         emails[r['id']] = (r['name'], r['homepage'], email)
-        # data.set_value(i, 'email', email)
-    return emails
+        data.set_value(i, 'email', email)
+    # return emails
 
 def get_homepage_html(data, prefix='./webpage/'):
     """
