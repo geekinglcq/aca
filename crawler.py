@@ -16,16 +16,27 @@ import multiprocessing
 from PIL import Image
 from random import randint
 from threading import Thread
+from selenium import webdriver
 from urllib.request import urlopen
 from bs4 import BeautifulSoup as bs 
+
+phantomjs_path = r'D:\DevTools\phantomjs-2.1.1-windows\bin\phantomjs.exe'
 
 user_agents = ['Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36',\
                'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36 Edge/15.15063',\
                'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.6; rv,2.0.1) Gecko/20100101 Firefox/4.0.1',\
                'Mozilla/5.0 (Windows NT 6.1; rv,2.0.1) Gecko/20100101 Firefox/4.0.1',\
                'Mozilla/5.0 (Windows NT 6.1; rv,2.0.1) Gecko/20100101 Firefox/4.0.1']
-ss_proxies = {"http": "127.0.0.1:8118", "https": "127.0.0.1:8118"}
+<<<<<<< HEAD
+ss_proxies = {"http": "127.0.0.1:1080", "https": "127.0.0.1:1080"}
 
+=======
+ss_proxies = {"http": "127.0.0.1:8118", "https": "127.0.0.1:8118"}
+proxies = {
+    'http': 'socks5://user:pass@104.194.72.216:443',
+    'https': 'socks5://user:pass@host:port'
+}
+>>>>>>> e6186a1fd362e79ae48bf80042ac2c211bcf0d6f
 def get_search_page(search_url, use_proxy=False):
 
     """
@@ -122,6 +133,8 @@ def get_true_url(url, use_proxy=True, re_try=False):
     try:
         if re_try:
             verify = False
+        else:
+            verify = True
         dlurl = requests.get(url, headers=headers, timeout=10, verify=verify)
         return dlurl.url
     except Exception as e:  
@@ -203,7 +216,45 @@ def store_html_text(data, prefix='./webpage/'):
             with codecs.open(prefix + filename, 'w', 'utf-8') as f:
                 f.write(html_text)
             return True
+def store_d_html_text_single(data, prefix='./webpage/'):
+    """
+    Get the dynamical html text for given urls and store them.
+    Input: data - list of [id, url]
+    """
+    service_args=[]
+    service_args.append('--load-images=no')  ##关闭图片加载
+    service_args.append('--disk-cache=yes')  ##开启缓存
+    driver = webdriver.PhantomJS(executable_path=phantomjs_path, service_args=service_args)
+    driver.set_page_load_timeout(30)
+    for pid, url in data:
+        try:
+            driver.get(url)
+            filename = hashlib.md5(url.encode('utf-8')).hexdigest()
+            with codecs.open(prefix + filename, 'w', 'utf-8') as f:
+                f.write(driver.page_source)
+            driver.get("about:blank")
+        except Exception as e:  
+            pass
 
+
+def store_d_html_text_multi(data, prefix='./webpage/', threads_num=10):
+    """
+    Input: data- standard dataframe
+    """
+    chunk = math.ceil(data.shape[0] / threads_num)
+    threads = []
+    id_url = [[] for i in range(threads_num)]
+    for i, r in data.iterrows():
+        id_url[i % threads_num].append((r['id'], r['homepage']))
+    for i in id_url:
+        t = threading.Thread(target=store_d_html_text_single,
+        args=(i, prefix))
+        threads.append(t)
+    for i in threads:
+        i.start()
+    for i in threads:
+        i.join()
+    
 def store_html_single_thread(data, prefix='./webpage/'):
     for i in data:
         store_html_text(i, prefix=prefix)

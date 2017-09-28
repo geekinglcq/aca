@@ -1,444 +1,285 @@
-Associate Chair
-Head
-Senior Scientist
-Institute Chair Professor
-Senior Research Engineer
-Adjunct Professor
-Director General
-Distinguished Professor Emeritus
-senior member
-postdoctoral researcher
-Carolina Distinguished Professor
-Principal Research Staff Member
-Senior Professor
-Visiting Professor
-Dean Emeritus
-Honorary Fellow
-Team Leader
-ASSOCIATE PROFESSOR
-副教授
-Researcher
-Docent
-dean
-Division Chief
-associate professor
-Chief Technology Officer
-ADJUNCT PROFESSOR
-Assoc Professor
-Distinguished Research Staff Member
-Staff Research Scientist
-Executive Director
-Canada Research Chair
-Associate Researcher
-Adjunct Faculty
-Senior scientist
-senior staff research scientist
-Research Associate Professor
-Wissenschaftlicher Mitarbeiter
-Chairperson
-博导
-senior researcher
-Program Director
-Associate Provost
-Lead
-Programme leader
-Medical Director
-Professore Ordinario
-An Wang Professor
-PROFESSOR EMERITUS
-Technical Fellow
-Distinguished Adjunct Professor
-Regents' Professor
-William R. Kenan, Jr. Professor
-Invited Professor
-Post-Doctoral Researcher
-Distinguished Research Professor
-Senior lecturer
-Editorial Board Member
-Faculty Member
-Co-Chair
-Associate Teaching Professor
-Educator
-James F. Barbour Professor
-Executive Officer
-Adjunct Associate Professor
-Research Assistant
-research assistant
-Dean
-Senior Researcher
-Professor Emeritu
-Associate Editor
-project manager
-Postdoctoral Fellowship
-Ricercatore
-Emeritus professor
-vice president
-Computer Scientist
-Co-Founder
-Associate Research Fellow
-Researcher Emeritus
-Chancellor’s Professor
-硕导
-Reseacher
-Faculty Fellow
-professeur
-Associate Vice Chair
-Doctor
-ricercatore
-Director,
-Lead Researcher
-Research Staff
-Tier I Concordia Research Chair
-Head of Department
-Senior Director
-Research scientist
-Hugh Roy and Lillie Cranz Cullen Distinguished Professor
-Professor Emerita
-Full Professor emeritus
-research director
-Affiliated Researcher
-computer scientist
-Regents Professor
-Senior Research Fellow
-ADJUNCT ASSOCIATE PROFESSOR
-Director of Research
-RESEARCHER
-CEO
-co-founder
-Full professor
-CTO
-Full Research Professor
-Senior Principal Research Scientist
-Principal Research Manager
-Director Emeritus
-Life Fellow
-staff scientist
 院长
-Deputy Scientific Director
-Managing Director
-Officer
-Associate Faculty
-Galileo Circle Fellow
-Assistant Dean
-Principal Research Scientist
-Profesor Titular de Universidad
-Research Director
+硕导
 硕士生导师
-Consultant
-Emerita Professor
-Associate Director
-University Distinguished Professor
-Scientia Professor
-data scientist
-Research Assistant Professor
-Chair Professor
-Postdoctoral Researcher
-software engineer
-Pro­fes­sor
-Consulting professor
-Graduate Director
-B. N. Gafford Professor
-coordinator
-emeritus professor
-Co-creator
-Technical Staff
-expert
-Emeritus
-senior research scientist
-Editor
-Research Scientist
-External Professor
-co-Director
-Honorary Visiting Professor
-founding Director
-Full member researcher
-Program Manager
-Visiting Scientist
-Affiliate Professor
-Emeritus Professor
-visiting professor
-Associate
-Laura H. Carnell Professor
-principal investigator
-Lecturer
-Senior Lecturer
-Department Chair
-VP
-Project Leader
-Principal Scientist
-Senior researcher
-Vice Director
-Associate Professor
-Senior Consultant
-Principal Applied Scientist
-Chancellor's Professor
-Distinguished Professor
-Executive Vice President
-Spencer T. and Ann W. Olin Professor
-Professore ordinario
-IBM Fellow
-Chief Scientific Officer
-Software Engineer
-​Professor
-Professeur agrégé
-Senior Staff Scientist
-ASSISTANT PROFESSOR
-Instructor
-Vice Provost
-professore
-Department Head
-Group Leader
-Associate Vice President
-Research Chair
-permanent researcher
-Professori
-senior lecturer
-Visiting Research Professor
-vice-president
-associate director
-principal scientist
-Chercheur
-Research Fellow
-Senior Research Investigator
-Chancellor's Professor Emeritus
-Research Professor Emeritus
-Senior Research Scientist
-Full Professor
-PROF.
-二级教授
-Research Associate
-Full-Professor
-Associate Professor Emeritus
-Argonne Distinguished Fellow
-Walter P. Murphy Professor
-research fellow
-Distiguished Professor
-research engineer
-Research Professor
-Group leader
-Research staff
-post-doctoral researcher
-head
-Univ.-Prof.
-Scientific Councillor
-Assistant Professor
-Research Worker
-prof.
-Adjunct Research Fellow
-engineer
-scientist
-Professur
-Professor Emeritus
-Associate Dean
-directeur
-博士生导师
-Scientist
-ASSOCIATE DEAN
-co-chair
-Senior Software Engineer
-Project Manager
-Provost
-Chair
-assistant professor
-Visiting professor
-Founder
-Director
-Chief Executive Officer
-副院长
-Honorary Research Fellow
-lecturer
-Engineer
-Professo
-Directeur de Recherche
-Senior Associate Dean
-Tenured Scientist
-Associate Head
-tenured professor
-Professors
-Professora
-Honorary Associate Professor
-Vice-Chancellor
-Supervisor
-president
-technical lead
-Coordinator
-特聘教授
-Distinguished University Professor
-Associate editor
-Professore
-副研究员
-Principal Lecturer
-Professore Associato
-full Professor
-Visiting Assistant Professor
-Professor emeritus
-Profesor Titular
-Co-founder
-Assistant Director
-Direttore
-VU/VUmc-director
-DIRECTOR
-Lehrstuhlinhaber
-researcher
-President
-chairman
-chair
-Deputy Head
 研究员
-Clinical Director
-teacher
-Vice Head
-research professor
-Master Inventor
-leader
-Adjunct Assistant Professor
-Associate professor
-manager
+特聘教授
 教授
-Associate Research Professor
 教 授
-Alfred Deakin Professor
-Staff Scientist
-Privatdozent
-Chief
-Senior Research Manager
-Profesor
-Foundation Chair
-Distinguished University Professor Emeritus
-Vice-President
-Interim Director
-Senior Associate Professor
-Prof
-Postdoctoral Scientist
-Fellow
-Specialist
-Research associate
-PROFESSOR
-Interim Associate Dean
-SUNY Distinguished Professor
-主任
-Senior Fellow
-PROF
-professore associato
-adjunct professor
-Professor Titular
-Vice Chancellor
-DISTINGUISHED PROFESSOR
-PROFESSORE ASSOCIATO
-Titular Professor
-Visiting Researcher
-CNRS researcher
-Partner
-Profesora
-Division Head
-PhD supervisor
-Professeur
-professor
-Gordon McKay Professor
-Curators' Distinguished Professor
-research staff member
-Eminent Scholar
-Scientific Researcher
-Associate Fellow
-Investigator
-Principal Engineer
-professore ordinario
-Co-Director
-Professor
-Senior Principal Scientist
-Vice Dean
-co-director
-Senior Research Professor
-Lucie Stern Professor
-Research Manager
-Distinguished Scientist
-Associate Research Scientist
-Principal Researcher
-Guest Scientist
-full professor
-Visiting Scholar
-Associated Professor
-Professore associato
-Docente
-director
-Principal Investigator
-prof
-Reader
-Regents Chair
-project leader
-Prof. Associato
-professor emeritus
-cardiologist
-Directeur
-Group Lead
-Assistant professor
-Senior Physicist
-Assistant Research Professor
-faculty member
-Associate Scientist
-Convenor
-Vice President
-Assoc. Professor
-research associate
-Assoc. Prof.
-Manager
-pesquisador
-Tutor
-Laureate Professor
-Catedrático
-Concurrent Professor
-founder
-Founding Director
-research manager
-technology director
-Deputy Director
-research scientist
-senior scientist
-Delta Electronics Professor
-John Curtin Distinguished Professor
-distinguished professor
-Prof.
-Vice-Principal
-Teaching Assistant
-Distinguished Engineer
-Retired Professor
-Chairman
-Leader
-Co-editor
-PROFESOR
-Senior Research Associate
-deputy director
-Guest Professor
-Senior Computer Scientist
-FULL PROFESSOR
-Senior Advisor
-Honorary Professor
-research staff
+博导
+博士生导师
+副院长
+副研究员
+副教授
 副主任
-Associate Member
-associate editor
-Chief Scientist
-Postdoctoral Fellow
-Scientific Director
 准教授
-Arthur F. Thurnau Professor
-Co-head
-consultant
-Gewoon Hoogleraar
-chief
-chief scientist
+二级教授
+主任
+​Professor
+tenured professor
+technology director
+technical lead
 team leader
-Vice Chair
-Senior Member
-Senior Manager
-Co-director
-Technical Staff Member
-Senior Investigator
-Co-Principal Investigator
-Associate Department Head
-Distinguished Member of Technical Staff
-Engineering Manager
+staff scientist
+senior staff research scientist
+senior scientist
+senior researcher
+senior research scientist
+senior lecturer
+research staff member
+research staff
+research scientist
+research manager
+research engineer
+research director
+project leader
+professore ordinario
+professore associato
+professore
+professor emeritus
+professor
+professeur
+prof.
+principal scientist
+postdoctoral researcher
+post-doctoral researcher
+permanent researcher
+full professor
+full Professor
+founding Director
+emeritus professor
+distinguished professor
+directeur
+chief scientist
+associate professor
+assistant professor
+Wissenschaftlicher Mitarbeiter
+Walter P. Murphy Professor
+Visiting Group Leader
+Visiting Research Professor
 Visiting Associate Professor
+Visiting Assistant Professor
+Vice-Principal
+Vice Head
+Vice Director
+Vice Dean
+VU/VUmc-director
+Univ.-Prof.
+Titular Professor
+Tier I Concordia Research Chair
+Tenured Scientist
+Technical Staff Member
+Technical Fellow
+Staff Research Scientist
+Senior scientist
+Senior researcher
+Senior lecturer
+Senior Staff Scientist
+Senior Software Engineer
+Senior Scientist
+Senior Researcher
+Senior Research Scientist
+Senior Research Professor
+Senior Research Manager
+Senior Research Investigator
+Senior Research Fellow
+Senior Research Engineer
+Senior Professor
+Senior Principal Scientist
+Senior Principal Research Scientist
+Senior Physicist
+Senior Manager
+Senior Lecturer
+Senior Investigator
+Senior Fellow
+Senior Director
+Senior Consultant
+Senior Computer Scientist
+Senior Associate Professor
+Senior Associate Dean
+Scientific Researcher
+Scientific Councillor
+Scientia Professor
+SUNY Distinguished Professor
+Retired Professor
+Researcher Emeritus
+Research scientist
+Research associate
+Research Worker
 Research Staff Member
+Research Scientist
+Research Professor Emeritus
+Research Professor
+Research Manager
+Research Fellow
+Research Director
+Research Chair
+Research Associate Professor
+Research Associate
+Research Assistant Professor
+Reseacher
+Regents' Professor
+Regents Professor
+RESEARCHER
+Pro­fes­sor
+Programme leader
+Professori
+Professore ordinario
+Professore associato
+Professore Ordinario
+Professore Associato
+Professore
+Professora
+Professor emeritus
+Professor Titular
+Professor Emeritus
+Professor Emeritu
+Professor Emerita
+Professor
+Professo
+Professeur agrégé
+Professeur
+Profesora
+Profesor Titular
+Profesor
+Prof. Associato
+Prof.
+Privatdozent
+Principal Scientist
+Principal Researcher
+Principal Research Staff Member
+Principal Research Manager
+Principal Lecturer
+Principal Engineer
+Principal Applied Scientist
+Postdoctoral Scientist
+Post-Doctoral Researcher
+PhD supervisor
+PROFESSORE ASSOCIATO
+PROFESSOR EMERITUS
+PROFESSOR
+PROFESOR
+PROF.
+Medical Director
+Master Inventor
+Lucie Stern Professor
+Lehrstuhlinhaber
+Lead Researcher
+Laureate Professor
+Laura H. Carnell Professor
+John Curtin Distinguished Professor
+James F. Barbour Professor
+Invited Professor
+Interim Director
+Interim Associate Dean
+Institute Chair Professor
+Hugh Roy and Lillie Cranz Cullen Distinguished Professor
+Honorary Visiting Professor
+Honorary Research Fellow
+Honorary Professor
+Honorary Fellow
+Honorary Associate Professor
+Head
+Guest Scientist
+Group leader
+Group Lead
+Graduate Director
+Gordon McKay Professor
+Gewoon Hoogleraar
+Galileo Circle Fellow
+Full-Professor
+Full professor
+Full member researcher
+Full Research Professor
+Full Professor emeritus
+Full Professor
+Foundation Chair
+FULL PROFESSOR
+External Professor
+Executive Vice President
+Executive Officer
+Engineering Manager
+Emeritus professor
+Emeritus Professor
+Emerita Professor
+Division Head
+Division Chief
+Distinguished University Professor Emeritus
+Distinguished University Professor
+Distinguished Research Staff Member
+Distinguished Research Professor
+Distinguished Professor Emeritus
+Distinguished Professor
+Distinguished Member of Technical Staff
+Distinguished Engineer
+Distinguished Adjunct Professor
+Distiguished Professor
+Director,
+Director General
+Director Emeritus
+Director
+Directeur de Recherche
+Directeur
+Deputy Scientific Director
+Delta Electronics Professor
+Dean Emeritus
+DISTINGUISHED PROFESSOR
+DIRECTOR
+Curators' Distinguished Professor
+Convenor
+Consulting professor
+Concurrent Professor
+Co-head
+Co-creator
+CHIEF ENGINEER
+Chief Technology Officer
+Chief Scientist
+Chief Executive Officer
+Chercheur
+Chancellor’s Professor
+Chancellor's Professor Emeritus
+Chancellor's Professor
+Chair Professor
+Catedrático
+Carolina Distinguished Professor
+CNRS researcher
+B. N. Gafford Professor
+Associated Professor
+Associate professor
+Associate Vice President
+Associate Vice Chair
+Associate Teaching Professor
+Associate Scientist
+Associate Researcher
+Associate Research Scientist
+Associate Research Professor
+Associate Research Fellow
+Associate Provost
+Associate Professor
+Associate Head
+Associate Fellow
+Associate Faculty
+Associate Department Head
+Associate Dean
+Associate Chair
+Assoc. Professor
+Assoc. Prof.
+Assoc Professor
+Assistant professor
+Assistant Research Professor
 Assistant Research Fellow
-Advisor
+Assistant Professor
+Assistant Dean
+Arthur F. Thurnau Professor
+Argonne Distinguished Fellow
+An Wang Professor
+Alfred Deakin Professor
+Affiliate Professor
+Adjunct Research Fellow
+Adjunct Professor
+Adjunct Associate Professor
+Adjunct Assistant Professor
+ASSOCIATE PROFESSOR
+ASSOCIATE DEAN
+ASSISTANT PROFESSOR
+ADJUNCT PROFESSOR
+ADJUNCT ASSOCIATE PROFESSOR

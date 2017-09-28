@@ -12,6 +12,7 @@ import hashlib
 import data_io as dio
 import pagehome as ph
 from utility import email_getter
+from utility import get_clean_text
 from utility import homepage_neg
 from utility import homepage_pos
 from utility import head_phote_filter
@@ -57,8 +58,8 @@ def data_pic_url(data, html):
         pics[r['id']] = crawler.get_pic_url(html[r['id']], r['homepage'])
     return pics
 
-def generat_ans_file(data, flag=True):
-    with codecs.open('first_task_ans.txt', 'w', encoding='utf-8') as f:
+def generat_ans_file(data, flag=True, path='first_task_ans.txt'):
+    with codecs.open(path, 'w', encoding='utf-8') as f:
         f.write('<task1>\n')
         f.write('expert_id\thomepage_url\tgender\tposition\tperson_photo\temail\tlocation\n')
         for index, row in  data.iterrows():
@@ -99,16 +100,22 @@ def get_email(name, html):
     text = html
     email = []
     for i in text.split('\\n'):
+        if len(i) < 5:
+            continue
         t = email_getter(i)
         if t != '':
             email.extend(t)
-    return list(set(email))
+    # return list(set(email))
     max_score = -1
     if len(email) == 0:
         return ''
     for i in email:
         score = ph.check_name_in_text(name, i)
-        if score > max_score:
+        if score >= max_score:
+            if score == max_score:
+                # To handle to suiation of ['chaomin.shen@asu.edu', 'cmshen {at} cs.ecnu.edu.cn']
+                if len(i.split(' ')) <= len(ans.split(' ')):
+                    continue
             max_score = score
             ans = i
         
