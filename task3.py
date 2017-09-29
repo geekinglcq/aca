@@ -5,7 +5,7 @@ import ILearner
 from sklearn.model_selection import train_test_split
 import datetime
 import pickle
-
+import codecs
 
 # 文件路径
 paperPath = "F:\\ACAData\\task3\\papers.txt"
@@ -19,7 +19,7 @@ testX = []
 
 def ParsePaperTxt():
     print("%s parse paper"%datetime.datetime.now())
-    with open(paperPath, "r",encoding='utf-8') as f:
+    with codecs.open(paperPath, "r",encoding='utf-8') as f:
         for eachLine in f:
             if eachLine.startswith('#index'):
                 i = int(eachLine[6:])
@@ -44,7 +44,7 @@ def ParsePaperTxt():
 
 def ReadTrain():
     print("%s read training set"%datetime.datetime.now())
-    with open(trainPath, "r",encoding='utf-8') as csvf:
+    with codecs.open(trainPath, "r",encoding='utf-8') as csvf:
         reader = csv.reader(csvf)
         firstRow = True
         for row in reader:
@@ -57,7 +57,7 @@ def ReadTrain():
 
 def ReadValidation():
     print("%s read validation set"%datetime.datetime.now())
-    with open(validationPath, "r",encoding='utf-8') as csvf:
+    with codecs.open(validationPath, "r",encoding='utf-8') as csvf:
         reader = csv.reader(csvf)
         firstRow = True
         for row in reader:
@@ -72,7 +72,7 @@ def SelectModel():
     X_train, X_test, y_train, y_test = train_test_split(
         trainX, trainY, test_size=0.3, random_state=0)
     c=0
-    m = ILearner.DNN()
+    m = ILearner.SparsePA(0,5)
     m.train(trainX, trainY)
     mape = m.score(trainX, trainY)
     print("C: %r,  MAPE: %r, train: %r, test: %r\n" %
@@ -85,7 +85,7 @@ def SelectModel():
 
 def GenResult(model):
     print("%s save model"%datetime.datetime.now())
-    with open(output3Path, "w",encoding='utf-8') as out:
+    with codecs.open(output3Path, "w",encoding='utf-8') as out:
         out.write("<task3>\nauthorname\tcitation\n")
         Yp = model.predict(testX)
         for i in range(len(Yp)):
@@ -95,7 +95,7 @@ def GenResult(model):
 
 def analisis():
     tempPath = "F:\\ACAData\\task3\\"
-    with open(tempPath+"temp.txt",'w',encoding='utf-8') as fout:
+    with codecs.open(tempPath+"temp.txt",'w',encoding='utf-8') as fout:
         fout.write("%r\n"%len(trainX))
         for i in range(len(trainX)):
             papers = Paper.Paper.getPaperByAut(trainX[i])

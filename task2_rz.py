@@ -61,7 +61,7 @@ ordinals = ['first',
  'hundredth',
  'thousandth']
 
-en_stop =  stopwords.words('english')
+en_stop = stopwords.words('english')
 p_stemmer = PorterStemmer()
 dictionary = pickle.load(open('dictionary.pkl', 'rb'))
 model = gensim.models.ldamulticore.LdaMulticore.load('LDAModel.pkl')
@@ -277,23 +277,22 @@ def preProcess(paperText):
 
 def Preprocess():
 
-    #m = getLDAModel(paperData, 100) 
-    #print(m)
-    
-    paperData = getData(paperPath)
-    print('%s: Loaded data' % datetime.datetime.now())
-    
-    d = dict()
-    i = 0
-    for paperIdx in paperData:
-    	d[paperIdx] = getTopics(paperData[paperIdx][0] + ' ' + paperData[paperIdx][5])
-    	i += 1
-    	if i % 10000 == 0:
-    		print('Done with %d papers!'%i)
-    with open('paperToTopics.pkl', 'wb') as f:
-    	pickle.dump(d, f)
-    #paperTopics = pickle.load(open('paperToTopics.pkl', 'rb'))
-
+	#m = getLDAModel(paperData, 100)
+	#print(m)
+	
+	paperData = getData(paperPath)
+	print('%s: Loaded data' % datetime.datetime.now())
+	
+	d = dict()
+	i = 0
+	for paperIdx in paperData:
+		d[paperIdx] = getTopics(paperData[paperIdx][0] + ' ' + paperData[paperIdx][5])
+		i += 1
+		if i % 10000 == 0:
+			print('Done with %d papers!' % i)
+	with open('paperToTopics.pkl', 'wb') as f:
+		pickle.dump(d, f)
+	#paperTopics = pickle.load(open('paperToTopics.pkl', 'rb'))
 def reformatData(X,Y):
 	"""
 	X - Vector of Name
@@ -322,7 +321,6 @@ def TrainAndOutput():
 	#        fout.write(u"%s\t%s\t%s\t%s\t%s\t%s\t\n"%(aut,V[0],V[1],V[2],V[3],V[4]))
 	#    fout.write(u"</task2>\n")
 	#print("%r/%r\n"%(t,len(testX)))
-
 def analisis():
 	#统计各期刊上，兴趣的分布
 	r = {}
@@ -362,6 +360,5 @@ def main():
 	#ReadValidation()
 	#TrainAndOutput()
 	#analisis()
-
 if __name__ == "__main__":
 	main()
