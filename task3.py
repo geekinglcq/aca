@@ -8,7 +8,7 @@ import pickle
 
 
 # 文件路径
-paperPath = "./task3/papers.txt"
+paperPath = "F:\\ACAData\\task3\\papers.txt"
 trainPath = "F:\\ACAData\\task3\\train.csv"
 validationPath = "F:\\ACAData\\task3\\validation.csv"
 output3Path = "F:\\ACAData\\task3\\output3.txt"
@@ -72,11 +72,14 @@ def SelectModel():
     X_train, X_test, y_train, y_test = train_test_split(
         trainX, trainY, test_size=0.3, random_state=0)
     c=0
-    m = ILearner.DNN()
-    m.train(trainX, trainY)
-    mape = m.score(trainX, trainY)
+    opt=0
+
+    m = ILearner.SparsePA(0,26)
+    m.train(X_train, y_train)
+    mape = m.score(X_test, y_test)
     print("C: %r,  MAPE: %r, train: %r, test: %r\n" %
-          (c, mape, len(trainY), len(y_test)))
+          (c, mape, len(X_train), len(y_test)))
+
     if mape > opt:
         opt = mape
         model = m
@@ -107,9 +110,9 @@ def analisis():
 
 def main():
     ParsePaperTxt()
-    #Paper.Paper.MergerPaper()
+    Paper.Paper.MergePaper()
     ReadTrain()
-    analisis()
+    #analisis()
     ReadValidation()
     model = SelectModel()
     model.save('optModel.txt')

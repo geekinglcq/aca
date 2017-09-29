@@ -64,7 +64,7 @@ class Paper(object):
 
 
     @staticmethod
-    def MergerPaper():
+    def MergePaper():
         N = len(Paper.__wholeData)
         Removed = 0
         GroupCount = 0

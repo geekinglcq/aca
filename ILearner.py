@@ -6,7 +6,8 @@ import numpy as np
 import Paper
 import datetime
 import math
-
+import random
+import codecs
 
 class ILearner(object):
     """description of class"""
@@ -94,12 +95,12 @@ class SparsePA(ILearner):
         return int(round(yp)), w, gids
 
     def save(self,fileName):
-        with open(fileName,'w') as fout:
+        with codecs.open(fileName,'w',encoding='utf-8') as fout:
             for k,v in self.weightPool.items():
                 fout.write('%r,%r\n'%(k,v))
                 
     def load(self,fileName):
-        with open(fileName,'r') as fin:
+        with codecs.open(fileName,'r',encoding='utf-8') as fin:
             for row in fin:
                 it=row.split(',')
                 self.weightPool[int(it[0])] = float(it[1])
@@ -139,7 +140,7 @@ class SparsePA(ILearner):
         for i in range(N):
             if YP[i] != 0 or Yv[i] != 0:
                 s = s + abs(YP[i] - Yv[i]) * 1.0 / max(YP[i], Yv[i])
-        with (open(('%r_cv.txt' % self.C), mode='w')) as fout:
+        with ( codecs.open(('%r_cv.txt' % self.C), 'w',encoding='utf-8' ) ) as fout:
             for i in range(N):
                 #fout.write("%r,%r,%r\n" % (Xv[i], Yv[i], YP[i]))
                 fout.write("%r\t%r\n"%(Xv[i],Yv[i]))
