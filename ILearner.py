@@ -6,6 +6,8 @@ import numpy as np
 import Paper
 import datetime
 import math
+import random
+import codecs
 
 class ILearner(object):
     """description of class"""
@@ -15,7 +17,6 @@ class ILearner(object):
 
     def predict(self, X):
         pass
-
 
 class Svr(ILearner):
 
@@ -44,7 +45,6 @@ class Svr(ILearner):
     def predict(self, X):
         return self.model.predict(X)
 
-
 class SGDRegr(ILearner):
 
     def __init__(self):
@@ -55,7 +55,6 @@ class SGDRegr(ILearner):
 
     def predict(self, X):
         return self.clf.predict(X)
-
 
 class SparsePA(ILearner):
 
@@ -96,12 +95,12 @@ class SparsePA(ILearner):
         return int(round(yp)), w, gids
 
     def save(self,fileName):
-        with open(fileName,'w') as fout:
+        with codecs.open(fileName,'w',encoding='utf-8') as fout:
             for k,v in self.weightPool.items():
                 fout.write('%r,%r\n'%(k,v))
                 
     def load(self,fileName):
-        with open(fileName,'r') as fin:
+        with codecs.open(fileName,'r',encoding='utf-8') as fin:
             for row in fin:
                 it=row.split(',')
                 self.weightPool[int(it[0])] = float(it[1])
@@ -141,9 +140,10 @@ class SparsePA(ILearner):
         for i in range(N):
             if YP[i] != 0 or Yv[i] != 0:
                 s = s + abs(YP[i] - Yv[i]) * 1.0 / max(YP[i], Yv[i])
-        with (open(('%r_cv.txt' % self.C), mode='w')) as fout:
+        with (codecs.open(('%r_cv.txt' % self.C), 'w',encoding='utf-8')) as fout:
             for i in range(N):
-                fout.write("%r,%r,%r\n" % (Xv[i], Yv[i], YP[i]))
+                #fout.write("%r,%r,%r\n" % (Xv[i], Yv[i], YP[i]))
+                fout.write("%r\t%r\n"%(Xv[i],Yv[i]))
         return 1 - 1.0 / N * s
 
 class LIFT(ILearner):
@@ -153,52 +153,61 @@ class LIFT(ILearner):
         self.LabelSpace = LabelSpace
         self.ansLen=5
 
-    def _distance(self,x,y):
+    def __distance(self,x,y):
          return np.sqrt( np.sum( np.power( np.array(x)-np.array(y),2) ) )
 
+    def __mapToPhix(self,X,centp,centn):
+        mk = len(centp)
+        tp = [ self.__distance(X,centp[j]) for j in range(mk) ]
+        tn = [ self.__distance(X,centn[j]) for j in range(mk) ]
+        tp.extend(tn)
+        return tp
+
     def train(self, X, y):
-        y=np.array(y)
         q = len(self.LabelSpace)
-        M = np.size(X,0)
+        M = len(X)
         for k in range(q):
             Pk = [X[i] for i in range(M) if self.LabelSpace[k] in y[i]]
             Nk = [X[i] for i in range(M) if not self.LabelSpace[k] in y[i]]
-            mk = self.r * min(len(Pk),len(Nk))
-            #todo: choose another cluster method
-            centp = KMeans(mk).fit(Pk).cluster_centers_
-            centn = KMeans(mk).fit(Nk).cluster_centers_
-            PhiK=[]
-            Yk=[0 for i in range(M)]
-            for i in range(M):
-                tp = [ self._distance(Pk[i],centp[j]) for j in range(mk) ]
-                tn = [ self._distance(Pk[i],centn[j]) for j in range(mk) ]
-                tp.extend(tn)
-                PhiK.append(tp)
-                if self.LabelSpace[k] in y[i]:
-                    Yk[i]=1
-                else:
-                    Yk[i]=0
+            mk = int( self.r * min(len(Pk),len(Nk)) )
+            print("%dth class: %d - %d, mk: %d"%(k,len(Pk),len(Nk),mk))
+            if mk>0:
+                #todo: choose another cluster method
+                centp = KMeans(mk).fit(Pk).cluster_centers_
+                centn = KMeans(mk).fit(Nk).cluster_centers_
+                PhiK=[]
+                Yk=[0 for i in range(M)]
+                for i in range(M):
+                    PhiK.append(self.__mapToPhix(X[i],centp,centn))
+                    if self.LabelSpace[k] in y[i]:
+                        Yk[i]=1
+                    else:
+                        Yk[i]=0
 
-            #todo: choose another classification method and adjust parameters
-            clf = svm.SVC()
-            clf.fit(PhiK,Yk)
-            self.models.append(clf)
+                #todo: choose another classification method and adjust parameters
+                clf = svm.SVC()
+                clf.fit(PhiK,Yk)
+                self.models.append((clf,centp,centn))
+            else:
+                self.models.append(-1)
 
 
     def predict(self, X):
         y=[]
         for i in range(len(X)):
-            t=[-1 for i in range(self.ansLen+1)]
+            t=[0 for i in range(self.ansLen+1)]
             p=[-1 for i in range(self.ansLen+1)]
-            for k in len(self.LabelSpace):
-                R = self.models[k]._predict_proba(X[i])
-                j = self.ansLen
-                while j>0 and p[j-1]<R[1]:
-                   p[j]=p[j-1]
-                   t[j]=t[j-1]
-                   j=j-1
-                p[j] = R[1]
-                t[j]=k
+            for k in range(len(self.LabelSpace)):
+                if self.models[k]!=-1:
+                    phix = self.__mapToPhix(X[i],self.models[k][1],self.models[k][2])
+                    R = self.models[k]._predict_proba(phix)
+                    j = self.ansLen
+                    while j>0 and p[j-1]<R[1]:
+                       p[j]=p[j-1]
+                       t[j]=t[j-1]
+                       j=j-1
+                    p[j] = R[1]
+                    t[j]=k
             y.append(t)
         return y
 
@@ -211,3 +220,4 @@ class LIFT(ILearner):
             s2=set(Yv[i])
             s=s+len(s1.intersection(s2))/3.0
         return s/N
+
