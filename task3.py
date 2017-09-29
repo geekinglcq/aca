@@ -6,9 +6,10 @@ from sklearn.model_selection import train_test_split
 import datetime
 import pickle
 import codecs
+import re
 
 # 文件路径
-paperPath = "./task3/papers.txt"
+paperPath = "F:\\ACAData\\task3\\papers.txt"
 trainPath = "F:\\ACAData\\task3\\train.csv"
 validationPath = "F:\\ACAData\\task3\\validation.csv"
 output3Path = "F:\\ACAData\\task3\\output3.txt"
@@ -16,6 +17,78 @@ output3Path = "F:\\ACAData\\task3\\output3.txt"
 trainX = []
 trainY = []
 testX = []
+ordinals = ['first',
+ 'second',
+ 'third',
+ 'fourth',
+ 'fifth',
+ 'sixth',
+ 'seventh',
+ 'eighth',
+ 'ninth',
+ 'tenth',
+ 'eleventh',
+ 'twelfth',
+ 'thirteenth',
+ 'fourteenth',
+ 'fifteenth',
+ 'sixteenth',
+ 'seventeenth',
+ 'eighteenth',
+ 'nineteenth',
+ 'twentieth',
+ 'thirtieth',
+ 'fortieth',
+ 'fiftieth',
+ 'sixtieth',
+ 'seventieth',
+ 'eightieth',
+ 'ninetieth',
+ 'hundredth',
+ 'thousandth']
+
+
+def getVenue(venue, d=dict()):
+    tmp = d.get(venue)
+    if tmp:
+        return tmp
+    tmp = venue
+    venue = venue.lower()
+    #Remove Roman numerals, and artifacts like '12.'
+    venue = re.sub(r'M{0,4}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})', '', venue)
+    venue = re.sub(r'\d+\.', '', venue)
+    #Remove numbers
+    venue = re.sub(r' \d+ ', '', venue)
+    #Remove years
+    venue = re.sub(r'\'\d{2}', '', venue)
+    venue = re.sub(r'\d{4}', '', venue)
+    #Remove ordinals
+    venue = re.sub(r'\d+(st|nd|rd|th)', '', venue)
+    venue = venue.split()
+    venue = [x for x in venue if not any([o in x for o in ordinals])]
+    venue = ' '.join(venue)
+    #Remove stuff in brackets, and other boilerplate details
+    f = venue.find('(')
+    if f > 0:
+        venue = venue[:f]
+    f = venue.find(':')
+    if f > 0:
+        venue = venue[:f]
+    f = venue.find(';')
+    if f > 0:
+        venue = venue[:f]
+    f = venue.find('vol.')
+    if f > 0:
+        venue = venue[:f]
+    f = venue.find('volume')
+    if f > 0:
+        venue = venue[:f]
+    f = venue.find('part')
+    if f > 0:
+        venue = venue[:f]
+    d[tmp] = venue
+    return venue
+
 
 def ParsePaperTxt():
     print("%s parse paper"%datetime.datetime.now())
@@ -33,7 +106,7 @@ def ParsePaperTxt():
             elif eachLine.startswith("#t"):
                 p.Time = int(eachLine[2:-1])
             elif eachLine.startswith("#c"):
-                p.Journal = eachLine[2:-1]
+                p.Journal = getVenue(eachLine[2:-1])
             elif eachLine.startswith("#%"):
                 t = Paper.Paper.getPaperById(int(eachLine[2:-1]))
                 p.References.append(t)
@@ -109,7 +182,7 @@ def main():
     ParsePaperTxt()
     #Paper.Paper.MergerPaper()
     ReadTrain()
-    analisis()
+    #analisis()
     ReadValidation()
     model = SelectModel()
     model.save('optModel.txt')
