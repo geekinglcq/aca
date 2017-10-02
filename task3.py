@@ -147,20 +147,27 @@ def SelectModel():
     c=0
     opt=0
 
-    m = ILearner.SparsePA(0,26)
-    m.train(X_train, y_train)
-    mape = m.score(X_test, y_test)
-    print("C: %r,  MAPE: %r, train: %r, test: %r\n" %
-          (c, mape, len(X_train), len(y_test)))
+    while True:
+        m = ILearner.SparsePA(0,26)
+        m.train(X_train, y_train)
+        mape = m.score(X_test, y_test)
+        m.save('mape%.4f.txt'%mape)
+        print("C: %r,  MAPE: %r, train: %r, test: %r\n" %
+              (c, mape, len(X_train), len(y_test)))
 
-    if mape > opt:
-        opt = mape
-        model = m
+        if mape>opt:
+            opt = mape
+            model = m
+
+        if mape>=0.55:
+            break
+
+
     return model
 
 
 def GenResult(model):
-    print("%s save model"%datetime.datetime.now())
+    print("%s save result"%datetime.datetime.now())
     with codecs.open(output3Path, "w",encoding='utf-8') as out:
         out.write("<task3>\nauthorname\tcitation\n")
         Yp = model.predict(testX)
@@ -183,12 +190,11 @@ def analisis():
 
 def main():
     ParsePaperTxt()
-    Paper.Paper.MergePaper()
+    #Paper.Paper.MergePaper()
     ReadTrain()
     #analisis()
     ReadValidation()
     model = SelectModel()
-    model.save('optModel.txt')
     GenResult(model)
 
 

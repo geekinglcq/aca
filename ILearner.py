@@ -8,6 +8,7 @@ import datetime
 import math
 import random
 import codecs
+import pickle
 
 class ILearner(object):
     """description of class"""
@@ -66,13 +67,12 @@ class SparsePA(ILearner):
     def __makeOnePrediction(self, aut, **args):
         w = []
         x = []
-        papersIds = Paper.Paper._Paper__authorToIndexes[aut]
-        gids=set( [ Paper.Paper._Paper__IndexToGroup[ pid ] for pid in papersIds]  )
-        for gid in gids:
-            t = Paper.Paper._Paper__GroupData[gid]
+        papers = Paper.Paper.getPaperByAut(aut)
+        for paper in papers:
+            t = len(paper.Referenced)
             p = 1.0
-            if gid in self.weightPool:
-                p = self.weightPool[gid]
+            if paper.Index in self.weightPool:
+                p = self.weightPool[paper.Index]
             if t == 0:
                 t = 1
             w.append(p)
@@ -84,54 +84,55 @@ class SparsePA(ILearner):
         if 'y' in args:
             y = args['y']
             loss = abs(yp - y)
-            if self.C==0:
-                tau = loss / np.sum(x**2)
-            else:
-                tau = loss / (1.0 / (2 * self.C) + np.sum(x**2))
+            #tau = loss / (1.0 / (2 * self.C) + np.sum(x**2))
+            tau = loss / np.sum(x**2)
             w = w + np.sign(y - yp) * tau * x.T
             tmp = int(round(yp))
             if (tmp != 0 and y == 0) or (tmp == 0 and y != 0):
                 self.__needRefine.add((aut, args['y']))
-        return int(round(yp)), w, gids
+        return int(round(yp)), w
 
     def save(self,fileName):
-        with codecs.open(fileName,'w',encoding='utf-8') as fout:
+        with open(fileName,'w') as fout:
             for k,v in self.weightPool.items():
                 fout.write('%r,%r\n'%(k,v))
                 
     def load(self,fileName):
-        with codecs.open(fileName,'r',encoding='utf-8') as fin:
+        with open(fileName,'r') as fin:
             for row in fin:
                 it=row.split(',')
                 self.weightPool[int(it[0])] = float(it[1])
 
     def train(self, X, Y):
         """X - List of ['Name']\nY - List of [Citaion]"""
+        z = list(zip(X,Y))
+        random.shuffle(z)
+        X = [t[0] for t in z]
+        Y = [t[1] for t in z]
         for k in range(self.T):
             self.__needRefine = set()
-            print("%s  Training: %d" % (datetime.datetime.now(), k))
+            print("Training: %d" % (k))
             for i in range(len(X)):
-                yp, w, ids = self.__makeOnePrediction(X[i], y=Y[i])
-                j=0
-                for id in ids:
-                    self.weightPool[id] = w[0, j]
-                    j=j+1
+                yp, w = self.__makeOnePrediction(X[i], y=Y[i])
+                papers = Paper.Paper.getPaperByAut(X[i])
+                for j in range(len(papers)):
+                    self.weightPool[papers[j].Index] = w[0, j]
             for sam in self.__needRefine:
-                yp, w, ids = self.__makeOnePrediction(sam[0], y=sam[1])
-                j=0
-                for id in ids:
-                    self.weightPool[id] = w[0, j]
-                    j=j+1
+                yp, w = self.__makeOnePrediction(sam[0], y=sam[1])
+                papers = Paper.Paper.getPaperByAut(sam[0])
+                for j in range(len(papers)):
+                    self.weightPool[papers[j].Index] = w[0, j]
 
     def predict(self, X):
         """X - List of ['Name'] """
         Y = [0 for x in X]
         for i in range(len(X)):
-            yp, w, ids = self.__makeOnePrediction(X[i])
+            yp, w = self.__makeOnePrediction(X[i])
             if yp < 0:
                 yp = -yp
             Y[i] = yp
         return Y
+
 
     def score(self, Xv, Yv):
         YP = self.predict(Xv)
@@ -151,7 +152,7 @@ class LIFT(ILearner):
         self.models=[]
         self.r = r
         self.LabelSpace = LabelSpace
-        self.ansLen=5
+        self.ansLen = 5
 
     def __distance(self,x,y):
          return np.sqrt( np.sum( np.power( np.array(x)-np.array(y),2) ) )
@@ -169,7 +170,7 @@ class LIFT(ILearner):
         for k in range(q):
             Pk = [X[i] for i in range(M) if self.LabelSpace[k] in y[i]]
             Nk = [X[i] for i in range(M) if not self.LabelSpace[k] in y[i]]
-            mk = int( self.r * min(len(Pk),len(Nk)) )
+            mk = math.ceil( self.r * min(len(Pk),len(Nk)) )
             print("%dth class: %d - %d, mk: %d"%(k,len(Pk),len(Nk),mk))
             if mk>0:
                 #todo: choose another cluster method
@@ -185,7 +186,7 @@ class LIFT(ILearner):
                         Yk[i]=0
 
                 #todo: choose another classification method and adjust parameters
-                clf = svm.SVC()
+                clf = svm.SVC(probability=True)
                 clf.fit(PhiK,Yk)
                 self.models.append((clf,centp,centn))
             else:
@@ -200,13 +201,14 @@ class LIFT(ILearner):
             for k in range(len(self.LabelSpace)):
                 if self.models[k]!=-1:
                     phix = self.__mapToPhix(X[i],self.models[k][1],self.models[k][2])
-                    R = self.models[k]._predict_proba(phix)
+                    R = self.models[k][0].predict_proba(np.array( phix ).reshape(1,-1))
+                    #input('wait')
                     j = self.ansLen
-                    while j>0 and p[j-1]<R[1]:
+                    while j>0 and p[j-1]<R[0][1]:
                        p[j]=p[j-1]
                        t[j]=t[j-1]
                        j=j-1
-                    p[j] = R[1]
+                    p[j] = R[0][1]
                     t[j]=k
             y.append(t)
         return y
@@ -221,3 +223,10 @@ class LIFT(ILearner):
             s=s+len(s1.intersection(s2))/3.0
         return s/N
 
+    def save(self,fileName):
+        pickle.dump({'mod' : self.models,'labSpace':self.LabelSpace,'r':self.r},open(fileName,'wb'))
+
+    def load(self,fileName):
+        obj = pickle.load(open(fileName,'rb'))
+        self.__init__(obj['r'],obj['labSpace'])
+        self.models = obj['mod']

@@ -93,8 +93,11 @@ def SelectModel():
     X_train, X_test, y_train, y_test = train_test_split(trainX, trainY, test_size=0.3, random_state=0)
 
     #Train:
-    model = LIFT(1,range(len(labels)))
-    model.train(X_train,y_train)
+    model = LIFT(0.2,range(len(labels)))
+    #model.train(X_train,y_train)
+    #model.save('liftmodel.pkl')
+    model.load('liftmodel.pkl')
+
     print("score: %r\n" % (model.score(X_test,y_test)))
 
     return model
@@ -105,10 +108,12 @@ def GenResult(model):
     #Validation:
     with codecs.open(output2Path,'w',encoding = 'utf-8') as fout:
         fout.write(u"<task2>\nauthorname\tinterest1\tinterest2\tinterest3\tinterest4\tinterest5\n")
+        i=0
         for V in y:
             while len(V) < 5:
                 V.append(0)
             fout.write(u"%s\t%s\t%s\t%s\t%s\t%s\t\n" % (testX[i],labels[V[0]],labels[V[1]],labels[V[2]],labels[V[3]],labels[V[4]]))
+            i=i+1
         fout.write(u"</task2>\n")
 
 
