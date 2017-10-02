@@ -7,7 +7,6 @@ import requests
 import urllib
 import base64
 import readability
-import pagehome as ph
 from bs4 import BeautifulSoup as bs
 homepage_pos = [u'edu',u'faculty', u'id', u'staff',  u'detail', u'person', u'about', u'academic', u'teacher', u'list', \
                 u'lish', u'homepages', u'researcher', u'team', u'teachers', u'member']
@@ -141,3 +140,22 @@ def email_pic_filter(pic_list):
     p = re.compile(r'mail|address|contact|text')
     p2 = re.compile(r'cn_text|thu_text|footer|ico|logo|button|media_sharing')
     return list(filter(lambda x : (len(p.findall(x.lower())) != 0) and (len(p2.findall(x.lower())) == 0), pic_list))
+
+
+def check_name_in_text(name, text):
+    """
+    Sample: for the name of "Bai Li", \
+    # www.xx.com/li.jpg get 0.5
+    www.xx.org/bai_li.jpg get 1
+    www.xx.org.avatar.jpg get 0
+    """
+    score = 0
+    short = ''
+    for i in re.split(r'[ -]', name):
+        short = i.lower().strip()[0] + short
+        if i.lower() in text.lower():
+            score += 1
+    if short in text.lower() or short[::-1] in text.lower():
+        score += 0.2
+    print(short)
+    return score / len(re.split(r'[ -]', name))
