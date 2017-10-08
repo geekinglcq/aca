@@ -13,7 +13,7 @@ class gender_guesser():
     """
     def __init__(self):
         self.load_data()
-    
+        self.train_model()
     def load_data(self):
         with open('./data/name_gender.json') as f:
             data = json.load(f)
@@ -49,8 +49,10 @@ class gender_guesser():
         # Acc = 0.833 in training set
         if name in self.female_name_set:
             return 'f'
-        else:
+        elif name in self.male_name_set:
             return 'm'
+        else:
+            return self.advanced_guess(name)
 
     def predict_gender(self, data):
         """
