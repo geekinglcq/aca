@@ -2,7 +2,7 @@ from sklearn.svm import SVR
 from sklearn import linear_model
 import numpy as np
 import Paper
-
+import random
 
 class ILearner(object):
     """description of class"""
@@ -68,7 +68,7 @@ class SparsePA(ILearner):
         papers = Paper.Paper.getPaperByAut(aut)
         for paper in papers:
             t=len(paper.Referenced)
-            p=1.0
+            p=0.0
             if paper.Index in self.weightPool:
                 p=self.weightPool[paper.Index]
             if t==0:
@@ -83,6 +83,11 @@ class SparsePA(ILearner):
 
     def train(self, X, Y):
         """X - List of ['Name']\nY - List of [Citaion]"""
+        #z = list(zip(X,Y))
+        #random.shuffle(z)
+        #X = [it[0] for it in z]
+        #Y = [it[1] for it in z]
+
         for k in range(self.T):
             print("Training: %d\n" % (k))
             for i in range(len(X)):
@@ -90,7 +95,7 @@ class SparsePA(ILearner):
                 yp,w,x = self.__makeOnePrediction(X[i])
 
                 loss = abs(yp - y)
-                tau = loss / (1.0 / (2 * self.C) + np.sum(x**2))
+                tau = loss /  np.sum(x**2)
                 w = w + np.sign(y - yp) * tau * x.T
 
                 j=0
@@ -98,14 +103,16 @@ class SparsePA(ILearner):
                 for paper in papers:
                     self.weightPool[paper.Index]=w[0,j]
                     j=j+1
-        
+        return X,Y
 
     def predict(self, X):
         """X - List of ['Name'] """
         Y = [0 for x in X]
         for i in range(len(X)):
             yp,w,x = self.__makeOnePrediction(X[i])
-            Y[i] = int(yp)
+            if(yp<0):
+                yp=0
+            Y[i] = int(round(yp))
         return Y
 
     def MAPEScore(self, Xv, Yv):
@@ -119,3 +126,13 @@ class SparsePA(ILearner):
             for i in range(N):
                 fout.write("%r,%r,%r\n"%(Xv[i],Yv[i],YP[i]))
         return 1 - 1.0 / N * s
+    def save(self,fileName):
+        with open(fileName,'w') as fout:
+            for k,v in self.weightPool.items():
+                fout.write('%r,%r\n'%(k,v))
+                
+    def load(self,fileName):
+        with open(fileName,'r') as fin:
+            for row in fin:
+                it=row.split(',')
+                self.weightPool[int(it[0])] = float(it[1])

@@ -1,10 +1,14 @@
 # -*- coding: utf-8 -*-
 import json
-import pandas as pd
 import codecs
+import pandas as pd
 import numpy as np
 
 from collections import OrderedDict
+
+train_path = './task1/training.txt'
+validataion_path = './task1/validation.txt'
+
 variable_map = OrderedDict({
     ("id", 0),
     ("name", 1),
@@ -45,21 +49,41 @@ def read_task1(file):
             sample = handle_one_scientist(temp)
             data.append(sample)
             temp = []
-    data = pd.DataFrame(data, columns=variable)
+    if len(data[0]) == 4:
+        data = pd.DataFrame(data, columns=variable[0:3])
+    else:
+        data = pd.DataFrame(data, columns=variable)
     return data
     
-def read_former_task1_ans(file):
+
+def read_former_task1_ans(file, raw=validataion_path, skiprows=True):
     """
     Read former task1 ans 
     """
-    ans = pd.read_csv(file, sep='\t', skiprows=[0, -1])
+    if skiprows:
+        skiprows = [0]
+    else:
+        skiprows = None
+    ans = pd.read_csv(file, sep='\t', skiprows=skiprows, error_bad_lines=False)
+    ans = ans.fillna('')
+    if skiprows == [0]:
+        ans = ans.drop(ans.shape[0] - 1)
+    ans.columns = ['id', 'homepage', 'gender', 'position', 'pic', 'email', 'location']
+    # print(ans.head())
+    data = read_task1(raw)[["id", "name", "org", "search_results_page"]]
+    # print(data.head())
+    ans = pd.merge(ans, data, how='outer', on='id')
     return ans
 
-def load_search_res():
+def load_search_res(labeled=True):
     """
     Return a dict contains the search results. 
     Key is scientist's id.
     """
-    with open('task1_train_info.json') as f:
-        data = json.load(f)
+    if labeled:
+        with open('./data/train_search_info.json') as f:
+            data = json.load(f)
+    else:
+        with open('./data/validation_search_info.json') as f:
+            data = json.load(f)
     return data
