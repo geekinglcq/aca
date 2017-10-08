@@ -6,3 +6,10 @@
 *.m
 *.mat
 *.txt
+/paperToTopics.pkl
+/LDAModel.pkl.state.sstats.npy
+/LDAModel.pkl.state
+/LDAModel.pkl.id2word
+/LDAModel.pkl.expElogbeta.npy
+/LDAModel.pkl
+/dictionary.pkl
