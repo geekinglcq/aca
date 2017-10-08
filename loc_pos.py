@@ -1,4 +1,5 @@
 import re
+import json
 import codecs
 import pandas as pd
 
@@ -23,6 +24,7 @@ class locpos_guesser():
         # self.pos_p = set(self.pos_list)
         self.year_p = re.compile(r'((?:19|20)[0-9]{2})')
         self.loc_p = re.compile('|'.join([r'\b'+i+r'\b' for i in self.loc_list]))
+        self.org_loc = json.load(codecs.open('./data/org_location.json', 'r', 'utf-8'))
     def check_pos(self, html_text, name, index):
         pos_words_p = re.compile(r'[Pp]osition[^"]|职|[Tt]itle[^=>"]')
         le = max(index - 5, 0)
@@ -92,14 +94,54 @@ class locpos_guesser():
             pos = self.pos_guess(r['name'], text)
             data.set_value(i, 'position', ';'.join(pos))
 
-    def loc_guess(self, html_text):
+    def check_loc(self, i, name, org, html_text):
+        le = max(i - 4, 0)
+        ri = min(i + 4, len(html_text))
+        for i in range(le, ri):
+            if len(html_text[i]) <= 8:
+                if i < (le + ri) / 2:
+                    le = max(le - 1, 0)
+                else:
+                    ri = min(ri + 1, len(html_text))
+        score = [0 for i in range(12)]
+        for i in range(le, ri):
+            line_score = self.score_one_line(html_text[i], org, name)
+            for j in range(len(line_score)):
+                # score[j] = score[j] + line_score[j]
+                score[j] = max(score[j], line_score[j])
+        score = sum(score)
+        return score
+
+    def score_one_line(self, line, org, name):
+        score = []
+        key_words = ['mail', 'address', 'phone', 'tel', 'fax', 'room', 'office', 'road', 'street', 'avenue']
+        score.append(check_name_in_text(org, line))
+        score.append(check_name_in_text(name, line))
+        for i in key_words:
+            if i in line.lower():
+                score.append(1)
+            else:
+                score.append(0)
+        return score
+
+    def loc_guess(self, name, org, html_text):
         html_text = html_text.split('\n')
         locs = []
-        for i in html_text:
-            locs.extend(self.loc_p.findall(i))
+        for i, text in enumerate(html_text):
+            if self.loc_p.search(text):
+                if self.check_loc(i, name, org, html_text) > 3:
+                    locs.extend(self.loc_p.findall(text))
+        locs = list(set(locs))
         return locs
         
     def predict_loc(self, data, html):
         for i, r in data.iterrows():
-            loc = self.loc_guess(r['name'], html[r['id']])
-            data.set_value(i, 'location', loc)
+            # if r['org'] in self.org_loc:
+            #     data.set_value(i, 'location', self.org_loc[r['org']])
+            #     continue
+            loc = self.loc_guess(r['name'], r['org'], html[r['id']])
+            
+            if len(loc) == 1:
+                data.set_value(i, 'location', loc[0])
+            else:
+                data.set_value(i, 'location', '')

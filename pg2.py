@@ -52,7 +52,7 @@ def one_sample_homepage_features(data, search_res, labeled=True):
                 label = 1
             else:
                 # subsample
-                if random.random() < 0.1:
+                if random.random() < 0.2:
                 # if rank < 2:
                     label = 0
                 else:
@@ -141,7 +141,15 @@ def extract_homepage_features(labeled=True, full_data=False):
 
 def homepage_xgb_model(model_path, training_set='True'):
     training_set = './data/%s_features.svm.txt'%(training_set)
-    model = xgb.XGBClassifier()
+    model = xgb.XGBClassifier( learning_rate =0.1,
+         n_estimators=200,
+         max_depth=5,
+         min_child_weight=1,
+         gamma= 0.3,
+         subsample= 0.7,
+         colsample_bytree=0.7,
+         objective= 'binary:logistic',
+         scale_pos_weight=1)
     X, y = load_svmlight_file(training_set)
     model.fit(X,y)
     pickle.dump(model, open(model_path, 'wb'))
@@ -245,13 +253,13 @@ def score_homepage(model, data, res):
 def main(model_path='./model/temp.dat'):
     
     extract_homepage_features(labeled=True, full_data=True)
-    extract_homepage_features(labeled=False, full_data=False)
+    # extract_homepage_features(labeled=False, full_data=False)
     model = homepage_xgb_model(model_path, training_set='all')
     data = dio.read_former_task1_ans('./full_data/full_data_ans.txt', raw='./full_data/full_data.tsv', skiprows=False)
     search_info = json.load(open('./full_data/all_search_info.json'))
     print('Training set:', score_homepage(model, data, search_info))
-    test = dio.read_task1('./task1/training.txt')
-    res = dio.load_search_res(True)
-    print('Test set:', score_homepage(model, test, res))
+    # test = dio.read_task1('./task1/training.txt')
+    # res = dio.load_search_res(True)
+    # print('Test set:', score_homepage(model, test, res))
     
     return model
