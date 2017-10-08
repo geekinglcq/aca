@@ -64,7 +64,7 @@ class Paper(object):
 
 
     @staticmethod
-    def MergerPaper():
+    def MergePaper():
         N = len(Paper.__wholeData)
         Removed = 0
         GroupCount = 0
@@ -110,4 +110,13 @@ class Paper(object):
             id = id+1
         del(Paper.__wholeData)
         print("%s Delete whole data" % (datetime.datetime.now()))
+        gc.collect()
+
+    @staticmethod
+    def RemoveAllData():
+        del(Paper.__authorData)
+        del(Paper.__wholeData)
+        del(Paper.__authorToIndexes)
+        del(Paper.__IndexToGroup   )
+        del(Paper.__GroupData      )
         gc.collect()
