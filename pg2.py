@@ -52,7 +52,7 @@ def one_sample_homepage_features(data, search_res, labeled=True):
                 label = 1
             else:
                 # subsample
-                if random.random() < 0.2:
+                if random.random() < 0.3:
                 # if rank < 2:
                     label = 0
                 else:
