@@ -251,7 +251,15 @@ def store_d_html_text_multi(data, prefix='./webpage/', threads_num=10):
         i.start()
     for i in threads:
         i.join()
-    
+
+def delete_empty_file(prefix='./webpage/'):
+    files = os.listdir(prefix)
+    for i in files:
+        with codecs.open(prefix + i, 'r', 'utf-8') as f:
+            text = f.read()
+        if len(text) < 250:
+            os.remove(prefix + i)
+
 def store_html_single_thread(data, prefix='./webpage/'):
     for i in data:
         store_html_text(i, prefix=prefix)
