@@ -10,3 +10,7 @@
 *.npy
 *.id2word
 *.state
+!task*.txt
+/data/task3/test.csv
+/data/task3/train.csv
+/data/task3/validation.csv

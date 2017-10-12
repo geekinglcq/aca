@@ -7,21 +7,17 @@ import pickle
 
 
 # 文件路径
-paperPath = "F:\\ACAData\\task3\\papers.txt"
-trainPath = "F:\\ACAData\\task3\\train.csv"
-validationPath = "F:\\ACAData\\task3\\validation.csv"
-testPath= "F:\\ACAData\\task3\\test.csv"
-output3Path = "F:\\ACAData\\task3\\output3.txt"
-
-tempPath = "F:\\ACAData\\task3\\temp3.txt"
-
+paperPath = "Data\\task3\\papers.txt"
+trainPath = "Data\\task3\\train.csv"
+validationPath = "Data\\task3\\validation.csv"
+testPath= "Data\\task3\\test.csv"
+output3Path_validation = "Data\\task3\\output3_validation.txt"
+output3Path_final = "Data\\task3\\output3_final.txt"
 
 trainX = []
 trainY = []
 testX = []
-epsilon = 0.7
 finalTestX=[]
-
 
 def GroupReferedPaperByYear(author):
     res = {}
@@ -96,57 +92,41 @@ def ReadTest():
 def SelectModel():
     X_train, X_test, y_train, y_test = train_test_split(
         trainX, trainY, test_size=0.3, random_state=0)
-    #c=0
-    #opt = 0
-    ##standard : 0.9830
-    #while True:
-    #    m = SparsePA(c, 20)
-    #    xtmp,ytmp = m.train(trainX, trainY)
-    #    mape = m.MAPEScore(X_test, y_test)
-    #    print("C: %r,  MAPE: %r, train: %r,test: %r\n" % (c, mape,len(X_train),len(X_test)))
-    #    if mape > opt:
-    #        opt = mape
-    #        model = m
-    #        model.save('mape%.5f.txt'%mape)
-    #        pickle.dump(xtmp,open("xmp.pkl",'wb'))
-    #        pickle.dump(ytmp,open("ymp.pkl",'wb'))
+    c=0
+    opt = 0
 
-    X=pickle.load(open("xmp.pkl","rb"))
-    Y=pickle.load(open('ymp.pkl','rb'))
-    m = SparsePA(0,1020)
-    m.load('mape0.98366.txt')
-    m.train(X,Y)
-    mape = m.MAPEScore(X_test,y_test)
-    m.save('optmodel.txt')
-    print("MAPE: %r\n" % (mape))
-    return m
+    ## if train:
+    m = SparsePA(c, 1020)
+    m.train(trainX, trainY)
+    mape = m.MAPEScore(X_test, y_test)
+    print("C: %r,  MAPE: %r, train: %r,test: %r\n" % (c, mape,len(trainY),len(y_test)))
+    if mape > opt:
+        opt = mape
+        model = m
+    #-----------------------------------
 
+    ## if Test:
+    #model = SparsePA(0,0)
+    #model.load('optmodel.txt')
 
+    return model
 
-def GenResult(model):
-    with open(name=output3Path, mode="w") as out:
+def GenResult(model,inputData,outpath):
+    with open(name=outpath, mode="w") as out:
         out.write("<task3>\nauthorname\tcitation\n")
-        Yp = model.predict(testX)
+        Yp = model.predict(inputData)
         for i in range(len(Yp)):
-            out.write("%s\t%d\n" % (testX[i], Yp[i]))
-        out.write("</task3>\n")
-
-def GenTestResult(model):
-    with open(name=output3Path, mode="w") as out:
-        out.write("<task3>\nauthorname\tcitation\n")
-        Yp = model.predict(finalTestX)
-        for i in range(len(Yp)):
-            out.write("%s\t%d\n" % (finalTestX[i], Yp[i]))
+            out.write("%s\t%d\n" % (inputData[i], Yp[i]))
         out.write("</task3>\n")
 
 def main():
     ParsePaperTxt()
     ReadTrain()
     ReadValidation()
-    #ReadTest()
+    ReadTest()
     model = SelectModel()
-    GenResult(model)
-    #GenTestResult(model)
+    GenResult(model,testX,output3Path_validation)
+    GenResult(model,finalTestX,output3Path_final)
 
 
 if __name__ == "__main__":

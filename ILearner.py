@@ -83,10 +83,6 @@ class SparsePA(ILearner):
 
     def train(self, X, Y):
         """X - List of ['Name']\nY - List of [Citaion]"""
-        #z = list(zip(X,Y))
-        #random.shuffle(z)
-        #X = [it[0] for it in z]
-        #Y = [it[1] for it in z]
 
         for k in range(self.T):
             print("Training: %d\n" % (k))
@@ -103,7 +99,6 @@ class SparsePA(ILearner):
                 for paper in papers:
                     self.weightPool[paper.Index]=w[0,j]
                     j=j+1
-        return X,Y
 
     def predict(self, X):
         """X - List of ['Name'] """
@@ -122,9 +117,9 @@ class SparsePA(ILearner):
         for i in range(N):
             if YP[i] != 0 or Yv[i] != 0:
                 s = s + abs(YP[i] - Yv[i]) * 1.0 / max(YP[i], Yv[i])
-        with (open(('%r_cv.txt'%self.C),mode='w')) as fout:
-            for i in range(N):
-                fout.write("%r,%r,%r\n"%(Xv[i],Yv[i],YP[i]))
+        #with (open(('%r_cv.txt'%self.C),mode='w')) as fout:
+        #    for i in range(N):
+        #        fout.write("%r,%r,%r\n"%(Xv[i],Yv[i],YP[i]))
         return 1 - 1.0 / N * s
     def save(self,fileName):
         with open(fileName,'w') as fout:

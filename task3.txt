@@ -1,0 +1,6 @@
+task3 运行说明:
+1. Python 版本：2.7.13
+2. Python package: sci-learn, numpy, scipy, random, csv, pickle。均为截至2017年10月8号的最新版。
+3. 保证代码所在路径下有Data\task3\文件夹，同时，在task3文件夹中应有任务3的训练集train.csv、验证集validation.csv、训练集test.csv以及数据集papers.txt
+4. 运行：在代码所在路径，执行python task3.py命令。
+5. 结果：在上述task3文件夹中，output3_validation.txt是任务三的验证集输出；output3_final.txt是任务三的测试集输出。
