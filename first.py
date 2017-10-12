@@ -6,7 +6,7 @@ import pandas
 import codecs
 import pickle
 import random
-import crawler
+# import crawler
 import hashlib
 
 import data_io as dio
