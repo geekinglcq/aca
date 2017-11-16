@@ -1,7 +1,10 @@
 # 运行说明  
 ## 概述
-本代码是微软-清华开放学术精准画像大赛的参赛作品，我们团队是这次比赛的初赛No.4，决赛No.2。  
-整理后的可执行代码在`code`文件夹，其他的文件可以无视了。
+本代码是微软-清华开放学术精准画像大赛的解决方案，我们团队是这次比赛的初赛No.4，决赛No.2。  
+整理后的可执行代码在`code`文件夹，其他的文件可以无视了喵。  
+This repo is the No.2 solution to [Open Academic Data Challenge 2017](https://biendata.com/competition/scholar/).  
+**Clean code** in the `code` folder, please ignore other files.  
+
 ## Task1:  
 task1程序，使用python3，入口是`final_1.py`文件，但是由于爬虫的不稳定性，比赛中还用到了其他代码，下面会有所说明。  
 + `final_1.py` 程序入口  
